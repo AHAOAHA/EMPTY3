@@ -1,6 +1,18 @@
+//go语言以包作为管理单位
+//每个文件必须先声明包
+//程序中必须有一个main包
+//如果程序中没有main包 不会编译报错 但是无法生成可执行文件
 package main
+
+//导入的包必须进行使用，否则就会报错
 import "fmt"
 
+//主函数
+//函数的第一个括号必须和函数名在同一行 否则就会报错
 func main() {
-	fmt.Println("hello world!")
+	//go语言的结尾没有;
+	fmt.Println("hello world!") //PrintLn函数会自动换行
+	//调用函数大部分都需要导入包
+
+	//go语言自动格式化语句规范
 }
