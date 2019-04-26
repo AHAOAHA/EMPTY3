@@ -63,4 +63,16 @@ func main() {
 	tmp, _ = h, g // _ 代表匿名变量 此处g值会被丢弃
 	fmt.Printf("tmp = %d\n", tmp)
 
+	//结构体
+	//结构体声明
+	type stt struct {
+		_name   string
+		_id     string
+		_gender string
+	}
+
+	var stt1 stt
+	stt1._name = "ahaoozhang"
+	stt1._id = "01"
+	stt1._gender = "man"
 }
