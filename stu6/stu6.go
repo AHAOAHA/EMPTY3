@@ -4,9 +4,20 @@ import (
 	"fmt"
 )
 
-func hello() {
-	fmt.Println("this is goroutine")
+int Num = 10
+
+func function1() {
+	Num += 20
+	Num += 1
 }
+
+func function2 {
+	Num += 2
+}
+
+
+
+//协程
 
 func main() {
 	go hello()
