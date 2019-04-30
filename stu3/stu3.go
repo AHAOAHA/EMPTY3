@@ -11,7 +11,7 @@ func test() (a, b, c int) /*第二个括号中代表返回值*/ {
 
 func main() {
 	//Print和Println的区别
-	a := 10
+	a := 1
 	//一段一段处理 自动添加换行 变量之前自动添加空格 类似于cpp的cout
 	fmt.Println("a =", a)
 	//类似于C语言中的printf
@@ -68,7 +68,7 @@ func main() {
 		r = iota
 		s = iota
 		t = iota
-	)
+	)	
 	fmt.Printf("r = %d, s = %d, t = %d\n", r, s, t)
 	const (
 		//iota遇到const就会重置为0
