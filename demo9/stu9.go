@@ -1,8 +1,5 @@
 package main
 
-//#include <stdio.h>
-//#include <stdlib.h>
-import "C"
 import (
 	"fmt"
 )
@@ -14,8 +11,16 @@ func MyPrint(a string, who ...int) {
 	}
 }
 
+
+
+func test() int {
+	return 4567
+}
+
+type Func interface {
+	Test()
+}
 func main() {
-	var a int = 5
-	MyPrint("", 1, 2, 3, 4, 5, 6, 7)
-	C.printf("%d\n", a)
+	var f Func
+	f.Test()
 }
