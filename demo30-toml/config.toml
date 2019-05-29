@@ -1,0 +1,29 @@
+#Bc = "深圳"
+#[Song]
+#Name = "深圳哈哈"
+#Duration = 900
+
+title = "标题"
+
+[user]
+name = "ahaoozhang"
+id = 1
+
+[database]
+ip = "127.0.0.1"
+port = 8000
+maxconn = 100
+
+[servers]
+[servers.alpha]
+ip = "10.1.1.1"
+dc = "eqdc10"
+
+[servers.beta]
+ip = "10.0.0.0"
+dc = "eqdc10"
+
+[clients]
+data = [["gamma", "delta"], [1, 2]]
+
+hosts = ["alpha", "omega"]
