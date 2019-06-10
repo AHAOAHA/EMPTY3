@@ -5,6 +5,8 @@
 
 title = "标题"
 
+# key和value都会变为字符串
+kv = {key="value", zhanghao="ahaoozhang"}
 [user]
 name = "ahaoozhang"
 id = 1

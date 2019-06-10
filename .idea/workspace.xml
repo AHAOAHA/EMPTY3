@@ -2,14 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f027389f-0397-4fd5-ac98-1fd8e5c3995c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/MyStrings/MyStrings/MyLowerOrUpper.go" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/MyStrings/MyStrings/MyRepeat.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo19/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo17/demo18/demo18.go" beforeDir="false" afterPath="$PROJECT_DIR$/demo18/demo18.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo30-toml/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/demo30-toml/config.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo30-toml/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/demo30-toml/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,31 +23,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/demo26-file/main.go">
+        <entry file="file://$PROJECT_DIR$/Chat/conf/config.toml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="665">
-              <caret line="39" column="25" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/demo27-io/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/demo30-toml/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="80">
-              <caret line="67" column="32" selection-start-line="67" selection-start-column="32" selection-end-line="67" selection-end-column="32" />
-              <folding>
-                <element signature="e#36#48#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="19">
+              <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -55,8 +34,62 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/demo30-toml/config.toml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+            <state relative-caret-position="114">
+              <caret line="6" selection-start-line="6" selection-end-line="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo32-json-iterator/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="361">
+              <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo33-TCP API/service/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="912">
+              <caret line="51" column="9" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo34-Scan/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="286">
+              <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/demo35-CGO/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="73">
+              <caret line="4" column="19" lean-forward="true" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo33-TCP API/client/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="494">
+              <caret line="30" column="18" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://D:/Go/src/net/net.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2033">
+              <caret line="116" column="4" selection-start-line="116" selection-start-column="4" selection-end-line="116" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -75,24 +108,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="209">
               <caret line="17" column="34" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://D:/Go/src/net/http/server.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57228">
-              <caret line="3036" column="24" selection-start-line="3036" selection-start-column="24" selection-end-line="3036" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://D:/Go/src/net/dial.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12920">
-              <caret line="686" column="5" selection-start-line="686" selection-start-column="5" selection-end-line="686" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -125,6 +140,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GoLibraries">
+    <option name="urls">
+      <list>
+        <option value="file://$PROJECT_DIR$/Chat" />
+      </list>
+    </option>
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -139,8 +161,20 @@
         <option value="$PROJECT_DIR$/demo27-io/main.go" />
         <option value="$PROJECT_DIR$/demo28-gorilla/main.go" />
         <option value="$PROJECT_DIR$/demo29-websocket/main.go" />
-        <option value="$PROJECT_DIR$/demo30-toml/config.toml" />
+        <option value="$PROJECT_DIR$/Chat/conf/config.toml" />
+        <option value="$PROJECT_DIR$/Chat/main.go" />
+        <option value="$PROJECT_DIR$/Chat/src/message/message.go" />
+        <option value="$PROJECT_DIR$/Chat/src/Conn/conn.go" />
+        <option value="$PROJECT_DIR$/Chat/src/main.go" />
+        <option value="$PROJECT_DIR$/Chat/Client/src/main.go" />
         <option value="$PROJECT_DIR$/demo30-toml/main.go" />
+        <option value="$PROJECT_DIR$/demo30-toml/config.toml" />
+        <option value="$PROJECT_DIR$/demo32-json-iterator/main.go" />
+        <option value="$PROJECT_DIR$/demo33-TCP API/main.go" />
+        <option value="$PROJECT_DIR$/demo33-TCP API/client/main.go" />
+        <option value="$PROJECT_DIR$/demo33-TCP API/service/main.go" />
+        <option value="$PROJECT_DIR$/demo34-Scan/main.go" />
+        <option value="$PROJECT_DIR$/demo35-CGO/main.go" />
       </list>
     </option>
   </component>
@@ -158,7 +192,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -169,52 +202,35 @@
             <path>
               <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
               <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo21" type="462c0819:PsiDirectoryNode" />
+              <item name="demo33-TCP API" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
               <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo23-args" type="462c0819:PsiDirectoryNode" />
+              <item name="demo33-TCP API" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
               <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo24-panic" type="462c0819:PsiDirectoryNode" />
+              <item name="demo33-TCP API" type="462c0819:PsiDirectoryNode" />
+              <item name="service" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
               <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo25-timer" type="462c0819:PsiDirectoryNode" />
+              <item name="demo34-Scan" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
               <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo26-file" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo27-io" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo28-gorilla" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo29-websocket" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go_code" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go_code" type="462c0819:PsiDirectoryNode" />
-              <item name="demo30-toml" type="462c0819:PsiDirectoryNode" />
+              <item name="demo35-CGO" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -227,13 +243,14 @@
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="D:/Projects/FreeCloud" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="terminal" />
+    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\GoProject\src\go_code\Chat\src" />
       <recent name="D:\GoProject\src\go_code" />
     </key>
   </component>
@@ -253,7 +270,7 @@
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4973545" visible="true" weight="0.12708019" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4973545" visible="true" weight="0.13313162" />
       <window_info id="Favorites" order="1" sideWeight="0.5026455" side_tool="true" weight="0.2527216" />
       <window_info id="Structure" order="2" sideWeight="0.5026455" weight="0.2527216" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -266,9 +283,9 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.45322582" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.29307568" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="File Transfer" order="12" weight="0.32903227" />
+      <window_info anchor="bottom" id="File Transfer" order="12" visible="true" weight="0.15806451" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -422,10 +439,88 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo29-websocket/main.go">
+    <entry file="file://$PROJECT_DIR$/demo27-io/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="17" column="34" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
+        <state relative-caret-position="95">
+          <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo30-toml/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="646">
+          <caret line="37" column="29" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Chat/src/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="20" column="20" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Chat/Client/src/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Chat/src/Conn/conn.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo33-TCP API/main.go" />
+    <entry file="file://$PROJECT_DIR$/Chat/src/message/message.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Chat/conf/config.toml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="19">
+          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo30-toml/config.toml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo32-json-iterator/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo33-TCP API/service/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="912">
+          <caret line="51" column="9" selection-start-line="51" selection-start-column="9" selection-end-line="51" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo33-TCP API/client/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="30" column="18" selection-start-line="30" selection-start-column="18" selection-end-line="30" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Go/src/net/net.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2033">
+          <caret line="116" column="4" selection-start-line="116" selection-start-column="4" selection-end-line="116" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -436,27 +531,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo27-io/main.go">
+    <entry file="file://$PROJECT_DIR$/demo29-websocket/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="7" column="10" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+        <state relative-caret-position="209">
+          <caret line="17" column="34" selection-start-line="17" selection-start-column="34" selection-end-line="17" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo30-toml/config.toml">
+    <entry file="file://$PROJECT_DIR$/demo34-Scan/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+        <state relative-caret-position="286">
+          <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/demo30-toml/main.go">
+    <entry file="file://$PROJECT_DIR$/demo35-CGO/main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="67" column="32" selection-start-line="67" selection-start-column="32" selection-end-line="67" selection-end-column="32" />
-          <folding>
-            <element signature="e#36#48#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="73">
+          <caret line="4" column="19" lean-forward="true" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
         </state>
       </provider>
     </entry>

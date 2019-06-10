@@ -35,6 +35,7 @@ import (
 
 type MyConfig struct { // 整个文件可以看作一个大的结构体
 	Title string // 全局字段可以直接提取
+	KV map[string]string //KV
 	User UserInfo // 每个[]对应一个结构体
 	DataBase DataBaseInfo
 	Servers map[string]Server

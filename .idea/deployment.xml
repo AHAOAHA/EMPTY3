@@ -5,7 +5,7 @@
       <paths name="linux">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/ahao/golang/src" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/ahao/gocode" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
