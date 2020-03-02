@@ -1,28 +1,35 @@
 /******************************************************************
  * Copyright(C) 2020-2020. All right reserved.
- * 
+ *
  * Filename: main.go
  * Author: ahaoozhang
  * Date: 2020-01-16 00:13:17 (Thursday)
- * Describe: 
+ * Describe:
  ******************************************************************/
 package main
 
 import (
-        "github.com/gin-gonic/gin"
-        log "github.com/sirupsen/logrus"
+	"GradeManager/src/service"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
+func init() {
+	// 设置输出日志格式
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors:   true,
+		FullTimestamp: true,
+	})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.InfoLevel)
+}
+
 func main() {
-    log.WithFields(log.Fields{
-            "animal": "walrus",
-        }).Info("A walrus appears")
-    r := gin.Default()
-    r.GET("/", func(c *gin.Context) {
-        c.JSON(200, gin.H{
-            "Blog":"www.flysnow.org",
-            "wechat":"flysnow_org",
-        })
-    })
-   r.Run(":8080")
+	r := gin.Default()
+	r.Static("/static", "./views/static")
+	r.LoadHTMLGlob("/home/ahaoozhang/dev_code/GradeManager/views/templates/*")
+	r.GET("/login", service.LoginHandler)
+	r.Run(":8080")
 }
