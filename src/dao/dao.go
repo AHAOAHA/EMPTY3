@@ -9,9 +9,11 @@
 package dao
 
 import (
+	"GradeManager/src/config"
 	"database/sql"
 	"errors"
-	"reflect"
+	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -20,12 +22,13 @@ import (
 
 type DB interface {
 	IsValid() bool
-	OpenDB() bool
+	OpenDB() error
 	Query(rowStruct interface{}, format string, args ...interface{}) error
+	GetDBDrive() *sql.DB
 }
 
 type MyDB struct {
-	DB           *sql.DB
+	db           *sql.DB
 	IP           string
 	Port         uint32
 	UserName     string
@@ -33,42 +36,106 @@ type MyDB struct {
 	DatabaseName string
 }
 
+var DataBase *MyDB
+
+func init() {
+	go func() { // check db status runtine
+		for true {
+			if DataBase != nil {
+				err := DataBase.db.Ping()
+				if err != nil {
+					log.Warnf("Database Ping Err")
+				} else {
+					time.Sleep(time.Second * 3)
+					log.Infof("Database Normal")
+					continue
+				}
+			}
+			if config.Config.GradeManagerDB.IsValid() {
+				// init sql
+				DataBase = new(MyDB)
+				DataBase.IP = config.Config.GradeManagerDB.Host
+				DataBase.PassWord = config.Config.GradeManagerDB.Password
+				DataBase.DatabaseName = config.Config.GradeManagerDB.DataBaseName
+				DataBase.Port = config.Config.GradeManagerDB.Port
+				DataBase.UserName = config.Config.GradeManagerDB.User
+				err := DataBase.OpenDB()
+				if err != nil {
+					log.Fatal("Databases Init err")
+				}
+				log.Info("Database init success")
+			}
+		}
+	}()
+
+}
+
 func (f *MyDB) IsValid() bool {
 	if len(f.IP) == 0 || f.Port == 0 || len(f.UserName) == 0 || len(f.DatabaseName) == 0 || len(f.PassWord) == 0 {
-		log.Print("Prase fail")
 		return false
 	}
 	return true
 }
 
-func (f *MyDB) OpenDB() bool {
+func (f *MyDB) OpenDB() error {
 	Odb, err := sql.Open("mysql", f.UserName+":"+f.PassWord+"@tcp("+f.IP+")/"+f.DatabaseName+"?charset=utf8")
 	if err != nil {
-		return false
+		return err
 	}
-	f.DB = Odb
-	return true
+	f.db = Odb
+	return nil
 }
 
-func (f *MyDB) Query(rowStruct interface{}, format string, args ...interface{}) error {
+// sql Query format
+func (f *MyDB) Query(format string, args ...interface{}) ([]map[string]interface{}, error) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Error("DB Query panic, recovered!")
+		}
+	}()
+
 	if f == nil {
-		return errors.New("Sql MyDB point is nil")
+		return nil, errors.New("Sql MyDB point is nil")
 	}
-	rows, err := f.DB.Query(format, args)
+	err := f.db.Ping()
+	if err != nil {
+		return nil, err
+	}
+	// 查询语句传入不存在的字段名时间，会引发panic
+	log.Infof(format, args...)
+	rows, err := f.db.Query(format, args...)
+
 	defer rows.Close()
 	if err != nil {
-		return errors.New("DB Query err")
+		return nil, err
 	}
-	// 确定Scan函数输入的类型
-	s := reflect.ValueOf(rowStruct).Elem()
-	onerow := make([]interface{}, s.NumField())
-	for i := 0; i < s.NumField(); i++ {
-		onerow[i] = s.Field(i).Addr().Interface()
+
+	columns, _ := rows.Columns()
+	columnLength := len(columns)
+	cache := make([]interface{}, columnLength)
+	for index, _ := range cache {
+		var a interface{}
+		cache[index] = &a
 	}
+	var list []map[string]interface{}
 	for rows.Next() {
-		if err := rows.Scan(onerow...); err != nil {
-			log.Fatal(err)
+		_ = rows.Scan(cache...)
+
+		item := make(map[string]interface{})
+		for i, data := range cache {
+			item[columns[i]] = *data.(*interface{}) //取实际类型
 		}
+		list = append(list, item)
 	}
-	return nil
+	return list, nil
+}
+
+func (db *MyDB) GetDBDrive() *sql.DB {
+	return db.db
+}
+
+// use golang format
+func (db *MyDB) Queryf(format string, args ...interface{}) ([]map[string]interface{}, error) {
+	sql := fmt.Sprintf(format, args...)
+	return db.Query(sql)
 }

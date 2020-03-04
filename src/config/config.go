@@ -38,12 +38,12 @@ func init() {
 	if _, err := toml.DecodeFile("/home/ahaoozhang/dev_code/GradeManager/config/config.toml", &Config); err != nil {
 		panic(err)
 	}
-	log.Infof("MyConfig: %v", Config)
+	log.Infof("MyConfig: %+v", Config)
 }
 
 func (db *GradeManagerDBInfo) IsValid() bool {
 	if db.Host != "" && db.DataBaseName != "" && db.Password != "" && db.Port != 0 && db.User != "" {
-		return false
+		return true
 	}
-	return true
+	return false
 }

@@ -1,0 +1,108 @@
+syntax="proto3";
+
+package DataCenter;
+
+message AdminInfo {
+    string              User = 1;
+	string              Password = 2;
+	string              Mail = 3;
+	int32               CreateTime = 4;
+	int32               ExprTime = 5;
+	string              LoginIP = 6;
+}
+
+message StudentInfo {
+    enum STATUS {
+        NORMEAL = 0;
+        LEAVE = 1;
+    }
+    uint64              StudentUid = 1;
+    string              Password = 2;
+    uint64              CollegeUid = 3;
+    uint64              MajorUid = 4;
+    uint64              ClassUid = 5;
+    string              Name = 6;
+    string              Sex = 7;
+    string              NRIC = 8;
+    STATUS              Status = 9;
+    int32               CreateTime = 10;
+}
+
+message TeacherInfo {
+    enum STATUS {
+        NORMAL = 0;
+        LEAVE = 1;
+    }
+    uint64              TeacherUid = 1;
+    string              Password = 2;
+    uint64              CollegeUid = 3;
+    string              string = 4;
+    string              Sex = 5;
+    string              NRIC = 6;
+    STATUS              Status = 7;
+    uint32              CreateTime = 8;
+}
+
+message CollegeInfo {
+    uint64              CollegeUid = 1;
+    string              Name = 2;
+    uint32              CreateTime = 3;
+}
+
+message MajorInfo {
+    uint64              MajorUid = 1;
+    uint64              CollegeUid = 2;
+    string              Name = 3;
+    uint32              CreateTime = 4;
+}
+
+message ClassInfo {
+    uint64              ClassUid = 1;
+    uint64              MajorUid = 2;
+    uint64              CollegeUid = 3;
+    string              Name = 4;
+    uint32              StudentNum = 5;
+    uint32              CreateTime = 6;
+}
+
+// 课程表
+message CourseInfo {
+    enum STATUS {
+        PLAN = 0;
+        DOING = 1;
+        DONE = 2;
+    }
+    uint64              CourseUid = 1;
+    uint64              CollegeUid = 2;
+    string              Name = 3;
+    float               Credit = 4;
+    float               Hour = 5;
+    STATUS              Status = 6;
+    uint32              CreateTime = 7;
+}
+
+// 成绩信息
+message ScoreInfo {
+    enum STATUS {
+        UNDONE = 0;
+        DONE = 1;
+    }
+    uint64              ScoreUid = 1;
+    uint64              StudentUid = 2;
+    uint64              CourseUid = 3;
+
+    float               MidtermScore = 4;
+    float               EndtermScore = 5;
+    float               UsualScore = 6;
+    float               Credit = 7;
+    float               AcademicCredit = 8;
+    STATUS              Status = 9;
+    uint32              CreateTime = 10;
+}
+
+message StudentCourseInfo {
+    uint64              StudentCourseUid = 1;
+    uint64              StudentUid = 2;
+    uint64              CourseUid = 3;
+    uint32              CreateTime = 4;
+}

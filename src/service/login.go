@@ -9,22 +9,57 @@
 package service
 
 import (
+	"GradeManager/src/context"
+	_ "GradeManager/src/dao"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
-type Admin struct {
-	User       string
-	Password   string
-	Mail       string
-	CreateTime int32
-	ExprTime   int32
-	LoginIP    string
+type Loginer interface {
+	IsValid() error
+	Login(string, string) error
 }
 
-func LoginHandler(c *gin.Context) {
+func LoginGetHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title": "login",
 	})
+}
+
+func LoginPostHandler(c *gin.Context) {
+	c.Request.ParseForm()
+	// session := sessions.Default(c)
+	// session.Set("ahaoo", "test_val")
+	// session.Save()
+	// get type
+	login_type := c.Request.PostForm.Get("type")
+	var loginer Loginer
+	switch login_type {
+	case "admin":
+		loginer = new(context.AdminContext)
+		break
+	case "student":
+		loginer = new(context.StudentContext)
+		break
+	case "teacher":
+		loginer = new(context.TeacherContext)
+		break
+	default:
+		log.Error("login type err")
+		return
+	}
+	if err := loginer.IsValid(); err != nil {
+		log.Error(err)
+	}
+	for k, v := range c.Request.PostForm {
+		log.Info(k, ":", v)
+	}
+	if err := loginer.Login(c.Request.PostForm.Get("username"), c.Request.PostForm.Get("password")); err != nil {
+		log.Warn("login error")
+		c.Redirect(http.StatusMovedPermanently, "/debug_loginerr")
+		return
+	}
+	c.Redirect(http.StatusMovedPermanently, "/debug_loginok")
 }

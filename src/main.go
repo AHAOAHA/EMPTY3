@@ -9,8 +9,12 @@
 package main
 
 import (
+	_ "GradeManager/src/config"
 	"GradeManager/src/service"
+	"net/http"
 	"os"
+
+	"github.com/gin-gonic/contrib/sessions"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -28,8 +32,24 @@ func init() {
 
 func main() {
 	r := gin.Default()
+	store := sessions.NewCookieStore([]byte("secret"))
+	r.Use(sessions.Sessions("mysession", store))
 	r.Static("/static", "./views/static")
 	r.LoadHTMLGlob("/home/ahaoozhang/dev_code/GradeManager/views/templates/*")
-	r.GET("/login", service.LoginHandler)
+	r.GET("/login", service.LoginGetHandler)
+	r.POST("/login", service.LoginPostHandler)
+	r.GET("/", func(g *gin.Context) {
+		g.Redirect(http.StatusMovedPermanently, "/login")
+	})
+	r.GET("/debug_loginok", func(g *gin.Context) {
+		g.JSON(http.StatusOK, gin.H{
+			"login": "success",
+		})
+	})
+	r.GET("/debug_loginerr", func(g *gin.Context) {
+		g.JSON(http.StatusOK, gin.H{
+			"login": "err",
+		})
+	})
 	r.Run(":8080")
 }
