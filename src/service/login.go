@@ -20,6 +20,7 @@ import (
 type Loginer interface {
 	IsValid() error
 	Login(string, string) error
+	RedirectIndex(*gin.Context) error
 }
 
 func LoginGetHandler(c *gin.Context) {
@@ -61,5 +62,5 @@ func LoginPostHandler(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/debug_loginerr")
 		return
 	}
-	c.Redirect(http.StatusMovedPermanently, "/debug_loginok")
+	loginer.RedirectIndex(c)
 }

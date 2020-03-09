@@ -12,7 +12,9 @@ import (
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
 	"errors"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -85,5 +87,23 @@ func (t *TeacherContext) Login(username string, password string) error {
 	}
 	// success
 	log.Info(username, " teacher login success!")
+	return nil
+}
+
+// 重定向到主页
+func (a *AdminContext) RedirectIndex(c *gin.Context) error {
+	c.Redirect(http.StatusMovedPermanently, "/admin_index")
+	return nil
+}
+
+// 重定向到主页
+func (a *StudentContext) RedirectIndex(c *gin.Context) error {
+	c.Redirect(http.StatusMovedPermanently, "/student_index")
+	return nil
+}
+
+// 重定向到主页
+func (a *TeacherContext) RedirectIndex(c *gin.Context) error {
+	c.Redirect(http.StatusMovedPermanently, "/student_index")
 	return nil
 }

@@ -139,3 +139,14 @@ func (db *MyDB) Queryf(format string, args ...interface{}) ([]map[string]interfa
 	sql := fmt.Sprintf(format, args...)
 	return db.Query(sql)
 }
+
+func (db *MyDB) Execf(format string, args ...interface{}) error {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Error("db Exec Panic, recovered!")
+		}
+	}()
+	sql := fmt.Sprintf(format, args...)
+	_, err := db.db.Exec(sql)
+	return err
+}

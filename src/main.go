@@ -41,15 +41,8 @@ func main() {
 	r.GET("/", func(g *gin.Context) {
 		g.Redirect(http.StatusMovedPermanently, "/login")
 	})
-	r.GET("/debug_loginok", func(g *gin.Context) {
-		g.JSON(http.StatusOK, gin.H{
-			"login": "success",
-		})
-	})
-	r.GET("/debug_loginerr", func(g *gin.Context) {
-		g.JSON(http.StatusOK, gin.H{
-			"login": "err",
-		})
-	})
+	r.GET("/admin_index", service.AdminIndexHandler)
+	r.GET("/student_index", service.StudentIndexHandler)
+	r.GET("/teacher_index", service.TeacherIndexHandler)
 	r.Run(":8080")
 }
