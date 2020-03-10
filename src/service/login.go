@@ -21,6 +21,7 @@ type Loginer interface {
 	IsValid() error
 	Login(string, string) error
 	RedirectIndex(*gin.Context) error
+	SetCookies(*gin.Context) error
 }
 
 func LoginGetHandler(c *gin.Context) {
@@ -48,19 +49,22 @@ func LoginPostHandler(c *gin.Context) {
 		loginer = new(context.TeacherContext)
 		break
 	default:
-		log.Error("login type err")
+		log.Errorf("login type err, type: %s\n", login_type)
 		return
-	}
-	if err := loginer.IsValid(); err != nil {
-		log.Error(err)
 	}
 	for k, v := range c.Request.PostForm {
 		log.Info(k, ":", v)
 	}
+	if err := loginer.IsValid(); err != nil {
+		log.Error(err)
+	}
 	if err := loginer.Login(c.Request.PostForm.Get("username"), c.Request.PostForm.Get("password")); err != nil {
-		log.Warn("login error")
-		c.Redirect(http.StatusMovedPermanently, "/debug_loginerr")
+		log.Warn(err)
+		c.HTML(http.StatusOK, "login.html", gin.H{
+			"err_code": "false",
+		})
 		return
 	}
+	loginer.SetCookies(c)
 	loginer.RedirectIndex(c)
 }

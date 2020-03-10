@@ -15,6 +15,14 @@ import (
 )
 
 func AdminIndexHandler(c *gin.Context) {
+	//var a context.AdminContext
+	// cookies, err := c.Request.Cookie("userinfo")
+	// if err != nil {
+	// 	log.Error(err)
+	// 	c.Redirect(http.StatusMovedPermanently, "/login")
+	// 	return
+	// }
+	// log.Info(cookies)
 	c.HTML(http.StatusOK, "admin_index.html", gin.H{
 		"title": "login",
 	})

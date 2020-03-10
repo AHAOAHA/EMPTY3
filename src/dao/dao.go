@@ -47,7 +47,7 @@ func init() {
 					log.Warnf("Database Ping Err")
 				} else {
 					time.Sleep(time.Second * 3)
-					log.Infof("Database Normal")
+					//log.Infof("Database Normal")
 					continue
 				}
 			}

@@ -31,6 +31,7 @@ func init() {
 }
 
 func main() {
+	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
 	store := sessions.NewCookieStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
@@ -41,8 +42,9 @@ func main() {
 	r.GET("/", func(g *gin.Context) {
 		g.Redirect(http.StatusMovedPermanently, "/login")
 	})
-	r.GET("/admin_index", service.AdminIndexHandler)
-	r.GET("/student_index", service.StudentIndexHandler)
-	r.GET("/teacher_index", service.TeacherIndexHandler)
+	// r.GET("/admin_index", service.AdminIndexHandler)
+	// r.GET("/student_index", service.StudentIndexHandler)
+	// r.GET("/teacher_index", service.TeacherIndexHandler)
+	r.NoRoute(service.NotFoundHandler)
 	r.Run(":8080")
 }

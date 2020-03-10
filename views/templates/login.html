@@ -1,137 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>学生成绩管理系统</title>
-<link href="../static/css/login.css" rel="stylesheet" rev="stylesheet" type="text/css" media="all" />
 
-<script type="text/javascript" src="../static/js/jquery.min.js"></script>
-<script type="text/javascript" src="../static/js/vector.js"></script>
-<script type="text/javascript" src="../static/js/jQuery1.7.js"></script>
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>学生成绩管理系统</title>
+        <link href="../static/css/login.css" rel="stylesheet" rev="stylesheet" type="text/css" media="all" />
+
+        <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../static/js/vector.js"></script>
+        <!-- <script type="text/javascript" src="../static/js/jQuery1.7.js"></script>
 <script type="text/javascript" src="../static/js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="../static/js/jquery1.42.min.js"></script>
 <script type="text/javascript" src="../static/js/jquery.SuperSlide.js"></script>
-<script type="text/javascript" src="../static/js/Validform_v5.3.2_min.js"></script>
-<script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-        var $tab_li = $('#tab ul li');
-        $tab_li.hover(function(){
-                $(this).addClass('selected').siblings().removeClass('selected');
-                var index = $tab_li.index(this);
-                $('div.tab_box > div').eq(index).show().siblings().hide();
-                }); 
-        });
-</script>
-<script type="text/javascript">
-$(function(){
-        $(".screenbg ul li").each(function(){
-                $(this).css("opacity","0");
+<script type="text/javascript" src="../static/js/Validform_v5.3.2_min.js"></script> -->
+        <script type="text/javascript" src="../static/js/md5.js"></script>
+        <script type="text/javascript">
+                $(document).ready(function () {
+                        var $tab_li = $('#tab ul li');
+                        $tab_li.hover(function () {
+                                $(this).addClass('selected').siblings().removeClass('selected');
+                                var index = $tab_li.index(this);
+                                $('div.tab_box > div').eq(index).show().siblings().hide();
+                        });
                 });
-        $(".screenbg ul li:first").css("opacity","1");
-        var index = 0;
-        var t;
-        var li = $(".screenbg ul li");  
-        var number = li.size();
-        function change(index){
-        li.css("visibility","visible");
-        li.eq(index).siblings().animate({opacity:0},3000);
-        li.eq(index).animate({opacity:1},3000);
-        }
-        function show(){
-        index = index + 1;
-        if(index<=number-1){
-        change(index);
-        }else{
-        index = 0;
-        change(index);
-        }
-        }
-        t = setInterval(show,8000);
-        //根据窗口宽度生成图片宽度
-        var width = $(window).width();
-        $(".screenbg ul img").css("width",width+"px");
-});
-</script>
+        </script>
+        <script type="text/javascript">
+                $(function () {
+                        $(".screenbg ul li").each(function () {
+                                $(this).css("opacity", "0");
+                        });
+                        $(".screenbg ul li:first").css("opacity", "1");
+                        var index = 0;
+                        var t;
+                        var li = $(".screenbg ul li");
+                        var number = li.size();
+                        function change(index) {
+                                li.css("visibility", "visible");
+                                li.eq(index).siblings().animate({ opacity: 0 }, 3000);
+                                li.eq(index).animate({ opacity: 1 }, 3000);
+                        }
+                        function show() {
+                                index = index + 1;
+                                if (index <= number - 1) {
+                                        change(index);
+                                } else {
+                                        index = 0;
+                                        change(index);
+                                }
+                        }
+                        t = setInterval(show, 8000);
+                        //根据窗口宽度生成图片宽度
+                        var width = $(window).width();
+                        $(".screenbg ul img").css("width", width + "px");
+                });
+                function admin_login() {
+                        // 密码单向加密
+                        var sec_username_hide = document.getElementById("sec_username_hide").value;
+                        var sec_password_hide = document.getElementById("sec_password_hide").value;
+                        document.getElementById("submit_sec_password_hide").value = md5(sec_password_hide);
+                        // alert(document.getElementById("sec_password_hide").value);
+                        // alert(document.getElementById("submit_sec_password_hide").value);
+                }
+                function teacher_login() {
+                        // 密码单向加密
+                        var tea_username_hide = document.getElementById("tea_username_hide").value;
+                        var tea_password_hide = document.getElementById("tea_password_hide").value;
+                        document.getElementById("submit_tea_password_hide").value = md5(tea_password_hide);
+                        //alert(document.getElementById("tea_password_hide").value)
+                        // console.log(document.getElementById("tea_password_hide").value);
+
+                        //alert(document.getElementById("submit_tea_password_hide").value);
+                }
+
+                function student_login() {
+                        var stu_username_hide = document.getElementById("stu_username_hide").value;
+                        var stu_password_hide = document.getElementById("stu_password_hide").value;
+                        document.getElementById("submit_stu_password_hide").value = md5(stu_password_hide);
+                        // alert(document.getElementById("submit_stu_password_hide").value);
+                }
+        </script>
 </head>
 
 <body>
-<div id="tab">
-<ul class="tab_menu">
-<li class="selected">学生登录</li>
-<li>教师登录</li>
-<li>教务登录</li>
-</ul>
-<div class="tab_box"> 
-<!-- 学生登录开始 -->
-<div>
-<div class="stu_error_box"></div>
-<form action="" method="post" class="stu_login_error">
-<div id="username">
-<label>学&nbsp;&nbsp;&nbsp;号：</label>
-<input type="text" id="stu_username_hide" name="username" value=""/>
-</div>
-<div id="password">
-<label>密&nbsp;&nbsp;&nbsp;码：</label>
-<input type="password" name="password" id="stu_password_hide" value=""/>
-</div>
-<div id="type">
-<input type="hidden" name="type" value="student">
-</div>
-<div id="login">
-<button type="submit">登录</button>
-</div>
-</form>
-</div>
-<!-- 学生登录结束-->
-<!-- 老师登录开始-->
-<div class="hide">
-<div class="tea_error_box"></div>
-<form action="" method="post" class="tea_login_error">
-<div id="username">
-<label>教工号：</label>
-<input type="text" id="tea_username_hide" name="username" value=""/>
-</div>
-<div id="password">
-<label>密&nbsp;&nbsp;&nbsp;码：</label>
-<input type="password" id="tea_password_hide" name="password" value=""/>
-</div>
-<div id="type">
-<input type="hidden" name="type" value="teacher">
-</div>
-<div id="login">
-<button type="submit">登录</button>
-</div>
-</form>
-</div>
-<!-- 导师登录结束-->
-<!-- 教务登录开始-->
-<div class="hide">
-<div class="sec_error_box"></div>
-<form action="" method="post" class="sec_login_error">
-<div id="username">
-<label>教务号：</label>
-<input type="text" id="sec_username_hide" name="username" value=""/>
-</div>
-<div id="password">
-<label>密&nbsp;&nbsp;&nbsp;码：</label>
-<input type="password" id="sec_password_hide" name="password" value=""/>
-</div>
-<div id="login">
-<button type="submit">登录</button>
-</div>
-<div id="type">
-<input type="hidden" name="type" value="admin">
-</div>
-</form>
-</div>
-<!-- 教务登录结束-->
-</div>
-</div>
-<div class="screenbg">
-<ul>
-<li><a href="javascript:;"><img src="../static/images/background-0.jpg"></a></li>
-</ul>
-</div>
+        <div id="tab">
+                <ul class="tab_menu">
+                        <li class="selected">学生登录</li>
+                        <li>教师登录</li>
+                        <li>教务登录</li>
+                </ul>
+                <div class="tab_box">
+                        <!-- 学生登录开始 -->
+                        <div>
+                                <div class="stu_error_box"></div>
+                                <form action="" method="post" class="stu_login_error">
+                                        <div id="username">
+                                                <label>学&nbsp;&nbsp;&nbsp;号：</label>
+                                                <input type="text" id="stu_username_hide" name="username" value="" />
+                                        </div>
+                                        <div id="password">
+                                                <label>密&nbsp;&nbsp;&nbsp;码：</label>
+                                                <input type="password" id="stu_password_hide" value="" />
+                                        </div>
+                                        <input type="hidden" id="submit_stu_password_hide" name="password"
+                                                value=""></input>
+                                        <div id="type">
+                                                <input type="hidden" name="type" value="student">
+                                        </div>
+                                        <div id="login">
+                                                <button type="submit" onclick="student_login()">登录</button>
+                                        </div>
+                                </form>
+                        </div>
+                        <!-- 学生登录结束-->
+                        <!-- 老师登录开始-->
+                        <div class="hide">
+                                <div class="tea_error_box"></div>
+                                <form method="post" class="tea_login_error">
+                                        <div id="username">
+                                                <label>教工号：</label>
+                                                <input type="text" id="tea_username_hide" name="username" value="" />
+                                        </div>
+                                        <div id="password">
+                                                <label>密&nbsp;&nbsp;&nbsp;码：</label>
+                                                <input type="password" id="tea_password_hide" value="" />
+                                        </div>
+                                        <input type="hidden" id="submit_tea_password_hide" name="password"
+                                                value=""></input>
+                                        <div id="type">
+                                                <input type="hidden" name="type" value="teacher">
+                                        </div>
+                                        <div id="login">
+                                                <button type="submit" onclick="teacher_login()">登录</button>
+                                        </div>
+                                </form>
+                        </div>
+                        <!-- 导师登录结束-->
+                        <!-- 教务登录开始-->
+                        <div class="hide">
+                                <div class="sec_error_box"></div>
+                                <form id="admin_login_form" method="post" class="sec_login_error">
+                                        <div id="username">
+                                                <label>教务号：</label>
+                                                <input type="text" id="sec_username_hide" name="username" />
+                                        </div>
+                                        <div id="password">
+                                                <label>密&nbsp;&nbsp;&nbsp;码：</label>
+                                                <input type="password" id="sec_password_hide" />
+                                        </div>
+                                        <input type="hidden" id="submit_sec_password_hide" name="password"></input>
+
+                                        <div id="login">
+                                                <button type="botton" onclick="admin_login()">登录</button>
+                                        </div>
+                                        <div id="type">
+                                                <input type="hidden" name="type" value="admin">
+                                        </div>
+                                </form>
+                        </div>
+                        <!-- 教务登录结束-->
+                </div>
+        </div>
+        <div class="screenbg">
+                <ul>
+                        <li><a href="javascript:;"><img src="../static/images/background-0.jpg"></a></li>
+                </ul>
+        </div>
 </body>
+
 </html>
