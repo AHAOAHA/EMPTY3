@@ -136,25 +136,28 @@ func (t *TeacherContext) Login(username string, password string) error {
 
 // 重定向到主页
 func (a *AdminContext) RedirectIndex(c *gin.Context) error {
-	c.HTML(http.StatusOK, "admin_index.html", gin.H{
-		"err_code": "success",
-	})
+	// c.HTML(http.StatusOK, "admin_index.html", gin.H{
+	// 	"err_code": "success",
+	// })
+	c.Redirect(http.StatusMovedPermanently, "/admin_index")
 	return nil
 }
 
 // 重定向到主页
 func (s *StudentContext) RedirectIndex(c *gin.Context) error {
-	c.HTML(http.StatusOK, "student_index.html", gin.H{
-		"err_code": "success",
-	})
+	// c.HTML(http.StatusOK, "student_index.html", gin.H{
+	// 	"err_code": "success",
+	// })
+	c.Redirect(http.StatusMovedPermanently, "student_index")
 	return nil
 }
 
 // 重定向到主页
 func (t *TeacherContext) RedirectIndex(c *gin.Context) error {
-	c.HTML(http.StatusOK, "teacher_index.html", gin.H{
-		"err_code": "success",
-	})
+	// c.HTML(http.StatusOK, "teacher_index.html", gin.H{
+	// 	"err_code": "success",
+	// })
+	c.Redirect(http.StatusMovedPermanently, "teacher_index")
 	return nil
 }
 

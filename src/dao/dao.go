@@ -147,6 +147,7 @@ func (db *MyDB) Execf(format string, args ...interface{}) error {
 		}
 	}()
 	sql := fmt.Sprintf(format, args...)
+	log.Info(sql)
 	_, err := db.db.Exec(sql)
 	return err
 }
