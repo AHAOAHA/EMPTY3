@@ -2,5 +2,6 @@
 *.vscode
 *.idea
 *.toml
+*.bak
 go.sum
 bin/

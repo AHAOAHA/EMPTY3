@@ -157,39 +157,111 @@ func (t *TeacherContext) RedirectIndex(c *gin.Context) error {
 	// c.HTML(http.StatusOK, "teacher_index.html", gin.H{
 	// 	"err_code": "success",
 	// })
-	c.Redirect(http.StatusMovedPermanently, "teacher_index")
+	c.Redirect(http.StatusMovedPermanently, "/teacher_index")
 	return nil
 }
 
-func (a *AdminContext) SetCookies(c *gin.Context) error {
+func (a *AdminContext) Entcry() string {
 	data, err := proto.Marshal(&a.Info)
 	if err != nil {
 		log.Error(err)
-		return err
+		return ""
 	}
-	val := base64.StdEncoding.EncodeToString(data)
-	c.SetCookie("userinfo", val, 1000, "/", "localhost", false, true)
-	return nil
+	return base64.RawURLEncoding.EncodeToString(data)
 }
 
-func (s *StudentContext) SetCookies(c *gin.Context) error {
+func (a *AdminContext) Detcry(cookie string) error {
+	data, err := base64.RawURLEncoding.DecodeString(cookie)
+	if err != nil {
+		return err
+	}
+	err = proto.Unmarshal(data, &a.Info)
+	return err
+}
+
+func (s *StudentContext) Entcry() string {
 	data, err := proto.Marshal(&s.Info)
 	if err != nil {
 		log.Error(err)
-		return err
+		return ""
 	}
-	val := base64.StdEncoding.EncodeToString(data)
-	c.SetCookie("username", val, 1000, "/", "localhost", false, true)
-	return nil
+	return base64.RawURLEncoding.EncodeToString(data)
 }
 
-func (t *TeacherContext) SetCookies(c *gin.Context) error {
+func (s *StudentContext) Detcry(cookie string) error {
+	data, err := base64.RawURLEncoding.DecodeString(cookie)
+	if err != nil {
+		return err
+	}
+	err = proto.Unmarshal(data, &s.Info)
+	return err
+}
+
+func (t *TeacherContext) Entcry() string {
 	data, err := proto.Marshal(&t.Info)
 	if err != nil {
 		log.Error(err)
+		return ""
+	}
+	return base64.RawStdEncoding.EncodeToString(data)
+}
+
+func (t *TeacherContext) Detcry(cookie string) error {
+	data, err := base64.RawURLEncoding.DecodeString(cookie)
+	if err != nil {
 		return err
 	}
-	val := base64.StdEncoding.EncodeToString(data)
-	c.SetCookie("userinfo", val, 1000, "/", "localhost", false, true)
+	err = proto.Unmarshal(data, &t.Info)
+	return err
+}
+
+func (a *AdminContext) SetCookies(c *gin.Context) {
+	c.SetCookie("user_cookie", a.Entcry(), 1000, "/", "", false, true)
+}
+
+func (t *TeacherContext) SetCookies(c *gin.Context) {
+	c.SetCookie("user_cookie", t.Entcry(), 1000, "/", "", false, true)
+}
+
+func (s *StudentContext) SetCookies(c *gin.Context) {
+	c.SetCookie("user_cookie", s.Entcry(), 1000, "/", "", false, true)
+}
+
+func (a *AdminContext) CheckCookies(c *gin.Context, key string) error {
+	cookie, err := c.Request.Cookie(key)
+	if err != nil {
+		return err
+	}
+	err = a.Detcry(cookie.Value)
+	if err != nil {
+		return err
+	}
+	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
+	return nil
+}
+
+func (t *TeacherContext) CheckCookies(c *gin.Context, key string) error {
+	cookie, err := c.Request.Cookie(key)
+	if err != nil {
+		return err
+	}
+	err = t.Detcry(cookie.Value)
+	if err != nil {
+		return err
+	}
+	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
+	return nil
+}
+
+func (s *StudentContext) CheckCookies(c *gin.Context, key string) error {
+	cookie, err := c.Request.Cookie(key)
+	if err != nil {
+		return err
+	}
+	err = s.Detcry(cookie.Value)
+	if err != nil {
+		return err
+	}
+	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
 	return nil
 }

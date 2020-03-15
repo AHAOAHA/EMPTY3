@@ -1,5 +1,6 @@
 CREATE DATABASE GrageManager;
 USE `GradeManager`;
+
 -- college表创建
 CREATE TABLE IF NOT EXISTS `college` (
   `college_uid` bigint(20) unsigned NOT NULL DEFAULT '0',

@@ -9,6 +9,7 @@
 package service
 
 import (
+	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	"errors"
 	"net/http"
@@ -19,32 +20,86 @@ import (
 )
 
 func AdminIndexHandler(c *gin.Context) {
-	//var a context.AdminContext
-	// cookies, err := c.Request.Cookie("userinfo")
-	// if err != nil {
-	// 	log.Error(err)
-	// 	c.Redirect(http.StatusMovedPermanently, "/login")
-	// 	return
-	// }
-	// log.Info(cookies)
+	var a context.AdminContext
+	cookie, err := c.Request.Cookie("user_cookie")
+	if err != nil {
+		// cookie不存在，跳转401
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		log.Error(err)
+		return
+	}
+	err = a.Detcry(cookie.Value)
+	if err != nil {
+		// cookie内容验证失败
+		log.Error(err)
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+	log.Info(a.Info.User, " sign up.")
+	// 获取当前学生总人数，教师总人数，专业总数，学院总数
+	var count_student, count_teacher, count_college, count_major string
+	var wg sync.WaitGroup
+	go func() {
+		m, err := dao.DataBase.Queryf("select count(*) from `student`")
+		if err == nil || len(m) != 0 {
+			count_student = string(m[0]["count(*)"].([]uint8))
+		}
+		wg.Done()
+	}()
+	go func() {
+		m, err := dao.DataBase.Queryf("select count(*) from `teacher`")
+		if err == nil || len(m) != 0 {
+			count_teacher = string(m[0]["count(*)"].([]uint8))
+		}
+		wg.Done()
+	}()
+	go func() {
+		m, err := dao.DataBase.Queryf("select count(*) from `college`")
+		if err == nil || len(m) != 0 {
+			count_college = string(m[0]["count(*)"].([]uint8))
+		}
+		wg.Done()
+	}()
+	go func() {
+		m, err := dao.DataBase.Queryf("select count(*) from `major`")
+		if err == nil || len(m) != 0 {
+			count_major = string(m[0]["count(*)"].([]uint8))
+		}
+		wg.Done()
+	}()
+	wg.Add(4)
+
+	wg.Wait()
 	c.HTML(http.StatusOK, "admin_index.html", gin.H{
-		"title": "login",
+		"title":         "login",
+		"student_count": count_student,
+		"teacher_count": count_teacher,
+		"college_count": count_college,
+		"major_count":   count_major,
+		"loginer_name":  a.Info.GetUser(),
+		"introduce":     "西安科技大学简介",
+		"school_title":  "西安科技大学",
 	})
 }
 
 func AdminAddTeacherGetHandler(c *gin.Context) {
-	// cookies, err := c.Request.Cookie("userinfo")
-	// if err != nil {
-	// 	log.Error(err)
-	// 	c.Redirect(http.StatusMovedPermanently, "/login")
-	// 	return
-	// }
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_add_teacher.html", gin.H{
 		"err_code": "ok",
 	})
 }
 
 func AdminAddStudentGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
 	c.HTML(http.StatusOK, "form_add_student.html", gin.H{
 		"err_code": "ok",
 	})
@@ -52,6 +107,22 @@ func AdminAddStudentGetHandler(c *gin.Context) {
 
 // 添加教师
 func AdminAddTeacherPostHandler(c *gin.Context) {
+	var a context.AdminContext
+	cookie, err := c.Request.Cookie("user_cookie")
+	if err != nil {
+		// cookie不存在，跳转401
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		log.Error(err)
+		return
+	}
+	err = a.Detcry(cookie.Value)
+	if err != nil {
+		// cookie内容验证失败
+		log.Error(err)
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.Request.ParseForm()
 	for k, v := range c.Request.PostForm {
 		if len(v) == 0 {
@@ -90,6 +161,12 @@ func AdminAddTeacherPostHandler(c *gin.Context) {
 
 // 添加学生
 func AdminAddStudentPostHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.Request.ParseForm()
 	for k, v := range c.Request.PostForm {
 		if len(v) == 0 {
@@ -156,12 +233,23 @@ func AdminAddStudentPostHandler(c *gin.Context) {
 }
 
 func AdminAddCollegeGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_add_college.html", gin.H{
 		"err_msg": "ok",
 	})
 }
 
 func AdminAddCollegePostHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
 	for k, v := range formdata {
@@ -191,12 +279,34 @@ func AdminAddCollegePostHandler(c *gin.Context) {
 }
 
 func AdminAddMajorGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_add_major.html", gin.H{
 		"err_msg": "ok",
 	})
 }
 
 func AdminAddMajorPostHandler(c *gin.Context) {
+	var a context.AdminContext
+	cookie, err := c.Request.Cookie("user_cookie")
+	if err != nil {
+		// cookie不存在，跳转401
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		log.Error(err)
+		return
+	}
+	err = a.Detcry(cookie.Value)
+	if err != nil {
+		// cookie内容验证失败
+		log.Error(err)
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
 	if err := postFormIsValid(c); err != nil {
@@ -226,12 +336,34 @@ func AdminAddMajorPostHandler(c *gin.Context) {
 }
 
 func AdminAddClassGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_add_class.html", gin.H{
 		"err_msg": "ok",
 	})
 }
 
 func AdminAddClassPostHandler(c *gin.Context) {
+	var a context.AdminContext
+	cookie, err := c.Request.Cookie("user_cookie")
+	if err != nil {
+		// cookie不存在，跳转401
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		log.Error(err)
+		return
+	}
+	err = a.Detcry(cookie.Value)
+	if err != nil {
+		// cookie内容验证失败
+		log.Error(err)
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
 	if err := postFormIsValid(c); err != nil {
@@ -264,7 +396,11 @@ func AdminAddClassPostHandler(c *gin.Context) {
 	}()
 	wg.Wait()
 
-	err := dao.DataBase.Execf("insert into `class`(`class_uid`, `college_uid`, `major_uid`, `name`) values ('%s', '%s', '%s', '%s')",
+	if !ok {
+		log.Error("there err")
+	}
+
+	err = dao.DataBase.Execf("insert into `class`(`class_uid`, `college_uid`, `major_uid`, `name`) values ('%s', '%s', '%s', '%s')",
 		formdata.Get("class_uid"), college_uid, major_uid, formdata.Get("name"))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -278,15 +414,37 @@ func AdminAddClassPostHandler(c *gin.Context) {
 }
 
 func AdminAddCourseGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_add_course.html", gin.H{
 		"err_msg": "ok",
 	})
 }
 
 func AdminAddCoursePostHandler(c *gin.Context) {
+	var a context.AdminContext
+	cookie, err := c.Request.Cookie("user_cookie")
+	if err != nil {
+		// cookie不存在，跳转401
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		log.Error(err)
+		return
+	}
+	err = a.Detcry(cookie.Value)
+	if err != nil {
+		// cookie内容验证失败
+		log.Error(err)
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
-	if err := postFormIsValid(c); err != nil {
+	if err = postFormIsValid(c); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"err_mag": err,
 		})

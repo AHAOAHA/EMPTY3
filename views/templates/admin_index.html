@@ -30,7 +30,9 @@
 
         </div>
 
-        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+            data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+                class="am-icon-bars"></span></button>
 
         <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
 
@@ -54,7 +56,8 @@
 
                 <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
                     <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
-                        <span class="tpl-header-list-user-nick">小张</span><span class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
+                        <span class="tpl-header-list-user-nick">{{ .loginer_name }}</span><span
+                            class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
                     </a>
                     <ul class="am-dropdown-content">
                         <li><a href="#"><span class="am-icon-bell-o"></span> 个人资料</a></li>
@@ -62,15 +65,11 @@
                         <li><a href="#"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
-                <li><a href="###" class="tpl-header-list-link"><span class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
+                <li><a href="###" class="tpl-header-list-link"><span
+                            class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
             </ul>
         </div>
     </header>
-
-
-
-
-
 
 
     <div class="tpl-page-container tpl-page-header-fixed">
@@ -89,20 +88,27 @@
                         </a>
                     </li>
                     <li class="tpl-left-nav-item">
-                        <a href="/add_teacher" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加教师</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-wpforms"></i>
+                            <span>信息添加</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
-                    </li>
+                        <ul class="tpl-left-nav-sub-menu">
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_teacher" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加教师</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
 
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_student" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加学生</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                        <!-- <ul class="tpl-left-nav-sub-menu">
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_student" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加学生</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                                <!-- <ul class="tpl-left-nav-sub-menu">
                             <li>
                                 <a href="table-font-list.html">
                                     <i class="am-icon-angle-right"></i>
@@ -132,54 +138,60 @@
                                         </a>
                             </li>
                         </ul> -->
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_college" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加学院</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_major" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加专业</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_class" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加班级</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_sourse" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加课程</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_college" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加学院</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_major" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加专业</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_class" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加班级</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_sourse" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加课程</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="tpl-left-nav-item">
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-wpforms"></i>
-                            <span>信息修改</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+                            <span>信息管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
+                        <ul class="tpl-left-nav-sub-menu">
                             <li>
                                 <!-- TODO: -->
-                                <a href="form-amazeui.html">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>教师信息修改</span>
-                                    <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i>
+                                <a href="/teacher_info_manager" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-wpforms"></i>
+                                    <span>教师信息管理</span>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
+                            </li>
 
-                                <a href="form-line.html">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>学生信息修改</span>
+                            <li>
+                                <!-- TODO: -->
+                                <a href="student_info_manager" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-wpforms"></i>
+                                    <span>学生信息管理</span>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
                             </li>
                         </ul>
@@ -187,10 +199,10 @@
 
                     <li class="tpl-left-nav-item">
                         <!-- TODO: -->
-                        <a href="login.html" class="nav-link tpl-left-nav-link-list">
+                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-key"></i>
-                            <span>学生成绩查询</span>
-
+                            <span>学生成绩管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                     </li>
                 </ul>
@@ -210,16 +222,16 @@
                 <li><a href="#">分类</a></li>
                 <li class="am-active">内容</li> -->
             </ol>
+            <a href="https://www.xust.edu.cn/">
             <div class="tpl-content-scope">
                 <div class="note note-info">
-                    <h3>西安科技大学
+                    <h3>{{.school_title}}
                         <span class="close" data-close="note"></span>
                     </h3>
-                    <p>西安科技大学管理员主页简介。</p>
-                    <p><span class="label label-danger">提示:</span>
-                    </p>
+                    <p>{{.introduce}}</p>
                 </div>
             </div>
+        </a>
 
             <div class="row">
                 <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
@@ -228,12 +240,12 @@
                             <i class="am-icon-bar-chart-o"></i>
                         </div>
                         <div class="details">
-                            <div class="number"> 10000 </div>
+                            <div class="number"> {{ .student_count }} </div>
                             <div class="desc"> 学生总人数 </div>
                         </div>
                         <a class="more" href="#"> 查看更多
-                    <i class="m-icon-swapright m-icon-white"></i>
-                </a>
+                            <i class="m-icon-swapright m-icon-white"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
@@ -242,12 +254,12 @@
                             <i class="am-icon-bar-chart-o"></i>
                         </div>
                         <div class="details">
-                            <div class="number"> 620 </div>
+                            <div class="number"> {{.teacher_count}} </div>
                             <div class="desc"> 教师总人数 </div>
                         </div>
                         <a class="more" href="#"> 查看更多
-                    <i class="m-icon-swapright m-icon-white"></i>
-                </a>
+                            <i class="m-icon-swapright m-icon-white"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
@@ -256,12 +268,12 @@
                             <i class="am-icon-bar-chart-o"></i>
                         </div>
                         <div class="details">
-                            <div class="number"> 10 </div>
+                            <div class="number"> {{.college_count}} </div>
                             <div class="desc"> 学院总数 </div>
                         </div>
                         <a class="more" href="#"> 查看更多
-                    <i class="m-icon-swapright m-icon-white"></i>
-                </a>
+                            <i class="m-icon-swapright m-icon-white"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
@@ -270,12 +282,12 @@
                             <i class="am-icon-bar-chart-o"></i>
                         </div>
                         <div class="details">
-                            <div class="number"> 786 </div>
+                            <div class="number"> {{.major_count}} </div>
                             <div class="desc"> 专业总数 </div>
                         </div>
                         <a class="more" href="#"> 查看更多
-                    <i class="m-icon-swapright m-icon-white"></i>
-                </a>
+                            <i class="m-icon-swapright m-icon-white"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -321,8 +333,8 @@
                                 </ul>
                             </div>
                         </div>
-                         <div class="tpl-scrollable">
-                        <!--    <div class="number-stats">
+                        <div class="tpl-scrollable">
+                            <!--    <div class="number-stats">
                                 <div class="stat-number am-fl am-u-md-6">
                                     <div class="title am-text-right"> Total </div>
                                     <div class="number am-text-right am-text-warning"> 2460 </div>
@@ -401,9 +413,9 @@
                                 </tbody>
                             </table>
                         </div> -->
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
 
 

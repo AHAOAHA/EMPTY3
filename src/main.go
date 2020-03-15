@@ -37,27 +37,43 @@ func main() {
 	r.Use(sessions.Sessions("mysession", store))
 	r.Static("/static", "./views/static")
 	r.LoadHTMLGlob("/home/ahaoozhang/dev_code/GradeManager/views/templates/*")
-	r.GET("/login", service.LoginGetHandler)
-	r.POST("/login", service.LoginPostHandler)
-	r.GET("/", func(g *gin.Context) {
+
+	// rounte
+	r.Any("/", func(g *gin.Context) {
 		g.Redirect(http.StatusMovedPermanently, "/login")
 	})
-	r.GET("/admin_index", service.AdminIndexHandler)
-	r.GET("/student_index", service.StudentIndexHandler)
-	r.GET("/teacher_index", service.TeacherIndexHandler)
+
+	// login
+	r.Any("/login", service.LoginHandler)
+	r.POST("/sign_up", service.SignUpHandler)
+
+	// admin function
+	r.Any("/admin_index", service.AdminIndexHandler)
 	r.GET("/add_teacher", service.AdminAddTeacherGetHandler)
 	r.GET("/add_student", service.AdminAddStudentGetHandler)
+	r.GET("/add_course", service.AdminAddCourseGetHandler)
+	r.GET("/add_college", service.AdminAddCollegeGetHandler)
+	r.GET("/add_major", service.AdminAddMajorGetHandler)
+	r.GET("/add_class", service.AdminAddClassGetHandler)
+
 	r.POST("/add_teacher", service.AdminAddTeacherPostHandler)
 	r.POST("/add_student", service.AdminAddStudentPostHandler)
-	r.GET("/add_college", service.AdminAddCollegeGetHandler)
 	r.POST("/add_college", service.AdminAddCollegePostHandler)
-	r.GET("/add_major", service.AdminAddMajorGetHandler)
 	r.POST("/add_major", service.AdminAddMajorPostHandler)
-	r.GET("/add_class", service.AdminAddClassGetHandler)
 	r.POST("/add_class", service.AdminAddClassPostHandler)
-	r.GET("/add_course", service.AdminAddCourseGetHandler)
 	r.POST("/add_course", service.AdminAddCoursePostHandler)
 
-	r.NoRoute(service.NotFoundHandler)
+	// teacher
+	r.GET("/teacher_index", service.TeacherIndexHandler)
+
+	// student
+	r.GET("/student_index", service.StudentIndexHandler)
+
+	// common
+	// r.GET("/query", service.QueryGetHandler)
+
+	r.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusNotFound, "404.html", nil)
+	})
 	r.Run(":8080")
 }

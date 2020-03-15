@@ -21,21 +21,24 @@ type Loginer interface {
 	IsValid() error
 	Login(string, string) error
 	RedirectIndex(*gin.Context) error
-	SetCookies(*gin.Context) error
+	SetCookies(*gin.Context)
+
+	// protobuf marshal, then base64 encode.
+	Entcry() string
+	Detcry(cookie string) error
+
+	// check cookie format and update.
+	CheckCookies(c *gin.Context, key string) error
 }
 
-func LoginGetHandler(c *gin.Context) {
+func LoginHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title": "login",
 	})
 }
 
-func LoginPostHandler(c *gin.Context) {
+func SignUpHandler(c *gin.Context) {
 	c.Request.ParseForm()
-	// session := sessions.Default(c)
-	// session.Set("ahaoo", "test_val")
-	// session.Save()
-	// get type
 	login_type := c.Request.PostForm.Get("type")
 	var loginer Loginer
 	switch login_type {
