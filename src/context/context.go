@@ -61,12 +61,13 @@ func (a *AdminContext) Login(username string, password string) error {
 		return errors.New("admin password err")
 	}
 	crtt, _ := strconv.Atoi(string(m[0]["create_time"].([]uint8)))
+	exprt, _ := strconv.Atoi(string(m[0]["expr_time"].([]uint8)))
 	a.Info = DataCenter.AdminInfo{
 		User:       username,
 		Password:   password,
 		Mail:       string(m[0]["mail"].([]uint8)),
 		CreateTime: int32(crtt),
-		//ExprTime: m[0]["expr_time"].(int32),
+		ExprTime:   int32(exprt),
 	}
 	// success
 	log.Info(username, " admin login success!")
@@ -128,6 +129,7 @@ func (t *TeacherContext) Login(username string, password string) error {
 		Sex:        string(m[0]["sex"].([]uint8)),
 		NRIC:       string(m[0]["NRIC"].([]uint8)),
 		CreateTime: uint32(crtt),
+		Name:       string(m[0]["name"].([]uint8)),
 	}
 	// success
 	log.Info(username, " teacher login success!")
@@ -264,4 +266,47 @@ func (s *StudentContext) CheckCookies(c *gin.Context, key string) error {
 	}
 	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
 	return nil
+}
+
+func (a *AdminContext) GetPassword() string {
+	if a == nil {
+		return ""
+	}
+	return a.Info.GetPassword()
+}
+
+func (t *TeacherContext) GetPassword() string {
+	if t == nil {
+		return ""
+	}
+	return t.Info.GetPassword()
+}
+
+func (s *StudentContext) GetPassword() string {
+	if s == nil {
+		return ""
+	}
+	return s.Info.GetPassword()
+}
+
+func (a *AdminContext) UpdatePassword(new_password string) error {
+	if err := a.IsValid(); err != nil {
+		return err
+	}
+
+	return dao.DataBase.Execf("update `admin` set `password`='%s' where `user`='%s'", new_password, a.Info.GetUser())
+}
+
+func (t *TeacherContext) UpdatePassword(new_password string) error {
+	if err := t.IsValid(); err != nil {
+		return err
+	}
+	return dao.DataBase.Execf("update `teacher` set `password`='%s' where `teacher_uid`='%s'", new_password, t.Info.GetTeacherUid())
+}
+
+func (s *StudentContext) UpdatePassword(new_password string) error {
+	if err := s.IsValid(); err != nil {
+		return err
+	}
+	return dao.DataBase.Execf("update `student` set `password`='%s' where `student_uid`='%s'", new_password, s.Info.GetStudentUid())
 }

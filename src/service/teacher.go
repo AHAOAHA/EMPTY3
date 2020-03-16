@@ -13,27 +13,18 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
 
 func TeacherIndexHandler(c *gin.Context) {
 	var t context.TeacherContext
 	// check cookie
-	cookie, err := c.Request.Cookie("user_cookie")
-	if err != nil {
-		log.Error(err)
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		return
-	}
-	err = t.Detcry(cookie.Value)
-	if err != nil {
-		log.Error(err)
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
 
 	// login status ok
 	c.HTML(http.StatusOK, "teacher_index.html", gin.H{
-		"title": "login",
+		"loginer_name": t.Info.GetName(),
 	})
 }

@@ -56,7 +56,9 @@ func main() {
 	r.GET("/add_college", service.AdminAddCollegeGetHandler)
 	r.GET("/add_major", service.AdminAddMajorGetHandler)
 	r.GET("/add_class", service.AdminAddClassGetHandler)
+	r.GET("/admin_person_info", service.AdminInfoGetHandler)
 
+	r.POST("/update_admin_info", service.UpdateAdminPersonInfoHandler)
 	r.POST("/add_teacher", service.AdminAddTeacherPostHandler)
 	r.POST("/add_student", service.AdminAddStudentPostHandler)
 	r.POST("/add_college", service.AdminAddCollegePostHandler)
@@ -66,12 +68,18 @@ func main() {
 
 	// teacher
 	r.GET("/teacher_index", service.TeacherIndexHandler)
+	r.GET("/teacher_person_info", service.TeacherInfoGetHandler)
+
+	r.POST("/update_teacher_info", service.UpdateTeacherPersonInfoHandler)
 
 	// student
 	r.GET("/student_index", service.StudentIndexHandler)
 
 	// common
 	// r.GET("/query", service.QueryGetHandler)
+
+	r.GET("/update_password", service.UpdatePasswordGetHandler)
+	r.POST("/update_password", service.UpdatePasswordPostHandler)
 
 	r.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "404.html", nil)

@@ -29,6 +29,9 @@ type Loginer interface {
 
 	// check cookie format and update.
 	CheckCookies(c *gin.Context, key string) error
+
+	GetPassword() string
+	UpdatePassword(new_password string) error
 }
 
 func LoginHandler(c *gin.Context) {

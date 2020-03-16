@@ -8,7 +8,7 @@ message AdminInfo {
 	string              Mail = 3;
 	int32               CreateTime = 4;
 	int32               ExprTime = 5;
-	string              LoginIP = 6;
+    string              LoginIP = 6;
 }
 
 message StudentInfo {
@@ -41,6 +41,7 @@ message TeacherInfo {
     string              NRIC = 6;
     STATUS              Status = 7;
     uint32              CreateTime = 8;
+    string              Name = 9;
 }
 
 message CollegeInfo {
