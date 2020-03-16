@@ -46,6 +46,7 @@ func main() {
 	// login
 	r.Any("/login", service.LoginHandler)
 	r.POST("/sign_up", service.SignUpHandler)
+	r.Any("/sign_out", service.SignOutHandler)
 
 	// admin function
 	r.Any("/admin_index", service.AdminIndexHandler)

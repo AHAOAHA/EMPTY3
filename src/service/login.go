@@ -71,3 +71,8 @@ func SignUpHandler(c *gin.Context) {
 	loginer.SetCookies(c)
 	loginer.RedirectIndex(c)
 }
+
+func SignOutHandler(c *gin.Context) {
+	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
+	c.Redirect(http.StatusMovedPermanently, "/login")
+}
