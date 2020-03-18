@@ -61,9 +61,7 @@ func SignUpHandler(c *gin.Context) {
 	for k, v := range c.Request.PostForm {
 		log.Info(k, ":", v)
 	}
-	if err := loginer.IsValid(); err != nil {
-		log.Error(err)
-	}
+
 	if err := loginer.Login(c.Request.PostForm.Get("username"), c.Request.PostForm.Get("password")); err != nil {
 		log.Warn(err)
 		c.HTML(http.StatusOK, "login.html", gin.H{

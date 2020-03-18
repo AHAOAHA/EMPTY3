@@ -2,6 +2,13 @@ syntax="proto3";
 
 package DataCenter;
 
+enum LoginType {
+    UNUSE   = 0;
+    TEACHER = 10001;
+    STUDENT = 10002;
+    ADMIN   = 10003;
+}
+
 message AdminInfo {
     string              User = 1;
 	string              Password = 2;
@@ -9,6 +16,7 @@ message AdminInfo {
 	int32               CreateTime = 4;
 	int32               ExprTime = 5;
     string              LoginIP = 6;
+    LoginType           LType = 7;
 }
 
 message StudentInfo {
@@ -26,6 +34,7 @@ message StudentInfo {
     string              NRIC = 8;
     STATUS              Status = 9;
     int32               CreateTime = 10;
+    LoginType           LType = 11;
 }
 
 message TeacherInfo {
@@ -42,6 +51,7 @@ message TeacherInfo {
     STATUS              Status = 7;
     uint32              CreateTime = 8;
     string              Name = 9;
+    LoginType           LType = 10;
 }
 
 message CollegeInfo {

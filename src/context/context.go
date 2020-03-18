@@ -37,17 +37,23 @@ type TeacherContext struct {
 }
 
 func (a *AdminContext) IsValid() error {
-	// TODO:
+	if a.Info.GetLType() != DataCenter.LoginType_ADMIN {
+		return errors.New("Login type err")
+	}
 	return nil
 }
 
 func (s *StudentContext) IsValid() error {
-	// TODO:
+	if s.Info.GetLType() != DataCenter.LoginType_STUDENT {
+		return errors.New("Login type err")
+	}
 	return nil
 }
 
 func (t *TeacherContext) IsValid() error {
-	// TODO:
+	if t.Info.GetLType() != DataCenter.LoginType_TEACHER {
+		return errors.New("Login type err")
+	}
 	return nil
 }
 
@@ -68,6 +74,7 @@ func (a *AdminContext) Login(username string, password string) error {
 		Mail:       string(m[0]["mail"].([]uint8)),
 		CreateTime: int32(crtt),
 		ExprTime:   int32(exprt),
+		LType:      DataCenter.LoginType_ADMIN,
 	}
 	// success
 	log.Info(username, " admin login success!")
@@ -100,6 +107,7 @@ func (s *StudentContext) Login(username string, password string) error {
 		Sex:        string(m[0]["sex"].([]uint8)),
 		NRIC:       string(m[0]["NRIC"].([]uint8)),
 		CreateTime: int32(crtt),
+		LType:      DataCenter.LoginType_STUDENT,
 	}
 	// success
 	log.Info(username, " student login success!")
@@ -130,6 +138,7 @@ func (t *TeacherContext) Login(username string, password string) error {
 		NRIC:       string(m[0]["NRIC"].([]uint8)),
 		CreateTime: uint32(crtt),
 		Name:       string(m[0]["name"].([]uint8)),
+		LType:      DataCenter.LoginType_TEACHER,
 	}
 	// success
 	log.Info(username, " teacher login success!")
@@ -238,6 +247,11 @@ func (a *AdminContext) CheckCookies(c *gin.Context, key string) error {
 	if err != nil {
 		return err
 	}
+
+	if err = a.IsValid(); err != nil {
+		return err
+	}
+
 	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
 	return nil
 }
@@ -251,6 +265,13 @@ func (t *TeacherContext) CheckCookies(c *gin.Context, key string) error {
 	if err != nil {
 		return err
 	}
+
+	log.Warnf("%d", t.Info.GetLType())
+
+	if err = t.IsValid(); err != nil {
+		return err
+	}
+
 	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
 	return nil
 }
@@ -262,6 +283,9 @@ func (s *StudentContext) CheckCookies(c *gin.Context, key string) error {
 	}
 	err = s.Detcry(cookie.Value)
 	if err != nil {
+		return err
+	}
+	if err = s.IsValid(); err != nil {
 		return err
 	}
 	c.SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
