@@ -17,36 +17,31 @@ import (
 )
 
 func UpdatePasswordGetHandler(c *gin.Context) {
-	var a context.AdminContext
-	var s context.StudentContext
-	var t context.TeacherContext
-	err_a := a.CheckCookies(c, "user_cookie")
-	err_s := s.CheckCookies(c, "user_cookie")
-	err_t := t.CheckCookies(c, "user_cookie")
-	if err_a != nil && err_s != nil && err_t != nil {
-		// 鉴权失败
-		c.HTML(http.StatusBadRequest, "401.html", "nil")
-		return
-	}
-	var login_name string
 	login_type := c.Query("type")
+
+	var loginer Loginer
+
 	switch login_type {
 	case "admin":
-		login_name = a.Info.GetUser()
+		loginer = new(context.AdminContext)
 		break
 	case "student":
-		login_name = s.Info.GetName()
+		loginer = new(context.StudentContext)
 		break
 	case "teacher":
-		login_name = t.Info.GetName()
+		loginer = new(context.TeacherContext)
 		break
 	default:
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
+	if err := loginer.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
 	c.HTML(http.StatusOK, "update_password.html", gin.H{
-		"type":       login_type,
-		"login_name": login_name,
+		"type":         login_type,
+		"loginer_name": loginer.GetLoginerName(),
 	})
 }
 

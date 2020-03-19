@@ -65,12 +65,14 @@ func TeacherInfoGetHandler(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "teacher_person_info.html", gin.H{
 		"teacher_uid":  t.Info.GetTeacherUid(),
-		"name":         "todo",
+		"name":         t.Info.GetName(),
 		"sex":          t.Info.GetSex(),
 		"NRIC":         t.Info.GetNRIC(),
 		"college_name": t.Info.GetCollegeUid(),
 		"status":       t.Info.GetStatus(),
 		"create_time":  time.Unix(int64(t.Info.GetCreateTime()), 0).Format("2006-01-02 03:04:05 PM"),
+		"loginer_name": t.Info.GetName(),
+		"login_ip":     c.ClientIP(),
 	})
 }
 
@@ -93,4 +95,26 @@ func UpdateTeacherPersonInfoHandler(c *gin.Context) {
 
 	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
 	c.Redirect(http.StatusMovedPermanently, "/login")
+}
+
+func StudentInfoGetHandler(c *gin.Context) {
+	var s context.StudentContext
+	if err := s.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "student_person_info.html", gin.H{
+		"student_uid":  s.Info.GetStudentUid(),
+		"name":         s.Info.GetName(),
+		"sex":          s.Info.GetSex(),
+		"NRIC":         s.Info.GetNRIC(),
+		"college_name": s.Info.GetCollegeUid(),
+		"major_name":   s.Info.GetMajorUid(),
+		"class_name":   s.Info.GetClassUid(),
+		"status":       s.Info.GetStatus(),
+		"create_time":  time.Unix(int64(s.Info.GetCreateTime()), 0).Format("2006-01-02 03:04:05 PM"),
+		"loginer_name": s.Info.GetName(),
+		"login_ip":     c.ClientIP(),
+	})
 }

@@ -266,8 +266,6 @@ func (t *TeacherContext) CheckCookies(c *gin.Context, key string) error {
 		return err
 	}
 
-	log.Warnf("%d", t.Info.GetLType())
-
 	if err = t.IsValid(); err != nil {
 		return err
 	}
@@ -333,4 +331,25 @@ func (s *StudentContext) UpdatePassword(new_password string) error {
 		return err
 	}
 	return dao.DataBase.Execf("update `student` set `password`='%s' where `student_uid`='%s'", new_password, s.Info.GetStudentUid())
+}
+
+func (a *AdminContext) GetLoginerName() string {
+	if a == nil {
+		return ""
+	}
+	return a.Info.GetUser()
+}
+
+func (t *TeacherContext) GetLoginerName() string {
+	if t == nil {
+		return ""
+	}
+	return t.Info.GetName()
+}
+
+func (s *StudentContext) GetLoginerName() string {
+	if s == nil {
+		return ""
+	}
+	return s.Info.GetName()
 }

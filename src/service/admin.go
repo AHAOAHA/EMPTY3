@@ -21,24 +21,14 @@ import (
 
 func AdminIndexHandler(c *gin.Context) {
 	var a context.AdminContext
-	cookie, err := c.Request.Cookie("user_cookie")
-	if err != nil {
-		// cookie不存在，跳转401
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		log.Error(err)
-		return
-	}
-	err = a.Detcry(cookie.Value)
-	if err != nil {
-		// cookie内容验证失败
-		log.Error(err)
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
-	log.Info(a.Info.User, " sign up.")
 	// 获取当前学生总人数，教师总人数，专业总数，学院总数
 	var count_student, count_teacher, count_college, count_major string
 	var wg sync.WaitGroup
+	wg.Add(4)
 	go func() {
 		m, err := dao.DataBase.Queryf("select count(*) from `student`")
 		if err == nil || len(m) != 0 {
@@ -67,8 +57,6 @@ func AdminIndexHandler(c *gin.Context) {
 		}
 		wg.Done()
 	}()
-	wg.Add(4)
-
 	wg.Wait()
 	c.HTML(http.StatusOK, "admin_index.html", gin.H{
 		"title":         "login",

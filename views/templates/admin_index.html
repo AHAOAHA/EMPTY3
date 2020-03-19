@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="../static/assets/css/admin.css">
     <link rel="stylesheet" href="../static/assets/css/app.css">
     <script src="../static/assets/js/echarts.min.js"></script>
+    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon" />
 </head>
 
 <body data-type="index">
@@ -65,7 +67,7 @@
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
-                <li><a href="###" class="tpl-header-list-link"><span
+                <li><a href="/sign_out" class="tpl-header-list-link"><span
                             class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
             </ul>
         </div>
@@ -108,36 +110,6 @@
                                     <span>添加学生</span>
                                     <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
                                 </a>
-                                <!-- <ul class="tpl-left-nav-sub-menu">
-                            <li>
-                                <a href="table-font-list.html">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>文字表格</span>
-                                    <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i>
-                                </a>
-
-                                <a href="table-images-list.html">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>图片表格</span>
-                                    <i class="tpl-left-nav-content tpl-badge-success">
-               18
-             </i>
-
-                                    <a href="form-news.html">
-                                        <i class="am-icon-angle-right"></i>
-                                        <span>消息列表</span>
-                                        <i class="tpl-left-nav-content tpl-badge-primary">
-               5
-             </i>
-
-
-                                        <a href="form-news-list.html">
-                                            <i class="am-icon-angle-right"></i>
-                                            <span>文字列表</span>
-
-                                        </a>
-                            </li>
-                        </ul> -->
                             </li>
                             <li class="tpl-left-nav-item">
                                 <a href="/add_college" class="nav-link tpl-left-nav-link-list">
@@ -223,15 +195,15 @@
                 <li class="am-active">内容</li> -->
             </ol>
             <a href="https://www.xust.edu.cn/">
-            <div class="tpl-content-scope">
-                <div class="note note-info">
-                    <h3>{{.school_title}}
-                        <span class="close" data-close="note"></span>
-                    </h3>
-                    <p>{{.introduce}}</p>
+                <div class="tpl-content-scope">
+                    <div class="note note-info">
+                        <h3>{{.school_title}}
+                            <span class="close" data-close="note"></span>
+                        </h3>
+                        <p>{{.introduce}}</p>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
 
             <div class="row">
                 <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
@@ -290,138 +262,8 @@
                         </a>
                     </div>
                 </div>
-
-
-
             </div>
-
-            <div class="row">
-                <div class="am-u-md-6 am-u-sm-12 row-mb">
-                    <div class="tpl-portlet">
-                        <div class="tpl-portlet-title">
-                            <div class="tpl-caption font-green ">
-                                <i class="am-icon-cloud-download"></i>
-                                <span> 数据统计</span>
-                            </div>
-                            <div class="actions">
-                                <ul class="actions-btn">
-                                    <li class="red-on">昨天</li>
-                                    <li class="green">前天</li>
-                                    <li class="blue">本周</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!--此部分数据请在 js文件夹下中的 app.js 中的 “百度图表A” 处修改数据 插件使用的是 百度echarts-->
-                        <div class="tpl-echarts" id="tpl-echarts-A">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="am-u-md-6 am-u-sm-12 row-mb">
-                    <div class="tpl-portlet">
-                        <div class="tpl-portlet-title">
-                            <div class="tpl-caption font-red ">
-                                <i class="am-icon-bar-chart"></i>
-                                <span>动态资料</span>
-                            </div>
-                            <div class="actions">
-                                <ul class="actions-btn">
-                                    <li class="purple-on">昨天</li>
-                                    <li class="green">前天</li>
-                                    <li class="dark">本周</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="tpl-scrollable">
-                            <!--    <div class="number-stats">
-                                <div class="stat-number am-fl am-u-md-6">
-                                    <div class="title am-text-right"> Total </div>
-                                    <div class="number am-text-right am-text-warning"> 2460 </div>
-                                </div>
-                                <div class="stat-number am-fr am-u-md-6">
-                                    <div class="title"> Total </div>
-                                    <div class="number am-text-success"> 2460 </div>
-                                </div>
-
-                            </div>
-
-                            <table class="am-table tpl-table">
-                                <thead>
-                                    <tr class="tpl-table-uppercase">
-                                        <th>人员</th>
-                                        <th>余额</th>
-                                        <th>次数</th>
-                                        <th>效率</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <img src="assets/img/user01.png" alt="" class="user-pic">
-                                            <a class="user-name" href="###">禁言小张</a>
-                                        </td>
-                                        <td>￥3213</td>
-                                        <td>65</td>
-                                        <td class="font-green bold">26%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <img src="assets/img/user02.png" alt="" class="user-pic">
-                                            <a class="user-name" href="###">Alex.</a>
-                                        </td>
-                                        <td>￥2635</td>
-                                        <td>52</td>
-                                        <td class="font-green bold">32%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <img src="assets/img/user03.png" alt="" class="user-pic">
-                                            <a class="user-name" href="###">Tinker404</a>
-                                        </td>
-                                        <td>￥1267</td>
-                                        <td>65</td>
-                                        <td class="font-green bold">51%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <img src="assets/img/user04.png" alt="" class="user-pic">
-                                            <a class="user-name" href="###">Arron.y</a>
-                                        </td>
-                                        <td>￥657</td>
-                                        <td>65</td>
-                                        <td class="font-green bold">73%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <img src="assets/img/user05.png" alt="" class="user-pic">
-                                            <a class="user-name" href="###">Yves</a>
-                                        </td>
-                                        <td>￥3907</td>
-                                        <td>65</td>
-                                        <td class="font-green bold">12%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <img src="assets/img/user06.png" alt="" class="user-pic">
-                                            <a class="user-name" href="###">小黄鸡</a>
-                                        </td>
-                                        <td>￥900</td>
-                                        <td>65</td>
-                                        <td class="font-green bold">10%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
         </div>
-
     </div>
 
 

@@ -62,8 +62,8 @@
                             class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
                     </a>
                     <ul class="am-dropdown-content">
-                        <li><a href="/person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
-                        <li><a href="/change_password"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/student_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=student"><span class="am-icon-cog"></span> 修改密码</a></li>
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
@@ -76,67 +76,30 @@
 
     <div class="tpl-page-container tpl-page-header-fixed">
 
-
         <div class="tpl-left-nav tpl-left-nav-hover">
             <div class="tpl-left-nav-title">
-                管理员功能列表
+                学生功能列表
             </div>
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="/admin_index" class="nav-link active">
+                        <a href="student_index" class="nav-link active">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
                     </li>
                     <li class="tpl-left-nav-item">
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-wpforms"></i>
-                            <span>信息添加</span>
+                            <i class="am-icon-table"></i>
+                            <span>课程管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                         <ul class="tpl-left-nav-sub-menu">
-                            <li class="tpl-left-nav-item">
-                                <a href="/add_teacher" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-table"></i>
-                                    <span>添加教师</span>
-                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                                </a>
-                            </li>
-
-                            <li class="tpl-left-nav-item">
-                                <a href="/add_student" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-table"></i>
-                                    <span>添加学生</span>
-                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                                </a>
-                            </li>
-                            <li class="tpl-left-nav-item">
-                                <a href="/add_college" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-table"></i>
-                                    <span>添加学院</span>
-                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                                </a>
-                            </li>
-                            <li class="tpl-left-nav-item">
-                                <a href="/add_major" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-table"></i>
-                                    <span>添加专业</span>
-                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                                </a>
-                            </li>
-                            <li class="tpl-left-nav-item">
-                                <a href="/add_class" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-table"></i>
-                                    <span>添加班级</span>
-                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                                </a>
-                            </li>
-                            <li class="tpl-left-nav-item">
-                                <a href="/add_sourse" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-table"></i>
-                                    <span>添加课程</span>
-                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                            <li>
+                                <!-- TODO: -->
+                                <a href="form-amazeui.html">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>个人课表</span>
                                 </a>
                             </li>
                         </ul>
@@ -144,42 +107,24 @@
 
                     <li class="tpl-left-nav-item">
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-wpforms"></i>
-                            <span>信息管理</span>
+                            <i class="am-icon-table"></i>
+                            <span>成绩管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                         <ul class="tpl-left-nav-sub-menu">
                             <li>
                                 <!-- TODO: -->
-                                <a href="/teacher_info_manager" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-wpforms"></i>
-                                    <span>教师信息管理</span>
-                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
-                                </a>
-                            </li>
-
-                            <li>
-                                <!-- TODO: -->
-                                <a href="student_info_manager" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-wpforms"></i>
-                                    <span>学生信息管理</span>
-                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
+                                <a href="form-amazeui.html">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>成绩查询</span>
                                 </a>
                             </li>
                         </ul>
                     </li>
-
-                    <li class="tpl-left-nav-item">
-                        <!-- TODO: -->
-                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-key"></i>
-                            <span>学生成绩管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
+
 
         <div class="tpl-block ">
 
@@ -189,16 +134,58 @@
                 <div class="am-u-sm-12 am-u-md-9">
                     <form action="/update_admin_info" method="post" class="am-form am-form-horizontal">
                         <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">登录名</label>
+                            <label for="user-name" class="am-u-sm-3 am-form-label">姓名 </label>
                             <div class="am-u-sm-9">
                                 <input type="text" id="input_name" name="name" value="{{.name}}" readonly="true">
                             </div>
                         </div>
 
                         <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">邮箱 </label>
+                            <label for="college_id" class="am-u-sm-3 am-form-label">性别 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_mail" name="mail" value="{{.mail}}" readonly="true">
+                                <input type="text" id="input_sex" name="sex" value="{{.sex}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">身份证号 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="NRIC" value="{{.NRIC}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">状态 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="status" value="{{.status}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">学号 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="teacher_uid" value="{{.student_uid}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">所属学院 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="college_name" value="{{.college_name}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">所属专业 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="major_name" value="{{.major_name}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">所属班级 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="class_name" value="{{.class_name}}" readonly="true">
                             </div>
                         </div>
 
@@ -210,14 +197,7 @@
                         </div>
 
                         <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">过期时间 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="expr_time" value="{{.expr_time}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">login_ip </label>
+                            <label for="college_id" class="am-u-sm-3 am-form-label">登录ip </label>
                             <div class="am-u-sm-9">
                                 <input type="text" name="login_ip" value="{{.login_ip}}" readonly="true">
                             </div>
@@ -232,7 +212,7 @@
                                 <script>
                                     function changeReadOnly() {
                                         $("#input_name").attr("readOnly", false);
-                                        $("#input_mail").attr("readOnly", false);
+                                        $("#input_sex").attr("readOnly", false);
 
 
                                         $("#submit_button").attr("type", "submit");

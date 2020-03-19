@@ -74,6 +74,7 @@ func main() {
 
 	// student
 	r.GET("/student_index", service.StudentIndexHandler)
+	r.GET("/student_person_info", service.StudentInfoGetHandler)
 
 	// common
 	// r.GET("/query", service.QueryGetHandler)
