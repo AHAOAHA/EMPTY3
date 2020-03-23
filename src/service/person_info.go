@@ -118,3 +118,24 @@ func StudentInfoGetHandler(c *gin.Context) {
 		"login_ip":     c.ClientIP(),
 	})
 }
+
+func UpdateStudentPersonInfoHandler(c *gin.Context) {
+	var s context.StudentContext
+	if err := s.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.Request.ParseForm()
+	name := c.Request.PostForm.Get("name")
+	sex := c.Request.PostForm.Get("sex")
+
+	err := dao.DataBase.Execf("update `student` set `name`='%s', sex='%s' where `student_uid`='%s'", name, sex, s.Info.GetStudentUid())
+	if err != nil {
+		c.HTML(http.StatusBadGateway, "502.html", nil)
+		return
+	}
+
+	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
+	c.Redirect(http.StatusMovedPermanently, "/login")
+}

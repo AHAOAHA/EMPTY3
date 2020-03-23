@@ -10,8 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <link rel="icon" type="image/png" href="../static/assets/i/favicon.png">
-    <link rel="apple-touch-icon-precomposed" href="../static/assets/i/app-icon72x72@2x.png">
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
     <link rel="stylesheet" href="../static/assets/css/amazeui.min.css" />
     <link rel="stylesheet" href="../static/assets/css/admin.css">
@@ -25,7 +23,54 @@
 
 
     <header class="am-topbar am-topbar-inverse admin-header">
-        {{template "header"}}
+        <div class="am-topbar-brand">
+            <!-- <a href="javascript:;" class="tpl-logo">
+                <img src="../static/assets/img/logo.png" alt=""> 
+            </a> -->
+        </div>
+        <div class="am-icon-list tpl-header-nav-hover-ico am-fl am-margin-right">
+
+        </div>
+
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+            data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+                class="am-icon-bars"></span></button>
+
+        <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+            <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list tpl-header-list">
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-bell-o"></span> 提醒 <span class="am-badge tpl-badge-success am-round">5</span></span>
+                    </a> -->
+                </li>
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-comment-o"></span> 消息 <span class="am-badge tpl-badge-danger am-round">9</span></span>
+                    </a> -->
+                </li>
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-calendar"></span> 进度 <span class="am-badge tpl-badge-primary am-round">4</span></span>
+                    </a> -->
+                </li>
+                <!-- <li class="am-hide-sm-only"><a href="javascript:;" id="admin-fullscreen" class="tpl-header-list-link"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li> -->
+
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="tpl-header-list-user-nick">{{ .loginer_name }}</span><span
+                            class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
+                    </a>
+                    <ul class="am-dropdown-content">
+                        <li><a href="/admin_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=admin"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
+                    </ul>
+                </li>
+                <li><a href="/sign_out" class="tpl-header-list-link"><span
+                            class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
+            </ul>
+        </div>
     </header>
 
 
@@ -38,74 +83,86 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="/admin_index" class="nav-link tpl-left-nav-link-list">
+                        <a href="/admin_index" class="nav-link">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
                     </li>
                     <li class="tpl-left-nav-item">
-                        <a href="/add_teacher" class="nav-link active">
-                            <i class="am-icon-table"></i>
-                            <span>添加教师</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-wpforms"></i>
+                            <span>信息添加</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
-                    </li>
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_teacher" class="nav-link tpl-left-nav-link-list active">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加教师</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
 
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_student" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加学生</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_college" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加学院</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_major" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加专业</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_class" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加班级</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
-                    </li>
-                    <li class="tpl-left-nav-item">
-                        <a href="/add_course" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-table"></i>
-                            <span>添加课程</span>
-                            <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
-                        </a>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_student" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加学生</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_college" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加学院</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_major" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加专业</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_class" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加班级</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                            <li class="tpl-left-nav-item">
+                                <a href="/add_course" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-table"></i>
+                                    <span>添加课程</span>
+                                    <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="tpl-left-nav-item">
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-wpforms"></i>
-                            <span>信息修改</span>
-                            <i
-                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+                            <span>信息管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
+                        <ul class="tpl-left-nav-sub-menu">
                             <li>
                                 <!-- TODO: -->
-                                <a href="form-amazeui.html">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>教师信息修改</span>
-                                    <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i>
+                                <a href="/admin_teacher_manager" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-wpforms"></i>
+                                    <span>教师信息管理</span>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
+                            </li>
 
-                                <a href="form-line.html">
-                                    <i class="am-icon-angle-right"></i>
-                                    <span>学生信息修改</span>
+                            <li>
+                                <!-- TODO: -->
+                                <a href="admin_student_manager" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-wpforms"></i>
+                                    <span>学生信息管理</span>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
                             </li>
                         </ul>
@@ -113,15 +170,16 @@
 
                     <li class="tpl-left-nav-item">
                         <!-- TODO: -->
-                        <a href="login.html" class="nav-link tpl-left-nav-link-list">
+                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-key"></i>
-                            <span>学生成绩查询</span>
-
+                            <span>学生成绩管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
+
 
 
 

@@ -472,3 +472,25 @@ func postFormIsValid(c *gin.Context) error {
 	}
 	return nil
 }
+
+func TeacherManagerHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "admin_teacher_manager.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+	})
+}
+
+func AdminTeacherManagerHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	// 根据需要获取教师的信息列表
+}
