@@ -117,3 +117,9 @@ message StudentCourseInfo {
     uint64              CourseUid = 3;
     uint32              CreateTime = 4;
 }
+
+message NoticeInfo {
+    string              Title = 1;
+    string              Notice = 2;
+    uint32              CreateTime = 3;
+}

@@ -82,7 +82,7 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="/admin_index" class="nav-link active">
+                        <a href="/admin_index" class="nav-link">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
@@ -141,12 +141,13 @@
                     </li>
 
                     <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-wpforms"></i>
                             <span>信息管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
                                 <!-- TODO: -->
                                 <a href="/admin_teacher_manager" class="nav-link tpl-left-nav-link-list">
@@ -164,12 +165,28 @@
                                     <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
                             </li>
+                            <li>
+                                <!-- TODO: -->
+                                <a href="admin_student_manager" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-wpforms"></i>
+                                    <span>课程信息管理</span>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
+                                </a>
+                            </li>
+                            <li>
+                                <!-- TODO: -->
+                                <a href="/admin_notice_manager" class="nav-link tpl-left-nav-link-list">
+                                    <i class="am-icon-wpforms"></i>
+                                    <span>公告发布</span>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
                     <li class="tpl-left-nav-item">
                         <!-- TODO: -->
-                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
+                        <a href="/course_manager" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-key"></i>
                             <span>学生成绩管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
@@ -200,10 +217,44 @@
                         <div class="am-form-group">
                             <label for="user-name" class="am-u-sm-3 am-form-label">学院 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="college_name" placeholder="请选择学院（可选项）" list="listItem">
+                                <input type="text" id="input_name" name="college_name" placeholder="请选择学院（可选项）"
+                                    list="listItem">
                                 <datalist id="listItem">
-                                    <option>不限</option>
                                 </datalist>
+                                <script type="text/javascript">
+                                    function test() {
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/get_all_college_name",
+                                            dataType: "json",
+                                            success: function (data) {
+                                                addOption(data);
+                                                // console.log(data);
+                                                // var ss = document.getElementById("listItem");
+                                                // alert(data);
+                                                // $(data).each(function(){
+                                                //     var op=document.createElement("option");
+                                                //     op.setAttribute("value", this.name);
+                                                //     ss.appendChild(op);
+
+                                                // });
+                                            }
+                                        })
+                                    }
+                                    function addOption(data) {
+                                        var ss = document.getElementById("listItem");
+                                        $.each(JSON.parse(data), function (index, val) {
+                                                var op=document.createElement("option");
+                                                op.setAttribute("value", val["name"]);
+                                                ss.appendChild(op);
+                                        })
+
+                                    }
+                                    window.onload = function () {
+                                        test();
+                                    }
+                                </script>
                             </div>
                         </div>
 
@@ -234,15 +285,15 @@
                             </div>
                         </div>
                     </form>
+                </div>
             </div>
         </div>
-    </div>
 
 
-    <script src="../static/assets/js/jquery.min.js"></script>
-    <script src="../static/assets/js/amazeui.min.js"></script>
-    <script src="../static/assets/js/iscroll.js"></script>
-    <script src="../static/assets/js/app.js"></script>
+        <script src="../static/assets/js/jquery.min.js"></script>
+        <script src="../static/assets/js/amazeui.min.js"></script>
+        <script src="../static/assets/js/iscroll.js"></script>
+        <script src="../static/assets/js/app.js"></script>
 </body>
 
 </html>

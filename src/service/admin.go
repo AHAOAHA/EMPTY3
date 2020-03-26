@@ -9,10 +9,13 @@
 package service
 
 import (
+	"GradeManager/src/api"
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
+	DataCenter "GradeManager/src/proto"
 	"errors"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -27,8 +30,9 @@ func AdminIndexHandler(c *gin.Context) {
 	}
 	// 获取当前学生总人数，教师总人数，专业总数，学院总数
 	var count_student, count_teacher, count_college, count_major string
+	var notice DataCenter.NoticeInfo
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(5)
 	go func() {
 		m, err := dao.DataBase.Queryf("select count(*) from `student`")
 		if err == nil || len(m) != 0 {
@@ -57,6 +61,15 @@ func AdminIndexHandler(c *gin.Context) {
 		}
 		wg.Done()
 	}()
+	go func() {
+		notice_tmp, err := api.GetNotice()
+		if err == nil {
+			log.Info("notice is nil")
+		}
+
+		notice = notice_tmp
+		wg.Done()
+	}()
 	wg.Wait()
 	c.HTML(http.StatusOK, "admin_index.html", gin.H{
 		"title":         "login",
@@ -65,8 +78,8 @@ func AdminIndexHandler(c *gin.Context) {
 		"college_count": count_college,
 		"major_count":   count_major,
 		"loginer_name":  a.Info.GetUser(),
-		"introduce":     "西安科技大学简介",
-		"school_title":  "西安科技大学",
+		"introduce":     notice.GetNotice(),
+		"school_title":  notice.GetTitle(),
 	})
 }
 
@@ -142,8 +155,9 @@ func AdminAddTeacherPostHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"err_code": "ok",
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
 	})
 }
 
@@ -215,8 +229,9 @@ func AdminAddStudentPostHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"err_msg": "ok",
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
 	})
 }
 
@@ -260,8 +275,9 @@ func AdminAddCollegePostHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"err_msg": "ok",
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
 	})
 
 }
@@ -318,8 +334,9 @@ func AdminAddMajorPostHandler(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"err_msg": "ok",
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
 	})
 }
 
@@ -396,8 +413,9 @@ func AdminAddClassPostHandler(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"err_msg": "ok",
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
 	})
 }
 
@@ -453,8 +471,9 @@ func AdminAddCoursePostHandler(c *gin.Context) {
 			"err_msg": err,
 		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"err_msg": "ok",
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
 	})
 }
 
@@ -473,6 +492,7 @@ func postFormIsValid(c *gin.Context) error {
 	return nil
 }
 
+// Query teacher page.
 func TeacherManagerHandler(c *gin.Context) {
 	var a context.AdminContext
 	if err := a.CheckCookies(c, "user_cookie"); err != nil {
@@ -480,11 +500,20 @@ func TeacherManagerHandler(c *gin.Context) {
 		return
 	}
 
+	college_name, _ := api.GetALlCollegeName()
+	var college_option string
+	for _, v := range college_name {
+		college_option += "<option>" + v + "</option>"
+	}
+
 	c.HTML(http.StatusOK, "admin_teacher_manager.html", gin.H{
-		"loginer_name": a.Info.GetUser(),
+		"loginer_name":   a.Info.GetUser(),
+		"college_name":   college_name,
+		"college_option": college_option,
 	})
 }
 
+// Query teacher result page.
 func AdminTeacherManagerHandler(c *gin.Context) {
 	var a context.AdminContext
 	if err := a.CheckCookies(c, "user_cookie"); err != nil {
@@ -493,4 +522,112 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 	}
 
 	// 根据需要获取教师的信息列表
+	c.Request.ParseForm()
+
+	college_name := c.Request.PostForm.Get("college_name")
+	name := c.Request.PostForm.Get("name")
+	NRIC := c.Request.PostForm.Get("NRIC")
+	teacher_uid_str := c.Request.PostForm.Get("teacher_uid")
+
+	m := make(map[uint64]DataCenter.TeacherInfo)
+	var err error
+
+	if teacher_uid_str != "" {
+		// 直接通过teacher_uid查询
+		teacher_uid, _ := strconv.ParseUint(teacher_uid_str, 10, 64)
+		m, err = api.GetTeacherListByTeacherUid(teacher_uid)
+		if err != nil {
+			// 出现错误
+			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			return
+		}
+
+	} else if NRIC != "" {
+		m, err = api.GetTeacherListByNRIC(NRIC)
+		if err != nil {
+			// 出现错误
+			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			return
+		}
+	} else if name != "" {
+		m, err = api.GetTeacherListByTeacherName(name)
+		if err != nil {
+			// 出现错误
+			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			return
+		}
+
+	} else if college_name != "" {
+		if college_name == "不限" {
+			m, err = api.GetAllTeacherList()
+		} else {
+			m, err = api.GetTeacherListByCollegeName(college_name)
+		}
+		if err != nil {
+			// 出现错误
+			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			return
+		}
+	} else {
+		// TODO:
+	}
+
+	// 渲染html
+	c.HTML(http.StatusOK, "admin_teacher_manager_result.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+		"result":       m,
+	})
+
+}
+
+func AdminStudentManagerHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	college_name, _ := api.GetALlCollegeName()
+
+	c.HTML(http.StatusOK, "admin_student_manager.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+		"college_name": college_name,
+	})
+}
+
+func AdminNoticeManagerGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "admin_notice_manager.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+	})
+}
+
+func AdminNoticeManagerPostHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.Request.ParseForm()
+
+	title := c.Request.PostForm.Get("title")
+	notice := c.Request.PostForm.Get("notice_text")
+
+	err := dao.DataBase.Execf("insert into `notice`(`title`, `data`) values ('%s', '%s')", title, notice)
+	if err != nil {
+		log.Error(err)
+		c.HTML(http.StatusInternalServerError, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"second": 3,
+		"url":    "admin_index",
+	})
 }

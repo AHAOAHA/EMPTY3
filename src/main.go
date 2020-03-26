@@ -58,6 +58,8 @@ func main() {
 	r.GET("/add_class", service.AdminAddClassGetHandler)
 	r.GET("/admin_person_info", service.AdminInfoGetHandler)
 	r.GET("/admin_teacher_manager", service.TeacherManagerHandler)
+	r.GET("/admin_student_manager", service.AdminStudentManagerHandler)
+	r.GET("/admin_notice_manager", service.AdminNoticeManagerGetHandler)
 
 	r.POST("/update_admin_info", service.UpdateAdminPersonInfoHandler)
 	r.POST("/add_teacher", service.AdminAddTeacherPostHandler)
@@ -67,6 +69,7 @@ func main() {
 	r.POST("/add_class", service.AdminAddClassPostHandler)
 	r.POST("/add_course", service.AdminAddCoursePostHandler)
 	r.POST("/admin_teacher_manager", service.AdminTeacherManagerHandler)
+	r.POST("/admin_notice_manager", service.AdminNoticeManagerPostHandler)
 
 	// teacher
 	r.GET("/teacher_index", service.TeacherIndexHandler)
@@ -78,8 +81,9 @@ func main() {
 	r.GET("/student_person_info", service.StudentInfoGetHandler)
 	r.POST("/student_person_info", service.UpdateStudentPersonInfoHandler)
 
-	// common
+	// api
 	// r.GET("/query", service.QueryGetHandler)
+	r.GET("/get_all_college_name", service.GetAllCollegeNameHandler)
 
 	r.GET("/update_password", service.UpdatePasswordGetHandler)
 	r.POST("/update_password", service.UpdatePasswordPostHandler)

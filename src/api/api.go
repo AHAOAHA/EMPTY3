@@ -1,12 +1,12 @@
 /******************************************************************
  * Copyright(C) 2020-2020. All right reserved.
  *
- * Filename: query.go
+ * Filename: api.go
  * Author: ahaoozhang
  * Date: 2020-03-15 19:27:57 (Sunday)
  * Describe:
  ******************************************************************/
-package service
+package api
 
 import (
 	"GradeManager/src/dao"
@@ -135,6 +135,31 @@ func GetTeacherListByTeacherUid(teacher_uid uint64) (map[uint64]DataCenter.Teach
 	return m, nil
 }
 
+func GetTeacherListByNRIC(NRIC string) (map[uint64]DataCenter.TeacherInfo, error) {
+	m := make(map[uint64]DataCenter.TeacherInfo)
+	db_m, err := dao.DataBase.Queryf("select * from `teacher` where `NRIC`='%s'", NRIC)
+	if err != nil || len(db_m) != 1 {
+		return nil, errors.New("query teacher Info err")
+	}
+	var college_uid, teacher_uid uint64
+	var sta int
+	sta, _ = strconv.Atoi(string(db_m[0]["status"].([]uint8)))
+	crtt, _ := strconv.Atoi(string(db_m[0]["create_time"].([]uint8)))
+	college_uid, _ = strconv.ParseUint(string(db_m[0]["college_uid"].([]uint8)), 10, 64)
+	teacher_uid, _ = strconv.ParseUint(string(db_m[0]["teacher_uid"].([]uint8)), 10, 64)
+	m[teacher_uid] = DataCenter.TeacherInfo{
+		TeacherUid: teacher_uid,
+		CollegeUid: college_uid,
+		Name:       string(db_m[0]["name"].([]uint8)),
+		Password:   string(db_m[0]["password"].([]uint8)),
+		Sex:        string(db_m[0]["sex"].([]uint8)),
+		NRIC:       string(db_m[0]["NRIC"].([]uint8)),
+		Status:     DataCenter.TeacherInfo_STATUS(sta),
+		CreateTime: uint32(crtt),
+	}
+	return m, nil
+}
+
 // Without Cache.
 func GetTeacherListByTeacherName(teacher_name string) (map[uint64]DataCenter.TeacherInfo, error) {
 	dbm, err := dao.DataBase.Queryf("select * from `teacher` where `name`='%s'", teacher_name)
@@ -206,4 +231,32 @@ func GetTeacherListByCollegeName(college_name string) (map[uint64]DataCenter.Tea
 	college_uid, _ := strconv.ParseUint(string(cdbm[0]["college_uid"].([]uint8)), 10, 64)
 
 	return GetTeacherListByCollegeUid(college_uid)
+}
+
+func GetALlCollegeName() ([]string, error) {
+	cdbm, err := dao.DataBase.Queryf("select `name` from `college`")
+	if err != nil || len(cdbm) == 0 {
+		return nil, errors.New("query teacher info by college_uid err")
+	}
+
+	var college_name []string
+	for _, val := range cdbm {
+		college_name = append(college_name, string(val["name"].([]uint8)))
+	}
+
+	return college_name, nil
+}
+
+func GetNotice() (DataCenter.NoticeInfo, error) {
+	var n DataCenter.NoticeInfo
+	cdbm, err := dao.DataBase.Queryf("SELECT * from `notice` where `notice_uid` = (SELECT max(`notice_uid`) FROM notice)")
+	if err != nil || len(cdbm) != 1 {
+		return n, errors.New("query notice err")
+	}
+
+	n = DataCenter.NoticeInfo{
+		Title:  string(cdbm[0]["title"].([]uint8)),
+		Notice: string(cdbm[0]["data"].([]uint8)),
+	}
+	return n, nil
 }

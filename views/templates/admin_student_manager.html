@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>成绩管理系统</title>
-    <meta name="description" content="这是一个 index 页面">
+    <title>教师信息管理</title>
+    <meta name="description" content="管理员主页面">
     <meta name="keywords" content="index">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="renderer" content="webkit">
@@ -14,14 +14,12 @@
     <link rel="stylesheet" href="../static/assets/css/amazeui.min.css" />
     <link rel="stylesheet" href="../static/assets/css/admin.css">
     <link rel="stylesheet" href="../static/assets/css/app.css">
-    <script type="text/javascript" src="../static/js/md5.js"></script>
+    <script src="../static/assets/js/echarts.min.js"></script>
     <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon" />
 </head>
 
-<body data-type="generalComponents">
-
-
+<body data-type="index">
     <header class="am-topbar am-topbar-inverse admin-header">
         <div class="am-topbar-brand">
             <!-- <a href="javascript:;" class="tpl-logo">
@@ -74,9 +72,9 @@
     </header>
 
 
-
-
     <div class="tpl-page-container tpl-page-header-fixed">
+
+
         <div class="tpl-left-nav tpl-left-nav-hover">
             <div class="tpl-left-nav-title">
                 管理员功能列表
@@ -93,9 +91,9 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-wpforms"></i>
                             <span>信息添加</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
+                        <ul class="tpl-left-nav-sub-menu">
                             <li class="tpl-left-nav-item">
                                 <a href="/add_teacher" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-table"></i>
@@ -126,14 +124,14 @@
                                 </a>
                             </li>
                             <li class="tpl-left-nav-item">
-                                <a href="/add_class" class="nav-link tpl-left-nav-link-list active">
+                                <a href="/add_class" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-table"></i>
                                     <span>添加班级</span>
                                     <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
                                 </a>
                             </li>
                             <li class="tpl-left-nav-item">
-                                <a href="/add_course" class="nav-link tpl-left-nav-link-list">
+                                <a href="/add_sourse" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-table"></i>
                                     <span>添加课程</span>
                                     <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
@@ -143,12 +141,12 @@
                     </li>
 
                     <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-wpforms"></i>
                             <span>信息管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
                                 <!-- TODO: -->
                                 <a href="/admin_teacher_manager" class="nav-link tpl-left-nav-link-list">
@@ -193,6 +191,9 @@
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                     </li>
+
+                   
+
                 </ul>
             </div>
         </div>
@@ -201,98 +202,78 @@
 
 
 
-
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                学生信息
+                学生信息管理
             </div>
             <ol class="am-breadcrumb">
                 <!-- <li><a href="#" class="am-icon-home">首页</a></li>
-                <li><a href="#">表单</a></li>
-                <li class="am-active">Amaze UI 表单</li> -->
+                <li><a href="#">分类</a></li>
+                <li class="am-active">内容</li> -->
             </ol>
-            <div class="tpl-portlet-components">
-                <div class="portlet-title">
-                    <div class="caption font-green bold">
-                        <span class="am-icon-code"></span> 表单
-                    </div>
-                    <div class="tpl-portlet-input tpl-fz-ml">
-                        <div class="portlet-input input-small input-inline">
-                            <!-- <div class="input-icon right">
-                                <i class="am-icon-search"></i>
-                                <input type="text" class="form-control form-control-solid" placeholder="搜索..."> </div> -->
+            <div class="am-g tpl-amazeui-form">
+
+
+                <div class="am-u-sm-12 am-u-md-9">
+                    <form action="/admin_teacher_manager" method="post" class="am-form am-form-horizontal">
+                        <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">学院 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" id="input_name" name="college_name" placeholder="请选择学院（可选项）" list="listItem">
+                                <datalist id="listItem">      
+                                </datalist>
+                            </div>
                         </div>
-                    </div>
 
-
-                </div>
-                <div class="tpl-block ">
-
-                    <div class="am-g tpl-amazeui-form">
-
-
-                        <div class="am-u-sm-12 am-u-md-9">
-                            <form action="/add_class" method="post" class="am-form am-form-horizontal">
-                                <div class="am-form-group">
-                                    <label for="name" class="am-u-sm-3 am-form-label">班级名称</label>
-                                    <div class="am-u-sm-9">
-                                        <input type="text" id="name" name="name" value="" placeholder="输入班级名称">
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label for="class_id" class="am-u-sm-3 am-form-label">班级代码</label>
-                                    <div class="am-u-sm-9">
-                                        <input type="number" id="class_uid" name="class_uid" value=""
-                                            placeholder="输入班级代码">
-                                    </div>
-                                </div>
-
-
-                                <div class="am-form-group">
-                                    <label for="user-email" class="am-u-sm-3 am-form-label">所属学院</label>
-                                    <div class="am-u-sm-9">
-                                        <input type="text" id="college_name" name="college_name" value=""
-                                            placeholder="输入所属学院名">
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label for="user-phone" class="am-u-sm-3 am-form-label">所属专业</label>
-                                    <div class="am-u-sm-9">
-                                        <input type="text" id="major_name" name="major_name" value=""
-                                            placeholder="输入所属专业名">
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button type="submit" class="am-btn am-btn-primary">提交</button>
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">专业 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" id="input_major" name="major_name" value="" placeholder="请输入专业（可选项）">
+                            </div>
                         </div>
-                    </div>
-                </div>
 
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">班级 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" id="input_class" name="class_name" value="" placeholder="请输入班级（可选项）">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">姓名 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" id="input_sex" name="name" value="" placeholder="请输入姓名（可选项）">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">身份证号 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="NRIC" value="" placeholder="请输入身份证号码（可选项）">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">学号 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="student_uid" value="" placeholder="请输入学号（可选项）">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <div class="am-u-sm-9 am-u-sm-push-3">
+                                <button type="submit" id="submit_button" class="am-btn am-btn-primary">查询</button>
+                            </div>
+                        </div>
+                    </form>
             </div>
-
-
-
-
-
-
-
-
-
-
         </div>
-
     </div>
 
 
     <script src="../static/assets/js/jquery.min.js"></script>
     <script src="../static/assets/js/amazeui.min.js"></script>
+    <script src="../static/assets/js/iscroll.js"></script>
     <script src="../static/assets/js/app.js"></script>
 </body>
 

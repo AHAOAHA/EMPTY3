@@ -9,8 +9,10 @@
 package service
 
 import (
+	"GradeManager/src/api"
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
+	DataCenter "GradeManager/src/proto"
 	"net/http"
 	"sync"
 
@@ -27,8 +29,9 @@ func TeacherIndexHandler(c *gin.Context) {
 
 	// 获取当前学生总人数，教师总人数，专业总数，学院总数
 	var count_student, count_teacher, count_college, count_major string
+	var notice DataCenter.NoticeInfo
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(5)
 	go func() {
 		m, err := dao.DataBase.Queryf("select count(*) from `student`")
 		if err == nil || len(m) != 0 {
@@ -57,6 +60,10 @@ func TeacherIndexHandler(c *gin.Context) {
 		}
 		wg.Done()
 	}()
+	go func() {
+		notice, _ = api.GetNotice()
+		wg.Done()
+	}()
 	wg.Wait()
 
 	// login status ok
@@ -66,7 +73,7 @@ func TeacherIndexHandler(c *gin.Context) {
 		"teacher_count": count_teacher,
 		"college_count": count_college,
 		"major_count":   count_major,
-		"introduce":     "欢迎您",
-		"school_title":  "成绩管理系统教师主页",
+		"introduce":     notice.GetTitle(),
+		"school_title":  notice.GetNotice(),
 	})
 }
