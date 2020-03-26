@@ -13,6 +13,7 @@ import (
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -524,6 +525,8 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 	// 根据需要获取教师的信息列表
 	c.Request.ParseForm()
 
+	log.Info(c.Request.PostForm)
+
 	college_name := c.Request.PostForm.Get("college_name")
 	name := c.Request.PostForm.Get("name")
 	NRIC := c.Request.PostForm.Get("NRIC")
@@ -559,24 +562,21 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 
 	} else if college_name != "" {
 		if college_name == "不限" {
-			m, err = api.GetAllTeacherList()
+			m, _ = api.GetAllTeacherList()
 		} else {
-			m, err = api.GetTeacherListByCollegeName(college_name)
-		}
-		if err != nil {
-			// 出现错误
-			c.HTML(http.StatusInternalServerError, "401.html", nil)
-			return
+			m, _ = api.GetTeacherListByCollegeName(college_name)
 		}
 	} else {
 		// TODO:
 	}
 
 	// 渲染html
-	c.HTML(http.StatusOK, "admin_teacher_manager_result.html", gin.H{
-		"loginer_name": a.Info.GetUser(),
-		"result":       m,
-	})
+	if len(m) == 0 {
+		c.JSON(http.StatusOK, nil)
+		return
+	}
+	val, _ := json.Marshal(m)
+	c.JSON(http.StatusOK, string(val))
 
 }
 

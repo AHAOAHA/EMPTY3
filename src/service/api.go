@@ -19,6 +19,9 @@ import (
 func GetAllCollegeNameHandler(c *gin.Context) {
 	data, _ := api.GetALlCollegeName()
 	var m []gin.H
+	m = append(m, gin.H{
+		"name": "不限",
+	})
 	for _, v := range data {
 		m = append(m, gin.H{
 			"name": v,
