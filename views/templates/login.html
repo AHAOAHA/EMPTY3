@@ -53,8 +53,6 @@
                         var sec_username_hide = document.getElementById("sec_username_hide").value;
                         var sec_password_hide = document.getElementById("sec_password_hide").value;
                         document.getElementById("submit_sec_password_hide").value = md5(sec_password_hide);
-                        // alert(document.getElementById("sec_password_hide").value);
-                        // alert(document.getElementById("submit_sec_password_hide").value);
                 }
                 function teacher_login() {
                         // 密码单向加密
@@ -147,7 +145,7 @@
                                         <input type="hidden" id="submit_sec_password_hide" name="password"></input>
 
                                         <div id="login">
-                                                <button type="botton" onclick="admin_login()">登录</button>
+                                                <button type="submit" onclick="admin_login()">登录</button>
                                         </div>
                                         <div id="type">
                                                 <input type="hidden" name="type" value="admin">

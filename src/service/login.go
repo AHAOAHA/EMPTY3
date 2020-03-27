@@ -64,10 +64,8 @@ func SignUpHandler(c *gin.Context) {
 	}
 
 	if err := loginer.Login(c.Request.PostForm.Get("username"), c.Request.PostForm.Get("password")); err != nil {
-		log.Warn(err)
-		c.HTML(http.StatusOK, "login.html", gin.H{
-			"err_code": "false",
-		})
+		log.Error(err)
+		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
 	loginer.SetCookies(c)

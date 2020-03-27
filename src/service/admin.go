@@ -538,7 +538,8 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 	if teacher_uid_str != "" {
 		// 直接通过teacher_uid查询
 		teacher_uid, _ := strconv.ParseUint(teacher_uid_str, 10, 64)
-		m, err = api.GetTeacherListByTeacherUid(teacher_uid)
+		data, err := api.GetTeacherListByTeacherUid(teacher_uid)
+		m[teacher_uid] = data
 		if err != nil {
 			// 出现错误
 			c.HTML(http.StatusInternalServerError, "401.html", nil)
@@ -629,5 +630,82 @@ func AdminNoticeManagerPostHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "success.html", gin.H{
 		"second": 3,
 		"url":    "admin_index",
+	})
+}
+
+func AdminDeleteTeacherHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	teacher_uid := c.Query("teacher_uid")
+
+	err := dao.DataBase.Execf("delete from `teacher` where `teacher_uid`='%s'", teacher_uid)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	c.Redirect(http.StatusMovedPermanently, "admin_index")
+}
+
+func AdminEditTeacherHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	teacher_uid_str := c.Query("teacher_uid")
+	teacher_uid, _ := strconv.ParseUint(teacher_uid_str, 10, 64)
+	m, _ := api.GetTeacherListByTeacherUid(teacher_uid)
+	teacher_info := m
+
+	c.HTML(http.StatusOK, "admin_edit_teacher.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+		"name":         teacher_info.GetName(),
+		"sex":          teacher_info.GetSex(),
+		"NRIC":         teacher_info.GetNRIC(),
+		"status":       teacher_info.GetStatus(),
+		"teacher_uid":  teacher_info.GetTeacherUid(),
+		"college_name": teacher_info.GetCollegeUid(),
+		"create_time":  teacher_info.GetCreateTime(),
+	})
+}
+
+func AdminUpdateTeacherPersonInfoHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	teacher_uid := c.Query("teacher_uid")
+
+	c.Request.ParseForm()
+	name := c.Request.PostForm.Get("name")
+	sex := c.Request.PostForm.Get("sex")
+	NRIC := c.Request.PostForm.Get("NRIC")
+	status := c.Request.PostForm.Get("status")
+	teacher_uid_update := c.Request.PostForm.Get("teacher_uid")
+	college_name := c.Request.PostForm.Get("college_name")
+	college_uid, err := api.GetCollegeUidByName(college_name)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	err = dao.DataBase.Execf("update `teacher` set `name`='%s', `sex`='%s', `NRIC`='%s', `status`='%s', `college_uid`='%s', `teacher_uid`='%s' where `teacher_uid`='%s'",
+		name, sex, NRIC, status, college_uid, teacher_uid_update, teacher_uid)
+	if err != nil {
+		c.HTML(http.StatusBadGateway, "502.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"url":    "admin_index",
+		"second": "3",
 	})
 }

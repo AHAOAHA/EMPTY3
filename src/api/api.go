@@ -17,6 +17,7 @@ import (
 
 var TeacherCache *map[uint64]DataCenter.TeacherInfo
 var StudentCache *map[uint64]DataCenter.StudentInfo
+var CollegeCache *map[uint64]DataCenter.CollegeInfo
 
 func init() {
 	if TeacherCache == nil {
@@ -24,6 +25,9 @@ func init() {
 	}
 	if StudentCache == nil {
 		StudentCache = new(map[uint64]DataCenter.StudentInfo)
+	}
+	if CollegeCache == nil {
+		CollegeCache = new(map[uint64]DataCenter.CollegeInfo)
 	}
 }
 
@@ -97,20 +101,21 @@ func GetAllStudentList() (map[uint64]DataCenter.StudentInfo, error) {
 }
 
 // Query student info by teacher_uid, name, college_uid, college_name.
-func GetTeacherListByTeacherUid(teacher_uid uint64) (map[uint64]DataCenter.TeacherInfo, error) {
+func GetTeacherListByTeacherUid(teacher_uid uint64) (DataCenter.TeacherInfo, error) {
+	var rsp DataCenter.TeacherInfo
+	var ok bool
 	m := make(map[uint64]DataCenter.TeacherInfo)
 	if TeacherCache != nil {
-		teacher_info, ok := (*TeacherCache)[teacher_uid]
+		rsp, ok = (*TeacherCache)[teacher_uid]
 		if ok {
-			m[teacher_uid] = teacher_info
-			return m, nil
+			return rsp, nil
 		}
 	}
 
 	// TeacherCache nil or teacher_uid not exist, query from database.
 	db_m, err := dao.DataBase.Queryf("select * from `teacher` where `teacher_uid`='%d'", teacher_uid)
 	if err != nil || len(db_m) != 1 {
-		return nil, errors.New("query teacher Info err")
+		return rsp, errors.New("query teacher Info err")
 	}
 	var college_uid uint64
 	var sta int
@@ -132,7 +137,8 @@ func GetTeacherListByTeacherUid(teacher_uid uint64) (map[uint64]DataCenter.Teach
 	if TeacherCache != nil {
 		(*TeacherCache)[teacher_uid] = m[teacher_uid]
 	}
-	return m, nil
+	rsp = m[teacher_uid]
+	return rsp, nil
 }
 
 func GetTeacherListByNRIC(NRIC string) (map[uint64]DataCenter.TeacherInfo, error) {
@@ -259,4 +265,23 @@ func GetNotice() (DataCenter.NoticeInfo, error) {
 		Notice: string(cdbm[0]["data"].([]uint8)),
 	}
 	return n, nil
+}
+
+func GetCollegeUidByName(college_name string) (uint64, error) {
+	var c DataCenter.CollegeInfo
+	cdbm, err := dao.DataBase.Queryf("SELECT 'college_uid' from `college` where `name`='%s'", college_name)
+	if err != nil || len(cdbm) != 1 {
+		return 0, err
+	}
+
+	college_uid, _ := strconv.ParseUint(string(cdbm[0]["college_uid"].([]uint8)), 10, 64)
+	crt, _ := strconv.Atoi(string(cdbm[0]["create_time"].([]uint8)))
+	c = DataCenter.CollegeInfo{
+		CollegeUid: college_uid,
+		Name:       college_name,
+		CreateTime: uint32(crt),
+	}
+
+	(*CollegeCache)[college_uid] = c
+	return college_uid, nil
 }

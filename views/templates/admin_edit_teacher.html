@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>教师信息管理</title>
+    <title>管理员主页</title>
     <meta name="description" content="管理员主页面">
     <meta name="keywords" content="index">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,12 +60,12 @@
                             class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
                     </a>
                     <ul class="am-dropdown-content">
-                        <li><a href="/admin_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
-                        <li><a href="/update_password?type=admin"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/teacher_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=teacher"><span class="am-icon-cog"></span> 修改密码</a></li>
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
-                <li><a href="/sign_out" class="tpl-header-list-link"><span
+                <li><a href="###" class="tpl-header-list-link"><span
                             class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
             </ul>
         </div>
@@ -198,164 +198,81 @@
 
 
 
+        <div class="tpl-block ">
 
-
-        <div class="tpl-content-wrapper">
-            <div class="tpl-content-page-title">
-                教师信息管理
-            </div>
-            <ol class="am-breadcrumb">
-                <!-- <li><a href="#" class="am-icon-home">首页</a></li>
-                <li><a href="#">分类</a></li>
-                <li class="am-active">内容</li> -->
-            </ol>
             <div class="am-g tpl-amazeui-form">
 
 
-                <div class="am-u-sm-12 am-u-md-9" id="main_div">
-                    <form action="/admin_teacher_manager" method="post" id="form1" class="am-form am-form-horizontal"
-                        name="input_form">
+                <div class="am-u-sm-12 am-u-md-9">
+                    <form action="/admin_update_teacher?teacher_uid={{.teacher_uid}}" method="post" class="am-form am-form-horizontal">
                         <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">学院 </label>
+                            <label for="user-name" class="am-u-sm-3 am-form-label">姓名 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="college_name" placeholder="请选择学院（可选项）"
-                                    list="listItem" />
-                                <datalist id="listItem">
-                                </datalist>
-                                <script type="text/javascript">
-                                    function get_college_name() {
-
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/get_all_college_name",
-                                            dataType: "json",
-                                            success: function (data) {
-                                                addOption(data);
-                                                // console.log(data);
-                                                // var ss = document.getElementById("listItem");
-                                                // alert(data);
-                                                // $(data).each(function(){
-                                                //     var op=document.createElement("option");
-                                                //     op.setAttribute("value", this.name);
-                                                //     ss.appendChild(op);
-
-                                                // });
-                                            }
-                                        })
-                                    }
-                                    function addOption(data) {
-                                        var ss = document.getElementById("listItem");
-                                        $.each(JSON.parse(data), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["name"]);
-                                            ss.appendChild(op);
-                                        })
-
-                                    }
-                                    window.onload = function () {
-                                        get_college_name();
-                                    }
-                                </script>
+                                <input type="text" id="input_name" name="name" value="{{.name}}" readonly="true">
                             </div>
                         </div>
 
                         <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">姓名 </label>
+                            <label for="college_id" class="am-u-sm-3 am-form-label">性别 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_sex" name="name" value="" placeholder="请输入姓名（可选项）">
+                                <input type="text" id="input_sex" name="sex" value="{{.sex}}" readonly="true">
                             </div>
                         </div>
 
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">身份证号 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" name="NRIC" value="" placeholder="请输入身份证号码（可选项）">
+                                <input type="text" id="input_NRIC" name="NRIC" value="{{.NRIC}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">状态 </label>
+                            <div class="am-u-sm-9">
+                                <select id="input_status" name="status" value="{{.status}}"  readonly="true">
+                                    <option value="0">NORMAL</option>
+                                    <option value="1">LEAVE</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">教工号 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" name="teacher_uid" value="" placeholder="请输入教工号（可选项）">
+                                <input type="text" id="input_teacher_uid" name="teacher_uid" value="{{.teacher_uid}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">所属学院 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" id="input_college_name" name="college_name" value="{{.college_name}}" readonly="true">
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="college_id" class="am-u-sm-3 am-form-label">创建时间 </label>
+                            <div class="am-u-sm-9">
+                                <input type="text" name="create_time" value="{{.create_time}}" readonly="true">
                             </div>
                         </div>
 
                         <div class="am-form-group">
                             <div class="am-u-sm-9 am-u-sm-push-3">
-                                <input type="button" id="submit_button" class="am-btn am-btn-primary"
-                                    onclick="GetTeacherInfo()" value="查询" />
-                                <script type="text/javascript">
-                                    function GetTeacherInfo() {
-                                        var form = document.forms.namedItem("input_form");
-                                        var formData = new FormData(form);
-                                        $.ajax({
-                                            type: "POST",
-                                            dataType: "json",
-                                            url: "/admin_teacher_manager",
-                                            data: $('#form1').serialize(),
-                                            success: function (result) {
-                                                showResult(result);
-                                            },
-                                            error: function () {
-                                                alert("获取后台数据失败！");
-                                            }
-                                        })
-                                    }
+                                <button type="button" id="submit_button" class="am-btn am-btn-primary">提交</button>
+                                <button type="button" class="am-btn am-btn-primary"
+                                    onclick="changeReadOnly()">修改</button>
+                                <script>
+                                    function changeReadOnly() {
+                                        $("#input_name").attr("readOnly", false);
+                                        $("#input_sex").attr("readOnly", false);
+                                        $("#input_NRIC").attr("readOnly", false);
+                                        $("#input_status").attr("readOnly", false);
+                                        $("#input_teacher_uid").attr("readOnly", false);
+                                        $("#input_college_name").attr("readOnly", false);
 
-                                    function showResult(result) {
-                                        if (!result) {
-                                            alert("查询结果为空！");
-                                            return;
-                                        }
-                                        
-                                        document.getElementById("form1").style.display = "none";
-                                        //alert(result);
-                                        var json_result = JSON.parse(result)
-                                        var perfix = "\<div class=\"am-g\"\>\<form class=\"am-form\"\>\
-                                                        \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
-                                                        \<thead\>\
-                                                        \<tr\>\
-                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
-                                            \<th class=\"table-id\"\>序号\</th\>\
-                                            \<th class=\"table-title\">姓名\</th\>\
-                                            \<th class=\"table-type\"\>性别\</th\>\
-                                            \<th class=\"table-author am-hide-sm-only\"\>教工号\</th\>\
-                                            \<th class=\"table-date am-hide-sm-only\"\>所属学院\</th\>\
-                                            \<th class=\"table-set\"\>操作\</th\>\
-                                            \</tr\>\
-                                            \</thead\>\
-                                            \<tbody\>";
-                                            
-                                            var count = 1;
 
-                                            var mid = "";
-
-                                        $.each(json_result, function (index, obj) {
-
-                                            mid += "\<tr\>\
-                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
-                                                        \<td\>"+ count++ +"\</td\>\
-                                                        \<td\>\<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>" + obj["Name"] + "\</a\>\</td\>\
-                                                        \<td\>"+ obj["Sex"] +"\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["TeacherUid"] +"\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "TODO" +"\</td\>\
-                                                        \<td\>\
-                                                \<div class=\"am-btn-toolbar\"\>\
-                                                    \<div class=\"am-btn-group am-btn-group-xs\"\>\
-                                                        \<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>编辑\</a\>\
-                                                        \<a href=\"admin_delete_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>删除\</a\>\
-                                                    \</div\>\
-                                                \</div\>\
-                                            \</td\>\
-                                        \</tr\>";
-
-                                        })
-                                        
-                                        var suffix = "\</tbody\>\
-                                                        \</table\>\</form\>\</div\>";
-
-                                        var tmp = perfix + mid + suffix;
-                                        $('#main_div').append(tmp);
+                                        $("#submit_button").attr("type", "submit");
                                     }
                                 </script>
                             </div>
@@ -365,11 +282,13 @@
             </div>
         </div>
 
+    </div>
 
-        <script src="../static/assets/js/jquery.min.js"></script>
-        <script src="../static/assets/js/amazeui.min.js"></script>
-        <script src="../static/assets/js/iscroll.js"></script>
-        <script src="../static/assets/js/app.js"></script>
+
+    <script src="../static/assets/js/jquery.min.js"></script>
+    <script src="../static/assets/js/amazeui.min.js"></script>
+    <script src="../static/assets/js/iscroll.js"></script>
+    <script src="../static/assets/js/app.js"></script>
 </body>
 
 </html>
