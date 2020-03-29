@@ -73,6 +73,7 @@ func main() {
 	r.POST("/admin_teacher_manager", service.AdminTeacherManagerHandler)
 	r.POST("/admin_notice_manager", service.AdminNoticeManagerPostHandler)
 	r.POST("/admin_update_teacher", service.AdminUpdateTeacherPersonInfoHandler)
+	r.POST("/admin_student_manager", service.AdminStudentManagerPostHandler)
 
 	// teacher
 	r.GET("/teacher_index", service.TeacherIndexHandler)
@@ -87,6 +88,8 @@ func main() {
 	// api
 	// r.GET("/query", service.QueryGetHandler)
 	r.GET("/get_all_college_name", service.GetAllCollegeNameHandler)
+	r.GET("/get_all_major_name", service.GetAllMajorNameHandler)
+	r.GET("/get_all_class_name", service.GetAllClassNameHandler)
 
 	r.GET("/update_password", service.UpdatePasswordGetHandler)
 	r.POST("/update_password", service.UpdatePasswordPostHandler)

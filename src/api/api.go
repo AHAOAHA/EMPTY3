@@ -18,6 +18,7 @@ import (
 var TeacherCache *map[uint64]DataCenter.TeacherInfo
 var StudentCache *map[uint64]DataCenter.StudentInfo
 var CollegeCache *map[uint64]DataCenter.CollegeInfo
+var MajorCache *map[uint64]DataCenter.MajorInfo
 
 func init() {
 	if TeacherCache == nil {
@@ -28,6 +29,9 @@ func init() {
 	}
 	if CollegeCache == nil {
 		CollegeCache = new(map[uint64]DataCenter.CollegeInfo)
+	}
+	if MajorCache == nil {
+		MajorCache = new(map[uint64]DataCenter.MajorInfo)
 	}
 }
 
@@ -284,4 +288,53 @@ func GetCollegeUidByName(college_name string) (uint64, error) {
 
 	(*CollegeCache)[college_uid] = c
 	return college_uid, nil
+}
+
+func GetAllMajerName() ([]string, error) {
+	cdbm, err := dao.DataBase.Queryf("select `name` from `major`")
+	if err != nil || len(cdbm) == 0 {
+		return nil, errors.New("query major err")
+	}
+
+	var major_name []string
+	for _, val := range cdbm {
+		major_name = append(major_name, string(val["name"].([]uint8)))
+	}
+
+	return major_name, nil
+}
+
+func GetMajorUidByName(major_name string) (uint64, error) {
+	var m DataCenter.MajorInfo
+	cdbm, err := dao.DataBase.Queryf("SELECT * from `major` where `name`='%s'", major_name)
+	if err != nil || len(cdbm) != 1 {
+		return 0, err
+	}
+
+	major_uid, _ := strconv.ParseUint(string(cdbm[0]["major_uid"].([]uint8)), 10, 64)
+	college_uid, _ := strconv.ParseUint(string(cdbm[0]["college_uid"].([]uint8)), 10, 64)
+	crt, _ := strconv.Atoi(string(cdbm[0]["create_time"].([]uint8)))
+	m = DataCenter.MajorInfo{
+		MajorUid:   major_uid,
+		CollegeUid: college_uid,
+		Name:       major_name,
+		CreateTime: uint32(crt),
+	}
+
+	(*MajorCache)[major_uid] = m
+	return major_uid, nil
+}
+
+func GetAllClassName() ([]string, error) {
+	cdbm, err := dao.DataBase.Queryf("select `name` from `class`")
+	if err != nil || len(cdbm) == 0 {
+		return nil, errors.New("query class err")
+	}
+
+	var major_name []string
+	for _, val := range cdbm {
+		major_name = append(major_name, string(val["name"].([]uint8)))
+	}
+
+	return major_name, nil
 }

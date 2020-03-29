@@ -709,3 +709,12 @@ func AdminUpdateTeacherPersonInfoHandler(c *gin.Context) {
 		"second": "3",
 	})
 }
+
+func AdminStudentManagerPostHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+}
