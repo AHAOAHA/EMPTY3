@@ -713,8 +713,187 @@ func AdminUpdateTeacherPersonInfoHandler(c *gin.Context) {
 func AdminStudentManagerPostHandler(c *gin.Context) {
 	var a context.AdminContext
 	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "502.html", nil)
+		return
+	}
+
+	c.Request.ParseForm()
+	log.Info(c.Request.PostForm)
+	student_name := c.Request.PostForm.Get("student_name")
+	major_name := c.Request.PostForm.Get("major_name")
+	class_name := c.Request.PostForm.Get("class_name")
+	college_name := c.Request.PostForm.Get("college_name")
+	NRIC := c.Request.PostForm.Get("NRIC")
+	student_uid_str := c.Request.PostForm.Get("student_uid")
+
+	m := make(map[uint64]DataCenter.StudentInfo)
+	var err error
+
+	if len(student_uid_str) != 0 {
+		student_uid, _ := strconv.ParseUint(student_uid_str, 10, 64)
+		val, err := api.GetStudentByStudentUid(student_uid)
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+		m[student_uid] = val
+	} else if len(NRIC) != 0 {
+		m, err = api.GetStudentByNRIC(NRIC)
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+	} else if len(student_name) != 0 {
+		m, err = api.GetStudentByName(student_name)
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+	} else if len(class_name) != 0 {
+		class_uid, err := api.GetClassUidByName(class_name)
+		if err != nil || class_uid == 0 {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+		// 通过class_uid 获取所有学生
+		m, err = api.GetStudentListByClassUid(class_uid)
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+	} else if len(major_name) != 0 {
+		major_uid, err := api.GetMajorUidByName(major_name)
+		log.Info(major_uid)
+		if err != nil || major_uid == 0 {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+		m, err = api.GetStudentListByMajorUid(major_uid)
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+	} else if len(college_name) != 0 {
+		if college_name == "不限" {
+			m, err = api.GetAllStudentList()
+			if err != nil {
+				c.HTML(http.StatusInternalServerError, "502.html", nil)
+				return
+			}
+		} else {
+			college_uid, err := api.GetCollegeUidByName(college_name)
+			if err != nil {
+				c.HTML(http.StatusInternalServerError, "502.html", nil)
+				return
+			}
+
+			m, err = api.GetStudentListByCollegeUid(college_uid)
+			if err != nil {
+				c.HTML(http.StatusInternalServerError, "502.html", nil)
+				return
+			}
+		}
+	} else {
+		m, err = api.GetAllStudentList()
+		if err != nil {
+			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			return
+		}
+	}
+	// map to json
+	json_val, _ := json.Marshal(m)
+	c.JSON(http.StatusOK, string(json_val))
+}
+
+func AdminDeleteStudentHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "502.html", nil)
+		return
+	}
+
+	student_uid_str := c.Query("student_uid")
+
+	err := dao.DataBase.Execf("delete from `student` where `student_uid`='%s'", student_uid_str)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	c.Redirect(http.StatusMovedPermanently, "admin_index")
+}
+
+func AdminEditStudentHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
 
+	student_uid_str := c.Query("student_uid")
+	student_uid, _ := strconv.ParseUint(student_uid_str, 10, 64)
+	m, _ := api.GetStudentByStudentUid(student_uid)
+	student_info := m
+
+	class_name, _ := api.GetNamebyUid(student_info.GetClassUid(), "class", "class_uid")
+	major_name, _ := api.GetNamebyUid(student_info.GetMajorUid(), "major", "major_uid")
+	college_name, _ := api.GetNamebyUid(student_info.GetCollegeUid(), "college", "college_uid")
+
+	c.HTML(http.StatusOK, "admin_edit_student.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+		"name":         student_info.GetName(),
+		"sex":          student_info.GetSex(),
+		"NRIC":         student_info.GetNRIC(),
+		"status":       student_info.GetStatus(),
+		"student_uid":  student_info.GetStudentUid(),
+		"major_name":   major_name,
+		"class_name":   class_name,
+		"college_name": college_name,
+		"create_time":  student_info.GetCreateTime(),
+	})
+}
+
+func AdminUpdateStudentPersonInfoHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	student_uid := c.Query("student_uid")
+
+	c.Request.ParseForm()
+	name := c.Request.PostForm.Get("name")
+	sex := c.Request.PostForm.Get("sex")
+	NRIC := c.Request.PostForm.Get("NRIC")
+	status := c.Request.PostForm.Get("status")
+	student_uid_update := c.Request.PostForm.Get("student_uid")
+	college_name := c.Request.PostForm.Get("college_name")
+	major_name := c.Request.PostForm.Get("major_name")
+	class_name := c.Request.PostForm.Get("class_name")
+	college_uid, err := api.GetCollegeUidByName(college_name)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+	major_uid, err := api.GetMajorUidByName(major_name)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+	class_uid, err := api.GetClassUidByName(class_name)
+	if err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+	err = dao.DataBase.Execf("update `student` set `name`='%s', `sex`='%s', `NRIC`='%s', `status`='%s', `college_uid`='%d', `student_uid`='%s',`major_uid`='%d',`class_uid`='%d'  where `student_uid`='%s'",
+		name, sex, NRIC, status, college_uid, student_uid_update, major_uid, class_uid, student_uid)
+	if err != nil {
+		c.HTML(http.StatusBadGateway, "502.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "success.html", gin.H{
+		"url":    "admin_index",
+		"second": "3",
+	})
 }

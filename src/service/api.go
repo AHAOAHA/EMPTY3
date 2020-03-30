@@ -35,9 +35,6 @@ func GetAllCollegeNameHandler(c *gin.Context) {
 func GetAllMajorNameHandler(c *gin.Context) {
 	data, _ := api.GetAllMajerName()
 	var m []gin.H
-	m = append(m, gin.H{
-		"name": "不限",
-	})
 	for _, v := range data {
 		m = append(m, gin.H{
 			"name": v,
@@ -51,9 +48,6 @@ func GetAllMajorNameHandler(c *gin.Context) {
 func GetAllClassNameHandler(c *gin.Context) {
 	data, _ := api.GetAllClassName()
 	var m []gin.H
-	m = append(m, gin.H{
-		"name": "不限",
-	})
 	for _, v := range data {
 		m = append(m, gin.H{
 			"name": v,

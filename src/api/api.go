@@ -272,21 +272,13 @@ func GetNotice() (DataCenter.NoticeInfo, error) {
 }
 
 func GetCollegeUidByName(college_name string) (uint64, error) {
-	var c DataCenter.CollegeInfo
 	cdbm, err := dao.DataBase.Queryf("SELECT 'college_uid' from `college` where `name`='%s'", college_name)
 	if err != nil || len(cdbm) != 1 {
 		return 0, err
 	}
 
 	college_uid, _ := strconv.ParseUint(string(cdbm[0]["college_uid"].([]uint8)), 10, 64)
-	crt, _ := strconv.Atoi(string(cdbm[0]["create_time"].([]uint8)))
-	c = DataCenter.CollegeInfo{
-		CollegeUid: college_uid,
-		Name:       college_name,
-		CreateTime: uint32(crt),
-	}
 
-	(*CollegeCache)[college_uid] = c
 	return college_uid, nil
 }
 
@@ -305,23 +297,13 @@ func GetAllMajerName() ([]string, error) {
 }
 
 func GetMajorUidByName(major_name string) (uint64, error) {
-	var m DataCenter.MajorInfo
-	cdbm, err := dao.DataBase.Queryf("SELECT * from `major` where `name`='%s'", major_name)
+	cdbm, err := dao.DataBase.Queryf("SELECT `major_uid` from `major` where `name`='%s'", major_name)
 	if err != nil || len(cdbm) != 1 {
 		return 0, err
 	}
 
 	major_uid, _ := strconv.ParseUint(string(cdbm[0]["major_uid"].([]uint8)), 10, 64)
-	college_uid, _ := strconv.ParseUint(string(cdbm[0]["college_uid"].([]uint8)), 10, 64)
-	crt, _ := strconv.Atoi(string(cdbm[0]["create_time"].([]uint8)))
-	m = DataCenter.MajorInfo{
-		MajorUid:   major_uid,
-		CollegeUid: college_uid,
-		Name:       major_name,
-		CreateTime: uint32(crt),
-	}
 
-	(*MajorCache)[major_uid] = m
 	return major_uid, nil
 }
 
@@ -337,4 +319,222 @@ func GetAllClassName() ([]string, error) {
 	}
 
 	return major_name, nil
+}
+
+func GetStudentByStudentUid(student_uid uint64) (DataCenter.StudentInfo, error) {
+	val, ok := (*StudentCache)[student_uid]
+	if ok {
+		return val, nil
+	}
+
+	var s DataCenter.StudentInfo
+	sm, err := dao.DataBase.Queryf("select * from `student` where `student_uid`='%d'", student_uid)
+	if err != nil || len(sm) != 1 {
+		return s, err
+	}
+
+	v := sm[0]
+	// teacher_uid college_uid password name sex NRIC status create_time
+	var college_uid, major_uid, class_uid uint64
+	var sta int
+	sta, _ = strconv.Atoi(string(v["status"].([]uint8)))
+	crtt, _ := strconv.Atoi(string(v["create_time"].([]uint8)))
+	college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+	class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+	major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
+	s = DataCenter.StudentInfo{
+		StudentUid: student_uid,
+		CollegeUid: college_uid,
+		MajorUid:   major_uid,
+		ClassUid:   class_uid,
+		Name:       string(v["name"].([]uint8)),
+		Password:   string(v["password"].([]uint8)),
+		Sex:        string(v["sex"].([]uint8)),
+		NRIC:       string(v["NRIC"].([]uint8)),
+		Status:     DataCenter.StudentInfo_STATUS(sta),
+		CreateTime: int32(crtt),
+	}
+	return s, nil
+}
+
+func GetStudentByNRIC(NRIC string) (map[uint64]DataCenter.StudentInfo, error) {
+
+	sm, err := dao.DataBase.Queryf("select * from `student` where `NRIC`='%s'", NRIC)
+	if err != nil {
+		return nil, err
+	}
+
+	m := make(map[uint64]DataCenter.StudentInfo)
+
+	for _, v := range sm {
+		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
+		var class_uid, student_uid, college_uid, major_uid, crtt uint64
+		var sta int
+		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
+		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
+		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
+		class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		m[student_uid] = DataCenter.StudentInfo{
+			StudentUid: student_uid,
+			CollegeUid: college_uid,
+			MajorUid:   major_uid,
+			ClassUid:   class_uid,
+			Name:       string(v["name"].([]uint8)),
+			Password:   string(v["password"].([]uint8)),
+			Sex:        string(v["sex"].([]uint8)),
+			NRIC:       string(v["NRIC"].([]uint8)),
+			Status:     DataCenter.StudentInfo_STATUS(sta),
+			CreateTime: int32(crtt),
+		}
+	}
+	return m, nil
+}
+
+func GetClassUidByName(class_name string) (uint64, error) {
+	m, err := dao.DataBase.Queryf("select `class_uid` from `class` where `name`='%s'", class_name)
+	if err != nil || len(m) != 1 {
+		return 0, err
+	}
+
+	class_uid_str := string(m[0]["class_uid"].([]uint8))
+	class_uid, _ := strconv.ParseUint(class_uid_str, 10, 64)
+	return class_uid, nil
+}
+
+func GetStudentListByClassUid(class_uid uint64) (map[uint64]DataCenter.StudentInfo, error) {
+	sm, err := dao.DataBase.Queryf("select * from `student` where `class_uid`='%d'", class_uid)
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[uint64]DataCenter.StudentInfo)
+
+	for _, v := range sm {
+		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
+		var student_uid, college_uid, major_uid, crtt uint64
+		var sta int
+		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
+		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
+		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
+		m[student_uid] = DataCenter.StudentInfo{
+			StudentUid: student_uid,
+			CollegeUid: college_uid,
+			MajorUid:   major_uid,
+			ClassUid:   class_uid,
+			Name:       string(v["name"].([]uint8)),
+			Password:   string(v["password"].([]uint8)),
+			Sex:        string(v["sex"].([]uint8)),
+			NRIC:       string(v["NRIC"].([]uint8)),
+			Status:     DataCenter.StudentInfo_STATUS(sta),
+			CreateTime: int32(crtt),
+		}
+	}
+
+	return m, nil
+}
+
+func GetStudentListByMajorUid(major_uid uint64) (map[uint64]DataCenter.StudentInfo, error) {
+	sm, err := dao.DataBase.Queryf("select * from `student` where `major_uid`='%d'", major_uid)
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[uint64]DataCenter.StudentInfo)
+
+	for _, v := range sm {
+		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
+		var student_uid, class_uid, college_uid, crtt uint64
+		var sta int
+		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
+		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
+		class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+		m[student_uid] = DataCenter.StudentInfo{
+			StudentUid: student_uid,
+			CollegeUid: college_uid,
+			MajorUid:   major_uid,
+			ClassUid:   class_uid,
+			Name:       string(v["name"].([]uint8)),
+			Password:   string(v["password"].([]uint8)),
+			Sex:        string(v["sex"].([]uint8)),
+			NRIC:       string(v["NRIC"].([]uint8)),
+			Status:     DataCenter.StudentInfo_STATUS(sta),
+			CreateTime: int32(crtt),
+		}
+	}
+
+	return m, nil
+}
+
+func GetStudentListByCollegeUid(college_uid uint64) (map[uint64]DataCenter.StudentInfo, error) {
+	sm, err := dao.DataBase.Queryf("select * from `student` where `college_uid`='%d'", college_uid)
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[uint64]DataCenter.StudentInfo)
+
+	for _, v := range sm {
+		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
+		var student_uid, class_uid, major_uid, crtt uint64
+		var sta int
+		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
+		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
+		class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
+		m[student_uid] = DataCenter.StudentInfo{
+			StudentUid: student_uid,
+			CollegeUid: college_uid,
+			MajorUid:   major_uid,
+			ClassUid:   class_uid,
+			Name:       string(v["name"].([]uint8)),
+			Password:   string(v["password"].([]uint8)),
+			Sex:        string(v["sex"].([]uint8)),
+			NRIC:       string(v["NRIC"].([]uint8)),
+			Status:     DataCenter.StudentInfo_STATUS(sta),
+			CreateTime: int32(crtt),
+		}
+	}
+
+	return m, nil
+}
+
+func GetStudentByName(student_name string) (map[uint64]DataCenter.StudentInfo, error) {
+	sm, err := dao.DataBase.Queryf("select * from `student` where `name`='%s'", student_name)
+	if err != nil {
+		return nil, err
+	}
+	m := make(map[uint64]DataCenter.StudentInfo)
+
+	for _, v := range sm {
+		var student_uid, class_uid, college_uid, major_uid, crtt uint64
+		var sta int
+		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
+		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
+		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
+		class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		m[student_uid] = DataCenter.StudentInfo{
+			StudentUid: student_uid,
+			CollegeUid: college_uid,
+			MajorUid:   major_uid,
+			ClassUid:   class_uid,
+			Name:       student_name,
+			Password:   string(v["password"].([]uint8)),
+			Sex:        string(v["sex"].([]uint8)),
+			NRIC:       string(v["NRIC"].([]uint8)),
+			Status:     DataCenter.StudentInfo_STATUS(sta),
+			CreateTime: int32(crtt),
+		}
+	}
+
+	return m, nil
+}
+
+func GetNamebyUid(uid uint64, table string, field string) (string, error) {
+	m, err := dao.DataBase.Queryf("select `name` from `%s` where `%s`='%d'", table, field, uid)
+	if err != nil || len(m) != 1 {
+		return "", err
+	}
+
+	return string(m[0]["name"].([]uint8)), nil
 }

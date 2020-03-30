@@ -73,6 +73,6 @@ func SignUpHandler(c *gin.Context) {
 }
 
 func SignOutHandler(c *gin.Context) {
-	c.SetCookie("user_cookie", "out", 100, "/", "", false, true)
+	c.SetCookie("user_cookie", "out", 1000, "/", "", false, true)
 	c.Redirect(http.StatusMovedPermanently, "/login")
 }
