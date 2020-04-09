@@ -897,3 +897,15 @@ func AdminUpdateStudentPersonInfoHandler(c *gin.Context) {
 		"second": "3",
 	})
 }
+
+func AdminCourseGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "admin_course_manager.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+	})
+}

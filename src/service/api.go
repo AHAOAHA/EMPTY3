@@ -57,3 +57,7 @@ func GetAllClassNameHandler(c *gin.Context) {
 	val, _ := json.Marshal(m)
 	c.JSON(http.StatusOK, string(val))
 }
+
+func DebugHandler(c *gin.Context) {
+	c.HTML(http.StatusOK, "debug.html", nil)
+}

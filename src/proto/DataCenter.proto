@@ -90,6 +90,7 @@ message CourseInfo {
     float               Hour = 5;
     STATUS              Status = 6;
     uint32              CreateTime = 7;
+    int32              Type = 8;
 }
 
 // 成绩信息

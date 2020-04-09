@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>管理员主页</title>
+    <title>课程信息管理</title>
     <meta name="description" content="管理员主页面">
     <meta name="keywords" content="index">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,8 +60,8 @@
                             class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
                     </a>
                     <ul class="am-dropdown-content">
-                        <li><a href="/person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
-                        <li><a href="/change_password"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/admin_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=admin"><span class="am-icon-cog"></span> 修改密码</a></li>
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
@@ -82,7 +82,7 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="/admin_index" class="nav-link active">
+                        <a href="/admin_index" class="nav-link">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
@@ -141,15 +141,16 @@
                     </li>
 
                     <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-wpforms"></i>
                             <span>信息管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
                                 <!-- TODO: -->
-                                <a href="/teacher_info_manager" class="nav-link tpl-left-nav-link-list">
+                                <a href="/admin_teacher_manager" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-wpforms"></i>
                                     <span>教师信息管理</span>
                                     <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
@@ -158,7 +159,7 @@
 
                             <li>
                                 <!-- TODO: -->
-                                <a href="student_info_manager" class="nav-link tpl-left-nav-link-list">
+                                <a href="admin_student_manager" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-wpforms"></i>
                                     <span>学生信息管理</span>
                                     <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
@@ -185,7 +186,7 @@
 
                     <li class="tpl-left-nav-item">
                         <!-- TODO: -->
-                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
+                        <a href="/admin_score_manager" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-key"></i>
                             <span>学生成绩管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
@@ -195,77 +196,172 @@
             </div>
         </div>
 
-        <div class="tpl-block ">
-
-            <div class="am-g tpl-amazeui-form">
 
 
-                <div class="am-u-sm-12 am-u-md-9">
-                    <form action="/update_admin_info" method="post" class="am-form am-form-horizontal">
-                        <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">登录名</label>
-                            <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="name" value="{{.name}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">邮箱 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" id="input_mail" name="mail" value="{{.mail}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">创建时间 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="create_time" value="{{.create_time}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">过期时间 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="expr_time" value="{{.expr_time}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">login_ip </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="login_ip" value="{{.login_ip}}" readonly="true">
-                            </div>
-                        </div>
 
 
-                        <div class="am-form-group">
-                            <div class="am-u-sm-9 am-u-sm-push-3">
-                                <button type="button" id="submit_button" class="am-btn am-btn-primary">提交</button>
-                                <button type="button" class="am-btn am-btn-primary"
-                                    onclick="changeReadOnly()">修改</button>
-                                <script>
-                                    function changeReadOnly() {
-                                        $("#input_name").attr("readOnly", false);
-                                        $("#input_mail").attr("readOnly", false);
+        <div class="tpl-content-wrapper">
+            <div class="tpl-content-page-title">
+                课程信息管理
+            </div>
+            <ol class="am-breadcrumb">
+                <!-- <li><a href="#" class="am-icon-home">首页</a></li>
+                <li><a href="#">分类</a></li>
+                <li class="am-active">内容</li> -->
+            </ol>
+            <div>
 
+                <table width="100%" align="center" border="1">
+                    <!--第一行-->
+                    <tr height="50px">
+                        <th bgcolor="LightSalmon" colspan="2" width="6%">时间</th>
+                        <th bgcolor="LightSalmon" width="16%">星期一</th>
+                        <th bgcolor="LightSalmon" width="16%">星期二</th>
+                        <th bgcolor="LightSalmon" width="16%">星期三</th>
+                        <th bgcolor="LightSalmon" width="16%">星期四</th>
+                        <th bgcolor="LightSalmon" width="16%">星期五</th>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="4" bgcolor="LightGoldenRodYellow">上午</th>
+                        <th rowspan="1" bgcolor="Khaki">第1节</th>
+                        <td rowspan="2" align="center" bgcolor="GreenYellow">概率论与数理统计B<br>
+                            (48学时)<br>
+                            ◇2节/周(01-17)[1-2节]<br>
+                            ◇石7-110(阶梯)<br>
+                            ◇杜大刚</td>
+                        <td rowspan="2" align="center" bgcolor="Plum">软件项目管理<br>
+                            (48学时)<br>
+                            ◇2节/周(01-17)[1-2节]<br>
+                            ◇石C6-406<br>
+                            ◇倪启东</td>
+                        <td rowspan="2" align="center" bgcolor="SpringGreen">软件质量保证与测试<br>
+                            (48学时)<br>
+                            ◇2节/单周(01-17)[1-2节]<br>
+                            ◇石C6-101<br>
+                            ◇傅启明<br>
+                            <br>
+                            概率论与数理统计B<br>
+                            (48学时)<br>
+                            ◇2节/双周(01-17)[1-2节]<br>
+                            ◇石7-110(阶梯)<br>
+                            ◇杜大刚</td>
+                        <td rowspan="2" align="center" bgcolor="LightBlue">Oracle数据库管理<br>
+                            (32学时)<br>
+                            ◇2节/周(01-17)[1-2节]<br>
+                            ◇石C6-208<br>
+                            ◇张明亮</td>
+                        <td rowspan="2" align="center" bgcolor="LightPink">ASP.Net应用程序设计<br>
+                            (32学时)<br>
+                            ◇2节/周(01-17)[1-2节]<br>
+                            ◇石C6-312<br>
+                            ◇吴宏杰</td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第2节</th>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第3节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="2" align="center" bgcolor="Coral">移动互联网开发技术<br>
+                            (48学时)<br>
+                            ◇2节/周(01-17)[3-4节]<br>
+                            ◇石C6-307<br>
+                            ◇张战成</td>
+                        <td rowspan="2" align="center" bgcolor="Gold">编译原理<br>
+                            (48学时)<br>
+                            ◇2节/周(01-17)[3-4节]<br>
+                            ◇石C6-108<br>
+                            ◇傅朝阳</td>
+                        <td rowspan="2" align="center" bgcolor="LightSteelBlue">云计算与大数据技术概论<br>
+                            (32学时)<br>
+                            ◇2节/周(01-17)[3-4节]<br>
+                            ◇石C6-210<br>
+                            ◇邹恩岑</td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第4节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="4" bgcolor="LightGoldenRodYellow">下午</th>
 
-                                        $("#submit_button").attr("type", "submit");
-                                    }
-                                </script>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                        <th rowspan="1" bgcolor="Khaki">第5节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第6节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第7节</th>
+                        <td rowspan="2" align="center" bgcolor="Thistle">软件质量保证与测试<br>
+                            (48学时)<br>
+                            ◇2节/周(01-17)[7-8节]<br>
+                            ◇石C6-101<br>
+                            ◇傅启明</td>
+                        <td rowspan="2" align="center" bgcolor="SandyBrown">工程经济学B<br>
+                            (32学时)<br>
+                            ◇2节/周(01-17)[7-8节]<br>
+                            ◇石C6-201<br>
+                            ◇周咏馨</td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="2" align="center" bgcolor="LightGreen">软件项目管理<br>
+                            (48学时)<br>
+                            ◇2节/单周(01-17)[7-8节]<br>
+                            ◇石C4-305<br>
+                            ◇倪启东<br>
+                            <br>
+                            移动互联网开发技术<br>
+                            (48学时)<br>
+                            ◇2节/双周(01-17)[7-8节]<br>
+                            ◇石C6-307<br>
+                            ◇张战成</td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第8节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="2" bgcolor="LightGoldenRodYellow">晚上</th>
+                        <th rowspan="1" bgcolor="Khaki">第9节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="2" align="center" bgcolor="Feldspar">网球提高<br>
+                            ◇2节/周(03-17)[9-10节]<br>
+                            ◇网球场<br>
+                            ◇江旭氢</td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                    <tr height="50px">
+                        <th rowspan="1" bgcolor="Khaki">第10节</th>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                        <td rowspan="1" bgcolor="Lavender"></td>
+                    </tr>
+                </table>
+
             </div>
         </div>
 
-    </div>
 
-
-    <script src="../static/assets/js/jquery.min.js"></script>
-    <script src="../static/assets/js/amazeui.min.js"></script>
-    <script src="../static/assets/js/iscroll.js"></script>
-    <script src="../static/assets/js/app.js"></script>
+        <script src="../static/assets/js/jquery.min.js"></script>
+        <script src="../static/assets/js/amazeui.min.js"></script>
+        <script src="../static/assets/js/iscroll.js"></script>
+        <script src="../static/assets/js/app.js"></script>
 </body>
 
 </html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>管理员主页</title>
+    <title>课程信息管理</title>
     <meta name="description" content="管理员主页面">
     <meta name="keywords" content="index">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,8 +60,8 @@
                             class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
                     </a>
                     <ul class="am-dropdown-content">
-                        <li><a href="/person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
-                        <li><a href="/change_password"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/admin_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=admin"><span class="am-icon-cog"></span> 修改密码</a></li>
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
@@ -82,7 +82,7 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="/admin_index" class="nav-link active">
+                        <a href="/admin_index" class="nav-link">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
@@ -141,15 +141,16 @@
                     </li>
 
                     <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-wpforms"></i>
                             <span>信息管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
                                 <!-- TODO: -->
-                                <a href="/teacher_info_manager" class="nav-link tpl-left-nav-link-list">
+                                <a href="/admin_teacher_manager" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-wpforms"></i>
                                     <span>教师信息管理</span>
                                     <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
@@ -158,7 +159,7 @@
 
                             <li>
                                 <!-- TODO: -->
-                                <a href="student_info_manager" class="nav-link tpl-left-nav-link-list">
+                                <a href="admin_student_manager" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-wpforms"></i>
                                     <span>学生信息管理</span>
                                     <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
@@ -185,7 +186,7 @@
 
                     <li class="tpl-left-nav-item">
                         <!-- TODO: -->
-                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
+                        <a href="/admin_score_manager" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-key"></i>
                             <span>学生成绩管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
@@ -195,61 +196,146 @@
             </div>
         </div>
 
-        <div class="tpl-block ">
-
-            <div class="am-g tpl-amazeui-form">
 
 
-                <div class="am-u-sm-12 am-u-md-9">
-                    <form action="/update_admin_info" method="post" class="am-form am-form-horizontal">
+
+
+        <div class="tpl-content-wrapper">
+            <div class="tpl-content-page-title">
+                课程信息管理
+            </div>
+            <ol class="am-breadcrumb">
+                <!-- <li><a href="#" class="am-icon-home">首页</a></li>
+                <li><a href="#">分类</a></li>
+                <li class="am-active">内容</li> -->
+            </ol>
+            <div class="am-g tpl-amazeui-form" id="main_div">
+
+
+                <div class="am-u-sm-12 am-u-md-9" id="main_div">
+                    <form action="/admin_teacher_manager" method="post" id="form1" class="am-form am-form-horizontal"
+                        name="input_form">
                         <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">登录名</label>
+                            <label for="user-name" class="am-u-sm-3 am-form-label">班级 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="name" value="{{.name}}" readonly="true">
-                            </div>
-                        </div>
+                                <input type="text" id="input_name" name="college_name" placeholder="请选择班级"
+                                    list="listItem" />
+                                <datalist id="listItem">
+                                </datalist>
+                                <script type="text/javascript">
+                                    function get_class_name() {
 
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">邮箱 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" id="input_mail" name="mail" value="{{.mail}}" readonly="true">
-                            </div>
-                        </div>
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/get_all_class_name",
+                                            dataType: "json",
+                                            success: function (data) {
+                                                addOption(data);
+                                                // console.log(data);
+                                                // var ss = document.getElementById("listItem");
+                                                // alert(data);
+                                                // $(data).each(function(){
+                                                //     var op=document.createElement("option");
+                                                //     op.setAttribute("value", this.name);
+                                                //     ss.appendChild(op);
 
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">创建时间 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="create_time" value="{{.create_time}}" readonly="true">
-                            </div>
-                        </div>
+                                                // });
+                                            }
+                                        })
+                                    }
+                                    function addOption(data) {
+                                        var ss = document.getElementById("listItem");
+                                        $.each(JSON.parse(data), function (index, val) {
+                                            var op = document.createElement("option");
+                                            op.setAttribute("value", val["name"]);
+                                            ss.appendChild(op);
+                                        })
 
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">过期时间 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="expr_time" value="{{.expr_time}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">login_ip </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="login_ip" value="{{.login_ip}}" readonly="true">
+                                    }
+                                    window.onload = function () {
+                                        get_class_name();
+                                    }
+                                </script>
                             </div>
                         </div>
 
 
                         <div class="am-form-group">
                             <div class="am-u-sm-9 am-u-sm-push-3">
-                                <button type="button" id="submit_button" class="am-btn am-btn-primary">提交</button>
-                                <button type="button" class="am-btn am-btn-primary"
-                                    onclick="changeReadOnly()">修改</button>
-                                <script>
-                                    function changeReadOnly() {
-                                        $("#input_name").attr("readOnly", false);
-                                        $("#input_mail").attr("readOnly", false);
+                                <input type="button" id="submit_button" class="am-btn am-btn-primary"
+                                    onclick="GetTeacherInfo()" value="查询" />
+                                <script type="text/javascript">
+                                    function GetTeacherInfo() {
+                                        var form = document.forms.namedItem("input_form");
+                                        var formData = new FormData(form);
+                                        $.ajax({
+                                            type: "POST",
+                                            dataType: "json",
+                                            url: "/admin_teacher_manager",
+                                            data: $('#form1').serialize(),
+                                            success: function (result) {
+                                                showResult(result);
+                                            },
+                                            error: function () {
+                                                alert("获取后台数据失败！");
+                                            }
+                                        })
+                                    }
 
+                                    function showResult(result) {
+                                        if (!result) {
+                                            alert("查询结果为空！");
+                                            return;
+                                        }
+                                        
+                                        document.getElementById("form1").style.display = "none";
+                                        //alert(result);
+                                        var json_result = JSON.parse(result)
+                                        var perfix = "\<div class=\"am-g\"\>\<form class=\"am-form\"\>\
+                                                        \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
+                                                        \<thead\>\
+                                                        \<tr\>\
+                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
+                                            \<th class=\"table-id\"\>序号\</th\>\
+                                            \<th class=\"table-title\">姓名\</th\>\
+                                            \<th class=\"table-type\"\>性别\</th\>\
+                                            \<th class=\"table-author am-hide-sm-only\"\>教工号\</th\>\
+                                            \<th class=\"table-date am-hide-sm-only\"\>所属学院\</th\>\
+                                            \<th class=\"table-set\"\>操作\</th\>\
+                                            \</tr\>\
+                                            \</thead\>\
+                                            \<tbody\>";
+                                            
+                                            var count = 1;
 
-                                        $("#submit_button").attr("type", "submit");
+                                            var mid = "";
+
+                                        $.each(json_result, function (index, obj) {
+
+                                            mid += "\<tr\>\
+                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
+                                                        \<td\>"+ count++ +"\</td\>\
+                                                        \<td\>\<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>" + obj["Name"] + "\</a\>\</td\>\
+                                                        \<td\>"+ obj["Sex"] +"\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["TeacherUid"] +"\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ "TODO" +"\</td\>\
+                                                        \<td\>\
+                                                \<div class=\"am-btn-toolbar\"\>\
+                                                    \<div class=\"am-btn-group am-btn-group-xs\"\>\
+                                                        \<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>编辑\</a\>\
+                                                        \<a href=\"admin_delete_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>删除\</a\>\
+                                                    \</div\>\
+                                                \</div\>\
+                                            \</td\>\
+                                        \</tr\>";
+
+                                        })
+                                        
+                                        var suffix = "\</tbody\>\
+                                                        \</table\>\</form\>\</div\>";
+
+                                        var tmp = perfix + mid + suffix;
+                                        $('#main_div').append(tmp);
                                     }
                                 </script>
                             </div>
@@ -259,13 +345,11 @@
             </div>
         </div>
 
-    </div>
 
-
-    <script src="../static/assets/js/jquery.min.js"></script>
-    <script src="../static/assets/js/amazeui.min.js"></script>
-    <script src="../static/assets/js/iscroll.js"></script>
-    <script src="../static/assets/js/app.js"></script>
+        <script src="../static/assets/js/jquery.min.js"></script>
+        <script src="../static/assets/js/amazeui.min.js"></script>
+        <script src="../static/assets/js/iscroll.js"></script>
+        <script src="../static/assets/js/app.js"></script>
 </body>
 
 </html>

@@ -538,3 +538,89 @@ func GetNamebyUid(uid uint64, table string, field string) (string, error) {
 
 	return string(m[0]["name"].([]uint8)), nil
 }
+
+func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, error) {
+	m, err := dao.DataBase.Queryf("select DISTINCT `course_uid` from `student_course` where `teacher_uid`='%d'", teacher_uid)
+	if err != nil {
+		return nil, err
+	}
+
+	// db query result type string.
+	var courses []string
+	for _, v := range m {
+		courses = append(courses, string(v["course_uid"].([]uint8)))
+	}
+
+	// Query course info by course uid.
+	var coursesInfo []DataCenter.CourseInfo
+	for _, v := range courses {
+		sm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%s'", v)
+		if err != nil || len(sm) != 1 {
+			continue
+		}
+
+		course_uid, _ := strconv.ParseUint(v, 10, 64)
+		college_uid, _ := strconv.ParseUint(string(sm[0]["college_uid"].([]uint8)), 10, 64)
+		course_name := string(sm[0]["name"].([]uint8))
+		credit, _ := strconv.ParseFloat(string(sm[0]["credit"].([]uint8)), 32)
+		hour, _ := strconv.ParseFloat(string(sm[0]["hour"].([]uint8)), 32)
+		course_type, _ := strconv.Atoi(string(sm[0]["type"].([]uint8)))
+		status, _ := strconv.Atoi(string(sm[0]["status"].([]uint8)))
+		crt, _ := strconv.Atoi(string(sm[0]["create_time"].([]uint8)))
+		coursesInfo = append(coursesInfo, DataCenter.CourseInfo{
+			CourseUid:  course_uid,
+			CollegeUid: college_uid,
+			Name:       course_name,
+			Credit:     float32(credit),
+			Hour:       float32(hour),
+			Type:       int32(course_type),
+			Status:     DataCenter.CourseInfo_STATUS(status),
+			CreateTime: uint32(crt),
+		})
+	}
+
+	return coursesInfo, nil
+}
+
+func GetTeacherCourseClass(teacher_uid uint64, course_uid uint64) ([]DataCenter.ClassInfo, error) {
+	m, err := dao.DataBase.Queryf("select `class_uid` from `student_course` where `teacher_uid`='%d' and `course_uid`='%d'", teacher_uid, course_uid)
+	if err != nil {
+		return nil, err
+	}
+
+	var classes []string
+	for _, v := range m {
+		classes = append(classes, string(v["class_uid"].([]uint8)))
+	}
+
+	var classInfo []DataCenter.ClassInfo
+	for _, v := range classes {
+		sm, err := dao.DataBase.Queryf("select * from `class` where `class_uid`='%s'", v)
+		if err != nil || len(sm) != 1 {
+			continue
+		}
+
+		college_uid, _ := strconv.ParseUint(string(sm[0]["college_uid"].([]uint8)), 10, 64)
+		major_uid, _ := strconv.ParseUint(string(sm[0]["major_uid"].([]uint8)), 10, 64)
+
+		class_name := string(sm[0]["name"].([]uint8))
+		crt, _ := strconv.Atoi(string(sm[0]["create_time"].([]uint8)))
+		classInfo = append(classInfo, DataCenter.ClassInfo{
+			CollegeUid: college_uid,
+			Name:       class_name,
+			MajorUid:   major_uid,
+			CreateTime: uint32(crt),
+		})
+	}
+
+	return classInfo, nil
+}
+
+func GetCourseNameByCourseUid(course_uid uint64) string {
+	m, err := dao.DataBase.Queryf("select `name` from `course` where `course_uid`='%d'", course_uid)
+	if err != nil || len(m) != 1 {
+		return ""
+	}
+
+	return string(m[0]["name"].([]uint8))
+}

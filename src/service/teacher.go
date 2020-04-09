@@ -13,10 +13,13 @@ import (
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
+	"encoding/json"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func TeacherIndexHandler(c *gin.Context) {
@@ -76,4 +79,70 @@ func TeacherIndexHandler(c *gin.Context) {
 		"introduce":     notice.GetTitle(),
 		"school_title":  notice.GetNotice(),
 	})
+}
+
+func TeacherCourseQueryGetHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "teacher_course_query_result.html", gin.H{
+		"loginer_name": t.Info.GetName(),
+	})
+}
+
+func TeacherGetTeacherCoursesHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	coursesInfo, err := api.GetTeacherCourseByTeacherUid(t.Info.GetTeacherUid())
+	if err != nil {
+		// err
+	}
+
+	log.Info(coursesInfo)
+
+	data, _ := json.Marshal(coursesInfo)
+	c.JSON(http.StatusOK, string(data))
+}
+
+// json format, class name, course name, and operator info.
+func TeacherGetCourseClassHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	course_uid_str := c.Query("course_uid")
+	course_uid, _ := strconv.ParseUint(course_uid_str, 10, 64)
+	result, _ := api.GetTeacherCourseClass(t.Info.GetTeacherUid(), course_uid)
+	data := []struct {
+		ClassName  string
+		CourseName string
+	}{}
+	for _, v := range result {
+		data = append(data, struct {
+			ClassName  string
+			CourseName string
+		}{
+			v.GetName(),
+			api.GetCourseNameByCourseUid(course_uid),
+		})
+	}
+	rsp, _ := json.Marshal(data)
+
+	c.HTML(http.StatusOK, "teacher_course_class_result.html", gin.H{
+		"loginer_name": t.Info.GetName(),
+		"data":         string(rsp),
+	})
+
 }
