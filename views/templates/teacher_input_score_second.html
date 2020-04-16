@@ -91,9 +91,9 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-table"></i>
                             <span>任课信息管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
+                        <ul class="tpl-left-nav-sub-menu">
                             <li>
                                 <!-- TODO: -->
                                 <a href="teacher_course_query">
@@ -108,9 +108,11 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-table"></i>
                             <span>学生成绩管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
                                 <!-- TODO: -->
                                 <a href="/teacher_query_score">
@@ -138,90 +140,135 @@
         </div>
 
 
+        <input type="hidden" id="rsp_data" value={{.data}}>
+
+
+
+
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                授课信息
+                学生信息
             </div>
             <ol class="am-breadcrumb">
                 <!-- <li><a href="#" class="am-icon-home">首页</a></li>
-                <li><a href="#">分类</a></li>
-                <li class="am-active">内容</li> -->
+                <li><a href="#">表单</a></li>
+                <li class="am-active">Amaze UI 表单</li> -->
             </ol>
-            <div class="am-g tpl-amazeui-form" id="main_div">
-                <script type="text/javascript">
-                    function getTeacherCourses() {
-                        $.ajax({
-                            type: "GET",
-                            url: "/get_teacher_courses",
-                            dataType: "json",
-                            success: function (data) {
-                                addCourses(data);
-                            }
-                        })
-                    }
+            <div class="tpl-portlet-components">
+                <div class="portlet-title">
+                    <div class="caption font-green bold">
+                        <span class="am-icon-code"></span> 表单
+                    </div>
+                    <div class="tpl-portlet-input tpl-fz-ml">
+                        <div class="portlet-input input-small input-inline">
+                            <!-- <div class="input-icon right">
+                                <i class="am-icon-search"></i>
+                                <input type="text" class="form-control form-control-solid" placeholder="搜索..."> </div> -->
+                        </div>
+                    </div>
 
-                    function addCourses(result) {
-                        if (!result) {
-                            alert("查询结果为空！");
-                            return;
-                        }
 
-                        // alert(result);
-                        var json_result = JSON.parse(result)
-                        var perfix = "\<div class=\"am-g\"\>\<form class=\"am-form\"\>\
-                                                        \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
-                                                        \<thead\>\
-                                                        \<tr\>\
-                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
-                                            \<th class=\"table-id\"\>序号\</th\>\
-                                                \<th class=\"table-title\">课程id\</th\>\
-                                            \<th class=\"table-title\">课程名\</th\>\
-                                                    \<th class=\"table-author am-hide-sm-only\"\>学分\</th\>\
-                                            \<th class=\"table-date am-hide-sm-only\"\>总课时\</th\>\
-                                                \<th class=\"table-date am-hide-sm-only\"\>状态\</th\>\
-                                                    \<th class=\"table-date am-hide-sm-only\"\>类型\</th\>\
-                                            \<th class=\"table-set\"\>操作\</th\>\
-                                            \</tr\>\
-                                            \</thead\>\
-                                            \<tbody\>";
+                </div>
+                <div class="tpl-block ">
 
-                        var count = 1;
+                    <div class="am-g tpl-amazeui-form">
 
-                        var mid = "";
 
-                        $.each(json_result, function (index, obj) {
+                        <div class="am-u-sm-12 am-u-md-9">
+                            <form  id="form1" action="/teacher_input_score_third" method="post" class="am-form am-form-horizontal">
+                                <div class="am-form-group">
+                                    <label for="name" class="am-u-sm-3 am-form-label">课程</label>
+                                    <div class="am-u-sm-9">
+                                        <input type="text" id="course_name" name="course_name" value="" readonly="true">
+                                    </div>
+                                </div>
 
-                            mid += "\<tr\>\
-                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
-                                                        \<td\>"+ count++ + "\</td\>\
-                                                        \<td\>"+ obj["CourseUid"] + "\</a\>\</td\>\
-                                                        \<td\>"+ obj["CourseName"] + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["Credit"] + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["Hour"] + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["Status"] + "\</td\>\
-                                                                \<td class=\"am-hide-sm-only\"\>"+ obj["Type"] + "\</td\>\
-                                                        \<td\>\
-                                                \<div class=\"am-btn-toolbar\"\>\
-                                                    \<div class=\"am-btn-group am-btn-group-xs\"\>\
-                                                        \<a href=\"get_teacher_course_class?course_uid="+ obj["CourseUid"] + "\"\>查询班级\</a\>\
-                                                    \</div\>\
-                                                \</div\>\
-                                            \</td\>\
-                                        \</tr\>";
+                                <div class="am-form-group">
+                                    <label for="name" class="am-u-sm-3 am-form-label">班级</label>
+                                    <div class="am-u-sm-9">
+                                        <input type="text" id="class_name" name="class_name" value="" readonly="true">
+                                    </div>
+                                </div>
 
-                        })
+                                <div class="am-form-group">
+                                    <label for="name" class="am-u-sm-3 am-form-label">平时成绩占比%</label>
+                                    <div class="am-u-sm-9">
+                                        <input type="number" id="usual_percent" name="usual_percent" value="">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="name" class="am-u-sm-3 am-form-label">期中成绩占比%</label>
+                                    <div class="am-u-sm-9">
+                                        <input type="number" id="mid_percent" name="mid_percent" value="">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="name" class="am-u-sm-3 am-form-label">期末成绩占比%</label>
+                                    <div class="am-u-sm-9">
+                                        <input type="number" id="end_percent" name="end_percent" value="">
+                                    </div>
+                                    <input type="hidden" id="is_update_percent" name="is_update_percent" value="0">
+                                </div>
 
-                        var suffix = "\</tbody\>\
-                                                        \</table\>\</form\>\</div\>";
+                                <script type="text/javascript">
+                                    function first() {
+                                        var data = document.getElementById("rsp_data").value;
+                                        var result = JSON.parse(data);
+                                        if (result["OK"] == false) {
+                                            alert("课程与班级不匹配，请返回上一步重新选择！");
+                                            return;
+                                        }
+                                        document.getElementById("course_name").value = result["CourseName"];
+                                        document.getElementById("class_name").value = result["ClassName"];
 
-                        var tmp = perfix + mid + suffix;
-                        $('#main_div').append(tmp);
-                    }
-                    window.onload = function () {
-                        getTeacherCourses();
-                    }
-                </script>
+                                        if (result["PercentOK"] == true) {
+                                            document.getElementById("usual_percent").value = result["UsualPercent"];
+                                            document.getElementById("usual_percent").readOnly = true;
+                                            document.getElementById("mid_percent").value = result["MidPercent"];
+                                            document.getElementById("mid_percent").readOnly = true;
+                                            document.getElementById("end_percent").value = result["EndPercent"];
+                                            document.getElementById("end_percent").readOnly = true;
+                                            document.getElementById("is_update_percent").value = 0;
+                                            return;
+                                        }
+                                        document.getElementById("is_update_percent").value = 1;
+                                    }
+
+                                    window.onload = function () {
+                                        first();
+                                    }
+
+
+                                </script>
+                                <div class="am-form-group">
+                                    <div class="am-u-sm-9 am-u-sm-push-3">
+                                        <button type="submit" class="am-btn am-btn-primary"
+                                            onclick="return getCourseClassStudent()">确定</button>
+                                        <script type="text/javascript">
+                                            function getCourseClassStudent() {
+                                                // 查询学生  检查成绩占比
+                                                var usual = document.getElementById("usual_percent").value;
+                                                var mid = document.getElementById("mid_percent").value;
+                                                var end = document.getElementById("end_percent").value;
+                                                if ((Number(usual) + Number(mid) + Number(end)) != 100) {
+                                                    alert("成绩占比总和不为100%！");
+                                                    return false;
+                                                }
+                                                return true;
+                                            }
+                                        </script>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+
+
+
 
 
 

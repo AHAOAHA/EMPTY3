@@ -83,6 +83,10 @@ message CourseInfo {
         DOING = 1;
         DONE = 2;
     }
+    enum TYPE {
+        MUST = 0;
+        CHOSE = 1;
+    }
     uint64              CourseUid = 1;
     uint64              CollegeUid = 2;
     string              Name = 3;
@@ -90,7 +94,7 @@ message CourseInfo {
     float               Hour = 5;
     STATUS              Status = 6;
     uint32              CreateTime = 7;
-    int32              Type = 8;
+    TYPE              Type = 8;
 }
 
 // 成绩信息
@@ -110,6 +114,7 @@ message ScoreInfo {
     float               AcademicCredit = 8;
     STATUS              Status = 9;
     uint32              CreateTime = 10;
+    uint32              Score = 11;
 }
 
 message StudentCourseInfo {
@@ -123,4 +128,14 @@ message NoticeInfo {
     string              Title = 1;
     string              Notice = 2;
     uint32              CreateTime = 3;
+}
+
+message CourseScorePercentInfo {
+    uint64              CourseScorePercentUid = 1;
+    uint64              CourseUid = 2;
+    uint32              UsualPercent = 3;
+    uint32              MidPercent = 4;
+    uint32              EndPercent = 5;
+    uint32              Type = 6;
+    uint32              CreateTime = 7;
 }

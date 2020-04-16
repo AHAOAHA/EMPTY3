@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>管理员主页</title>
-    <meta name="description" content="管理员主页面">
+    <title>教师主页</title>
+    <meta name="description" content="教师主页面">
     <meta name="keywords" content="index">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="renderer" content="webkit">
@@ -65,7 +65,7 @@
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
-                <li><a href="###" class="tpl-header-list-link"><span
+                <li><a href="sign_out" class="tpl-header-list-link"><span
                             class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
             </ul>
         </div>
@@ -82,13 +82,13 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="teacher_index" class="nav-link active">
+                        <a href="teacher_index" class="nav-link">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
                     </li>
                     <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-table"></i>
                             <span>任课信息管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
@@ -96,7 +96,7 @@
                         <ul class="tpl-left-nav-sub-menu">
                             <li>
                                 <!-- TODO: -->
-                                <a href="form-amazeui.html">
+                                <a href="teacher_course_query">
                                     <i class="am-icon-angle-right"></i>
                                     <span>任课信息查询</span>
                                 </a>
@@ -108,9 +108,11 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-table"></i>
                             <span>学生成绩管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
                                 <!-- TODO: -->
                                 <a href="/teacher_query_score">
@@ -118,7 +120,7 @@
                                     <span>成绩查询</span>
                                 </a>
 
-                                <a href="form-line.html">
+                                <a href="/teacher_input_score">
                                     <i class="am-icon-angle-right"></i>
                                     <span>成绩录入</span>
                                 </a>
@@ -138,99 +140,83 @@
         </div>
 
 
-
-        <div class="tpl-block ">
-
-            <div class="am-g tpl-amazeui-form">
+        <input type="hidden" id="rsp_data" value={{.rsp_data}}>
 
 
-                <div class="am-u-sm-12 am-u-md-9">
-                    <form action="/update_admin_info" method="post" class="am-form am-form-horizontal">
-                        <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">姓名 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="name" value="{{.name}}" readonly="true">
-                            </div>
-                        </div>
 
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">性别 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" id="input_sex" name="sex" value="{{.sex}}" readonly="true">
-                            </div>
-                        </div>
+        <div class="tpl-content-wrapper">
+            <div class="tpl-content-page-title">
+                学生成绩
+            </div>
+            <ol class="am-breadcrumb">
+            </ol>
+            <div class="am-g tpl-amazeui-form" id="main_div">
+                <div class="am-g">
+                    <form class="am-form">
+                        <table class="am-table am-table-striped am-table-hover table-main">
+                            <thead>
+                                <tr>
+                                    <th class="table-check"><input type="checkbox" class="tpl-table-fz-check"></th>
+                                    <th class="table-id">序号</th>
+                                    <th class="table-title">姓名</th>
+                                    <th class="table-title">平时成绩</th>
+                                    <th class="table-set">期中成绩</th>
+                                    <th class="table-set">期末成绩</th>
+                                    <th class="table-set">最终成绩</th>
+                                    <th class="table-set">绩点</th>
+                                    <th class="table-set">学分</th>
+                                    <th class="table-set">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="main_tbody">
+                                <script type="text/javascript">
+                                    function makePages() {
+                                        var student_data = document.getElementById("rsp_data").value;
+                                        // alert(student_data);
 
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">身份证号 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="NRIC" value="{{.NRIC}}" readonly="true">
-                            </div>
-                        </div>
+                                        var json_stu_result = JSON.parse(student_data);
+                                        
 
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">状态 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="status" value="{{.status}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">教工号 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="teacher_uid" value="{{.teacher_uid}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">所属学院 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="college_name" value="{{.college_name}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">创建时间 </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="create_time" value="{{.create_time}}" readonly="true">
-                            </div>
-                        </div>
-
-                        <div class="am-form-group">
-                            <label for="college_id" class="am-u-sm-3 am-form-label">登录ip </label>
-                            <div class="am-u-sm-9">
-                                <input type="text" name="login_ip" value="{{.login_ip}}" readonly="true">
-                            </div>
-                        </div>
-
-
-                        <div class="am-form-group">
-                            <div class="am-u-sm-9 am-u-sm-push-3">
-                                <button type="button" id="submit_button" class="am-btn am-btn-primary">提交</button>
-                                <button type="button" class="am-btn am-btn-primary"
-                                    onclick="changeReadOnly()">修改</button>
-                                <script>
-                                    function changeReadOnly() {
-                                        $("#input_name").attr("readOnly", false);
-                                        $("#input_sex").attr("readOnly", false);
-
-
-                                        $("#submit_button").attr("type", "submit");
+                                        var count = 1;
+                                        var tr = "";
+                                        $.each(json_stu_result, function (index, val) {
+                                            tr += "\<tr\>\
+                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
+                                                        \<td\>"+ count++ + "\</td\>\
+                                                        \<td\>"+ val["Name"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["UsualScore"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["MidScore"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["EndScore"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Score"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["AcaDemicCredit"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Credit"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Status"] + "\</td\>\
+                                        \</tr\>";
+                                        })
+                                        $('#main_tbody').append(tr);
                                     }
+
+                                    window.onload = function () {
+                                        makePages();
+                                    }
+
                                 </script>
-                            </div>
-                        </div>
+
+                            </tbody>
+                        </table>
                     </form>
                 </div>
             </div>
-        </div>
-
-    </div>
 
 
-    <script src="../static/assets/js/jquery.min.js"></script>
-    <script src="../static/assets/js/amazeui.min.js"></script>
-    <script src="../static/assets/js/iscroll.js"></script>
-    <script src="../static/assets/js/app.js"></script>
+
+
+
+
+            <script src="../static/assets/js/jquery.min.js"></script>
+            <script src="../static/assets/js/amazeui.min.js"></script>
+            <script src="../static/assets/js/iscroll.js"></script>
+            <script src="../static/assets/js/app.js"></script>
 </body>
 
 </html>

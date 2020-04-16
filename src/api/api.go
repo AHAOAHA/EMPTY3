@@ -401,6 +401,16 @@ func GetClassUidByName(class_name string) (uint64, error) {
 	class_uid, _ := strconv.ParseUint(class_uid_str, 10, 64)
 	return class_uid, nil
 }
+func GetCourseUidByName(course_name string) (uint64, error) {
+	m, err := dao.DataBase.Queryf("select `course_uid` from `course` where `name`='%s'", course_name)
+	if err != nil || len(m) != 1 {
+		return 0, err
+	}
+
+	course_uid_str := string(m[0]["course_uid"].([]uint8))
+	course_uid, _ := strconv.ParseUint(course_uid_str, 10, 64)
+	return course_uid, nil
+}
 
 func GetStudentListByClassUid(class_uid uint64) (map[uint64]DataCenter.StudentInfo, error) {
 	sm, err := dao.DataBase.Queryf("select * from `student` where `class_uid`='%d'", class_uid)
@@ -573,10 +583,11 @@ func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, 
 			Name:       course_name,
 			Credit:     float32(credit),
 			Hour:       float32(hour),
-			Type:       int32(course_type),
+			Type:       DataCenter.CourseInfo_TYPE(course_type),
 			Status:     DataCenter.CourseInfo_STATUS(status),
 			CreateTime: uint32(crt),
 		})
+		// log.Infof("%v", coursesInfo)
 	}
 
 	return coursesInfo, nil
@@ -623,4 +634,117 @@ func GetCourseNameByCourseUid(course_uid uint64) string {
 	}
 
 	return string(m[0]["name"].([]uint8))
+}
+func GetTeacherClassByTeacherUid(teacher_uid uint64) ([]DataCenter.ClassInfo, error) {
+	m, err := dao.DataBase.Queryf("select `class_uid` from `student_course` where `teacher_uid`='%d'", teacher_uid)
+	if err != nil {
+		return nil, err
+	}
+
+	var classes []string
+	for _, v := range m {
+		classes = append(classes, string(v["class_uid"].([]uint8)))
+	}
+
+	var classInfo []DataCenter.ClassInfo
+	for _, v := range classes {
+		sm, err := dao.DataBase.Queryf("select * from `class` where `class_uid`='%s'", v)
+		if err != nil || len(sm) != 1 {
+			continue
+		}
+
+		college_uid, _ := strconv.ParseUint(string(sm[0]["college_uid"].([]uint8)), 10, 64)
+		major_uid, _ := strconv.ParseUint(string(sm[0]["major_uid"].([]uint8)), 10, 64)
+		class_uid, _ := strconv.ParseUint(string(sm[0]["class_uid"].([]uint8)), 10, 64)
+		class_name := string(sm[0]["name"].([]uint8))
+		crt, _ := strconv.Atoi(string(sm[0]["create_time"].([]uint8)))
+		classInfo = append(classInfo, DataCenter.ClassInfo{
+			CollegeUid: college_uid,
+			ClassUid:   class_uid,
+			Name:       class_name,
+			MajorUid:   major_uid,
+			CreateTime: uint32(crt),
+		})
+	}
+
+	return classInfo, nil
+}
+
+func IsCourseBelongClass(course_uid uint64, class_uid uint64) bool {
+	m, err := dao.DataBase.Queryf("select `student_uid` from `student_course` where `course_uid`='%d' and `class_uid`='%d'", course_uid, class_uid)
+	if err != nil || len(m) == 0 {
+		return false
+	}
+	return true
+}
+
+func GetCourseScorePercentByCourseUid(course_uid uint64) (DataCenter.CourseScorePercentInfo, error) {
+	var ret DataCenter.CourseScorePercentInfo
+	m, err := dao.DataBase.Queryf("select * from `course_score_percent` where `course_uid`='%d'", course_uid)
+	if err != nil || len(m) != 1 {
+		return ret, errors.New("query course score percent err")
+	}
+
+	course_score_percent_uid, _ := strconv.ParseUint(string(m[0]["course_score_percent_uid"].([]uint8)), 10, 64)
+	usual_percent, _ := strconv.ParseUint(string(m[0]["usual_percent"].([]uint8)), 10, 32)
+	mid_percent, _ := strconv.ParseUint(string(m[0]["mid_percent"].([]uint8)), 10, 32)
+	end_percent, _ := strconv.ParseUint(string(m[0]["end_percent"].([]uint8)), 10, 32)
+	crt, _ := strconv.ParseUint(string(m[0]["create_time"].([]uint8)), 10, 32)
+	ret = DataCenter.CourseScorePercentInfo{
+		CourseScorePercentUid: course_score_percent_uid,
+		CourseUid:             course_uid,
+		UsualPercent:          uint32(usual_percent),
+		MidPercent:            uint32(mid_percent),
+		EndPercent:            uint32(end_percent),
+		CreateTime:            uint32(crt),
+	}
+
+	return ret, nil
+}
+
+func IsCourseHavePercent(course_uid uint64) bool {
+	m, err := dao.DataBase.Queryf("select * from `course_score_percent` where `course_uid`='%d'", course_uid)
+	if err != nil || len(m) != 1 {
+		return false
+	}
+
+	return true
+}
+
+func InsertCoursePercent(course_uid uint64, usual_percent uint32, mid_percent uint32, end_percent uint32, percent_type uint32) error {
+	err := dao.DataBase.Execf("insert into `course_score_percent` (`course_uid`, `usual_percent`, `mid_percent`, `end_percent`, `type`) values ('%d', '%d', '%d', '%d', '%d')", course_uid, usual_percent, mid_percent, end_percent, percent_type)
+	return err
+}
+
+func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (DataCenter.ScoreInfo, error) {
+	var ret DataCenter.ScoreInfo
+	m, err := dao.DataBase.Queryf("select * from `score` where `student_uid`='%d' and `course_uid`='%d'", student_uid, course_uid)
+	if err != nil || len(m) == 0 {
+		return ret, errors.New("query score err")
+	}
+
+	val := m[0]
+	score_uid, _ := strconv.ParseUint(string(val["score_uid"].([]uint8)), 10, 64)
+	usual_score, _ := strconv.ParseFloat(string(val["usual_score"].([]uint8)), 32)
+	mid_score, _ := strconv.ParseFloat(string(val["midterm_score"].([]uint8)), 32)
+	end_score, _ := strconv.ParseFloat(string(val["endterm_score"].([]uint8)), 32)
+	academic_credit, _ := strconv.ParseFloat(string(val["academic_credit"].([]uint8)), 32)
+	credit, _ := strconv.ParseFloat(string(val["credit"].([]uint8)), 32)
+	status, _ := strconv.Atoi(string(val["status"].([]uint8)))
+	crt, _ := strconv.ParseUint(string(val["create_time"].([]uint8)), 10, 32)
+
+	ret = DataCenter.ScoreInfo{
+		ScoreUid:       score_uid,
+		StudentUid:     student_uid,
+		CourseUid:      course_uid,
+		MidtermScore:   float32(mid_score),
+		EndtermScore:   float32(end_score),
+		UsualScore:     float32(usual_score),
+		AcademicCredit: float32(academic_credit),
+		Credit:         float32(credit),
+		Status:         DataCenter.ScoreInfo_STATUS(status),
+		CreateTime:     uint32(crt),
+	}
+
+	return ret, nil
 }

@@ -75,3 +75,15 @@ CREATE TABLE IF NOT EXISTS `student_score` (
 	CONSTRAINT ss_sc_student_uid FOREIGN KEY (`student_uid`) REFERENCES student(`student_uid`),
 	CONSTRAINT ss_sc_course_uid FOREIGN KEY (`course_uid`) REFERENCES course(`course_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+CREATE  TABLE `course_score_percent` (
+	`course_score_percent_uid` BIGINT UNSIGNED NOT NULL,
+	`course_uid` BIGINT UNSIGNED NOT NULL, 
+	`usual_percent` INT UNSIGNED NOT NULL,
+	`mid_percent` INT UNSIGNED NOT NULL,
+	`end_percent` INT UNSIGNED NOT NULL,
+	`type` INT UNSIGNED NOT NULL DEFAULT '0',
+	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(`course_score_percent_uid`),
+	CONSTRAINT csp_course_uid FOREIGN KEY (`course_uid`) REFERENCES course(`course_uid`)
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
