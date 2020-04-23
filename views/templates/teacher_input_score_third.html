@@ -144,10 +144,22 @@
         <input type="hidden" id="course_data" value={{.course_data}}>
 
 
+
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
                 学生信息
             </div>
+            <form action="/teacher_input_score_third" method="post">
+                <div class="am-form-group">
+                    平时成绩占比（单位/%）：<input type="number" id="usual_percent" name="usual_percent" value=""
+                        onchange="changePercentUpdateScore()">
+                    期中成绩占比（单位/%）：<input type="number" id="mid_percent" name="mid_percent" value=""
+                        onchange="changePercentUpdateScore()">
+                    期末成绩占比（单位/%）：<input type="number" id="end_percent" name="end_percent" value=""
+                        onchange="changePercentUpdateScore()">
+                </div>
+            </form>
+
             <ol class="am-breadcrumb">
             </ol>
             <div class="am-g tpl-amazeui-form" id="main_div">
@@ -159,16 +171,65 @@
                                     <th class="table-check"><input type="checkbox" class="tpl-table-fz-check"></th>
                                     <th class="table-id">序号</th>
                                     <th class="table-title">姓名</th>
-                                    <th class="table-title">性别</th>
-                                    <th class="table-set">操作</th>
+                                    <th class="table-title">学号</th>
+                                    <th class="table-set">平时成绩</th>
+                                    <th class="table-set">期中成绩</th>
+                                    <th class="table-set">期末成绩</th>
+                                    <th class="table-set">总评成绩</th>
                                 </tr>
                             </thead>
                             <tbody id="main_tbody">
                                 <script type="text/javascript">
+
+                                    function changePercentUpdateScore() {
+                                        var stu_info = JSON.parse(document.getElementById("student_data").value);
+                                        
+                                        $.each(stu_info, function (index, val) {
+                                            
+                                            var us = Number(document.getElementById("usual_score_" + val["StudentUid"]).value);
+                                            var ms = Number(document.getElementById("mid_score_" + val["StudentUid"]).value);
+                                            var es = Number(document.getElementById("end_score_" + val["StudentUid"]).value);
+
+                                            var upn = Number(document.getElementById("usual_percent").value);
+                                            var mpn = Number(document.getElementById("mid_percent").value);
+                                            var epn = Number(document.getElementById("end_percent").value);
+                                            
+                                            
+
+                                            document.getElementById("score_" + val["StudentUid"]).value = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+                                        })
+                                    }
+                                    function updateScore(StudentUid) {
+                                        var usual_score = document.getElementById("usual_score_" + StudentUid).value;
+                                        var mid_score = document.getElementById("mid_score_" + StudentUid).value;
+                                        var end_score = document.getElementById("end_score_" + StudentUid).value;
+
+                                        var usual_percent = document.getElementById("usual_percent").value;
+                                        var mid_percent = document.getElementById("mid_percent").value;
+                                        var end_percent = document.getElementById("end_percent").value;
+
+
+
+                                        var upn = Number(usual_percent);
+                                        var mpn = Number(mid_percent);
+                                        var epn = Number(end_percent);
+
+                                        if ((upn + mpn + epn) != 100) {
+                                            alert("输入比例相加不等于100%，请重新输入！");
+                                            return;
+                                        }
+
+                                        var us = Number(usual_score);
+                                        var ms = Number(mid_score);
+                                        var es = Number(end_score);
+
+                                        document.getElementById("score_" + StudentUid).value = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+
+                                    }
                                     function makePages() {
                                         var student_data = document.getElementById("student_data").value;
                                         var course_data = document.getElementById("course_data").value;
-                                        
+
                                         var json_stu_result = JSON.parse(student_data);
                                         var json_cre_result = JSON.parse(course_data);
 
@@ -179,13 +240,18 @@
                                                         \<td\>\<input type=\"checkbox\"\>\</td\>\
                                                         \<td\>"+ count++ + "\</td\>\
                                                         \<td\>"+ val["Name"] + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Sex"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["StudentUid"] + "\</td\>\
                                                         \<td\>\
-                                                \<div class=\"am-btn-toolbar\"\>\
-                                                    \<div class=\"am-btn-group am-btn-group-xs\"\>\
-                                                        \<a href=\"admin_edit_student?student_uid="+ "TODO" + "\"\>提交成绩\</a\>\
-                                                    \</div\>\
-                                                \</div\>\
+                                                \<input\ type=\"number\" id=\"usual_score_" + val["StudentUid"] + "\" value=\"0\" onchange=\"updateScore(" + val["StudentUid"] + ")\">\
+                                            \</td\>\
+                                            \<td\>\
+                                                \<input\ type=\"number\" id=\"mid_score_" + val["StudentUid"] + "\" value=\"0\" onchange=\"updateScore(" + val["StudentUid"] + ")\">\
+                                            \</td\>\
+                                            \<td\>\
+                                                \<input\ type=\"number\" id=\"end_score_" + val["StudentUid"] + "\" value=\"0\" onchange=\"updateScore(" + val["StudentUid"] + ")\">\
+                                            \</td\>\
+                                            \<td\>\
+                                                \<input\ type=\"number\" id=\"score_" + val["StudentUid"] + "\" value=\"0\" onchange=\"updateScore(" + val["StudentUid"] + ")\" readonly=\"true\">\
                                             \</td\>\
                                         \</tr\>";
                                         })

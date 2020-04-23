@@ -90,7 +90,7 @@ func main() {
 	r.GET("/get_teacher_course", service.TeacherGetCourseHandler)
 	r.GET("/get_teacher_class", service.TeacherGetClassHandler)
 	r.POST("/update_teacher_info", service.UpdateTeacherPersonInfoHandler)
-	r.POST("/teacher_input_score_first", service.TeacherInputScoreFirstPostHandler)
+	// r.POST("/teacher_input_score_first", service.TeacherInputScoreFirstPostHandler)
 	r.POST("/teacher_input_score_third", service.TeacherInputScoreThirdHandler)
 	r.POST("/teacher_query_score_first", service.TeacherQueryScoreFirstHandler)
 

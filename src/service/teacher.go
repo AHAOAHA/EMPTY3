@@ -290,40 +290,46 @@ func TeacherInputScoreThirdHandler(c *gin.Context) {
 	}
 
 	c.Request.ParseForm()
-	course_name := c.Request.PostForm.Get("course_name")
-	class_name := c.Request.PostForm.Get("class_name")
-	usual_percent_str := c.Request.PostForm.Get("usual_percent")
-	mid_percent_str := c.Request.PostForm.Get("mid_percent")
-	end_percent_str := c.Request.PostForm.Get("end_percent")
-	is_update_percent_str := c.Request.PostForm.Get("is_update_percent")
-	usual_percent, _ := strconv.Atoi(usual_percent_str)
-	mid_percent, _ := strconv.Atoi(mid_percent_str)
-	end_percent, _ := strconv.Atoi(end_percent_str)
-	var is_update_percent bool = true
-	if is_update_percent_str == "0" {
-		is_update_percent = false
-	}
 
-	var percent_ok bool = true
-	if (usual_percent + mid_percent + end_percent) != 100 {
-		percent_ok = false
-	}
+	course_uid_str := c.Request.PostForm.Get("course_uid")
+	class_uid_str := c.Request.PostForm.Get("class_uid")
+	course_uid, _ := strconv.ParseUint(course_uid_str, 10, 64)
+	class_uid, _ := strconv.ParseUint(class_uid_str, 10, 64)
+	// course_name := c.Request.PostForm.Get("course_name")
+	// class_name := c.Request.PostForm.Get("class_name")
+	// usual_percent_str := c.Request.PostForm.Get("usual_percent")
+	// mid_percent_str := c.Request.PostForm.Get("mid_percent")
+	// end_percent_str := c.Request.PostForm.Get("end_percent")
+	// is_update_percent_str := c.Request.PostForm.Get("is_update_percent")
+	// usual_percent, _ := strconv.Atoi(usual_percent_str)
+	// mid_percent, _ := strconv.Atoi(mid_percent_str)
+	// end_percent, _ := strconv.Atoi(end_percent_str)
+	// var is_update_percent bool = true
+	// if is_update_percent_str == "0" {
+	// 	is_update_percent = false
+	// }
 
-	class_uid, _ := api.GetClassUidByName(class_name)
-	course_uid, _ := api.GetCourseUidByName(course_name)
+	// var percent_ok bool = true
+	// if (usual_percent + mid_percent + end_percent) != 100 {
+	// 	percent_ok = false
+	// }
+
+	// class_uid, _ := api.GetClassUidByName(class_name)
+	// course_uid, _ := api.GetCourseUidByName(course_name)
 	// query course have percent data.
-	if api.IsCourseHavePercent(course_uid) == false && is_update_percent == true && percent_ok == true {
-		// 将该门课程的占比写入数据库
-		err := api.InsertCoursePercent(course_uid, uint32(usual_percent), uint32(mid_percent), uint32(end_percent), 0)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-	}
+	// if api.IsCourseHavePercent(course_uid) == false && is_update_percent == true && percent_ok == true {
+	// 	// 将该门课程的占比写入数据库
+	// 	err := api.InsertCoursePercent(course_uid, uint32(usual_percent), uint32(mid_percent), uint32(end_percent), 0)
+	// 	if err != nil {
+	// 		log.Error(err)
+	// 		return
+	// 	}
+	// }
 
 	// 获取学生列表
 	stu_data, _ := api.GetStudentListByClassUid(class_uid)
 	student_rsp, _ := json.Marshal(stu_data)
+	course_name, _ := api.GetNamebyUid(course_uid, "course", "course_uid")
 
 	course_data := struct {
 		CourseName string
