@@ -93,6 +93,7 @@ func main() {
 	// r.POST("/teacher_input_score_first", service.TeacherInputScoreFirstPostHandler)
 	r.POST("/teacher_input_score_third", service.TeacherInputScoreThirdHandler)
 	r.POST("/teacher_query_score_first", service.TeacherQueryScoreFirstHandler)
+	r.POST("/teacher_input_score", service.TeacherInputScoreHandler)
 
 	// student
 	r.GET("/student_index", service.StudentIndexHandler)

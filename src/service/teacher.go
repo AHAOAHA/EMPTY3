@@ -14,6 +14,7 @@ import (
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"sync"
@@ -409,4 +410,160 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 		"rsp_data":     string(rsp),
 	})
 
+}
+
+func TeacherInputScoreHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	buf := make([]byte, 1024)
+	n, _ := c.Request.Body.Read(buf)
+
+	body_data := string(buf[0:n])
+	log.Info(body_data)
+
+	var err error
+	var err_code int = 0
+	var body_m map[string]interface{}
+	_ = json.Unmarshal([]byte(body_data), &body_m)
+	log.Info(body_m)
+	cmd := body_m["Cmd"]
+	if cmd == "save" {
+		// 保存命令
+		// 保存比例
+		err = SavePercent(body_m, 0)
+		if err != nil {
+			err_code = 1001
+		}
+		err = SaveStudentScore(body_m, 0)
+		if err != nil {
+			err_code = 1001
+		}
+	} else if cmd == "submit" {
+		// 提交
+	} else {
+		// 错误
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": err_code,
+	})
+
+}
+
+func SaveStudentScore(body map[string]interface{}, save_type int) error {
+	score_type := body["ScoreType"]
+	score_data := body["Data"].([]interface{})
+	if score_type == "0" {
+		// 分数制
+		log.Info(score_data)
+		for _, v := range score_data {
+			log.Warn(v)
+			student_data := v.(map[string]interface{})
+			usual_score, _ := strconv.Atoi(student_data["UsualScore"].(string))
+			mid_score, _ := strconv.Atoi(student_data["MidScore"].(string))
+			end_score, _ := strconv.Atoi(student_data["EndScore"].(string))
+			score, _ := strconv.Atoi(student_data["Score"].(string))
+			log.Info(usual_score, mid_score, end_score, score)
+
+			// 逐条保存
+			// 查看数据是否存在
+			var is_exist bool = true
+			m, err := dao.DataBase.Queryf("select * from `score` where `student_uid`='%s' and `course_uid`='%s'", student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+			if err != nil || len(m) != 1 {
+				is_exist = false
+			}
+
+			if is_exist == true {
+				if string(m[0]["type"].([]uint8)) == "0" {
+					// 可以修改
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+					if err != nil {
+						return err
+					}
+				} else {
+					return errors.New("type is 1")
+				}
+			} else {
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	} else if score_type == "1" {
+		// 分级制
+		for _, v := range score_data {
+			log.Warn(v)
+			student_data := v.(map[string]interface{})
+			usual_score, _ := strconv.Atoi(student_data["UsualScore"].(string))
+			mid_score, _ := strconv.Atoi(student_data["MidScore"].(string))
+			end_score, _ := strconv.Atoi(student_data["EndScore"].(string))
+			percent := body["Percent"].(map[string]interface{})
+			usual_percent, _ := strconv.Atoi(percent["UsualPercent"].(string))
+			mid_percent, _ := strconv.Atoi(percent["MidPercent"].(string))
+			end_percent, _ := strconv.Atoi(percent["EndPercent"].(string))
+			score := (usual_score*(usual_percent/100) + mid_score*(mid_percent/100) + end_score*(end_percent/100))
+			// 逐条保存
+
+			var is_exist bool = true
+			m, err := dao.DataBase.Queryf("select * from `score` where `student_uid`='%s' and `course_uid`='%s'", student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+			if err != nil || len(m) != 1 {
+				is_exist = false
+			}
+
+			if is_exist == true {
+				if string(m[0]["type"].([]uint8)) == "0" {
+					// 可以修改
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), body["CourseUid"].(string))
+					if err != nil {
+						return err
+					}
+				} else {
+					return errors.New("type is 1")
+				}
+			} else {
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	} else {
+		// err
+	}
+	return nil
+}
+
+func SavePercent(body map[string]interface{}, save_type int) error {
+	var is_exist bool = true
+	percent := body["Percent"].(map[string]interface{})
+	usual_percent := percent["UsualPercent"].(string)
+	mid_percent := percent["MidPercent"].(string)
+	end_percent := percent["EndPercent"].(string)
+	course_uid_str := percent["CourseUid"].(string)
+	m, err := dao.DataBase.Queryf("select * from `course_score_percent` where `course_uid`=%s", course_uid_str)
+	if err != nil || len(m) != 1 {
+		is_exist = false
+	}
+
+	if is_exist == true {
+		if string(m[0]["type"].([]uint8)) == "1" {
+			return errors.New("type is 1")
+		} else {
+			err := dao.DataBase.Execf("update `course_score_percent` set `usual_percent`='%s', `mid_percent`='%s', `end_percent`='%s', `type`='%d' where `course_uid`='%s'", usual_percent, mid_percent, end_percent, course_uid_str, save_type)
+			if err != nil {
+				return err
+			}
+		}
+	} else {
+		err := dao.DataBase.Execf("insert into `course_score_percent` (`course_uid`, `usual_percent`, `mid_percent`, `end_percent`, `type`) values('%s', '%s', '%s', '%s', '%d');", course_uid_str, usual_percent, mid_percent, end_percent, save_type)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
