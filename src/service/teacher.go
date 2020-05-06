@@ -296,57 +296,42 @@ func TeacherInputScoreThirdHandler(c *gin.Context) {
 	class_uid_str := c.Request.PostForm.Get("class_uid")
 	course_uid, _ := strconv.ParseUint(course_uid_str, 10, 64)
 	class_uid, _ := strconv.ParseUint(class_uid_str, 10, 64)
-	// course_name := c.Request.PostForm.Get("course_name")
-	// class_name := c.Request.PostForm.Get("class_name")
-	// usual_percent_str := c.Request.PostForm.Get("usual_percent")
-	// mid_percent_str := c.Request.PostForm.Get("mid_percent")
-	// end_percent_str := c.Request.PostForm.Get("end_percent")
-	// is_update_percent_str := c.Request.PostForm.Get("is_update_percent")
-	// usual_percent, _ := strconv.Atoi(usual_percent_str)
-	// mid_percent, _ := strconv.Atoi(mid_percent_str)
-	// end_percent, _ := strconv.Atoi(end_percent_str)
-	// var is_update_percent bool = true
-	// if is_update_percent_str == "0" {
-	// 	is_update_percent = false
-	// }
-
-	// var percent_ok bool = true
-	// if (usual_percent + mid_percent + end_percent) != 100 {
-	// 	percent_ok = false
-	// }
-
-	// class_uid, _ := api.GetClassUidByName(class_name)
-	// course_uid, _ := api.GetCourseUidByName(course_name)
-	// query course have percent data.
-	// if api.IsCourseHavePercent(course_uid) == false && is_update_percent == true && percent_ok == true {
-	// 	// 将该门课程的占比写入数据库
-	// 	err := api.InsertCoursePercent(course_uid, uint32(usual_percent), uint32(mid_percent), uint32(end_percent), 0)
-	// 	if err != nil {
-	// 		log.Error(err)
-	// 		return
-	// 	}
-	// }
 
 	// 获取学生列表
 	stu_data, _ := api.GetStudentListByClassUid(class_uid)
 	student_rsp, _ := json.Marshal(stu_data)
 	course_name, _ := api.GetNamebyUid(course_uid, "course", "course_uid")
 
+	// 获取成绩的占比情况
+	course_percent, _ := api.GetCoursePercent(course_uid)
+
+	// 获取学生的成绩列表
+	student_score, _ := api.GetStudentScoreByClassUidAndCourseUid(class_uid, course_uid)
+	student_score_rsp, _ := json.Marshal(student_score)
 	course_data := struct {
-		CourseName string
-		CourseUid  uint64
+		CourseName   string
+		CourseUid    uint64
+		UsualPercent uint32
+		MidPercent   uint32
+		EndPercent   uint32
+		Type         DataCenter.CourseScorePercentInfo_PERCENT_TYPE
 	}{
 		course_name,
 		course_uid,
+		course_percent.GetUsualPercent(),
+		course_percent.GetMidPercent(),
+		course_percent.GetEndPercent(),
+		course_percent.GetType(),
 	}
 
 	course_rsp, _ := json.Marshal(course_data)
 
 	// 组织返回值
 	c.HTML(http.StatusOK, "teacher_input_score_third.html", gin.H{
-		"loginer_name": t.Info.GetName(),
-		"student_data": string(student_rsp),
-		"course_data":  string(course_rsp),
+		"loginer_name":   t.Info.GetName(),
+		"student_data":   string(student_rsp),
+		"course_data":    string(course_rsp),
+		"students_score": string(student_score_rsp),
 	})
 }
 
@@ -480,7 +465,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			if is_exist == true {
 				if string(m[0]["type"].([]uint8)) == "0" {
 					// 可以修改
-					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d', `score_type`='0' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
 					if err != nil {
 						return err
 					}
@@ -488,7 +473,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 					return errors.New("type is 1")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d', '0')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
 				if err != nil {
 					return err
 				}
@@ -518,7 +503,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			if is_exist == true {
 				if string(m[0]["type"].([]uint8)) == "0" {
 					// 可以修改
-					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), body["CourseUid"].(string))
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d', `score_type`='1' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
 					if err != nil {
 						return err
 					}
@@ -526,7 +511,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 					return errors.New("type is 1")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d', '1')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
 				if err != nil {
 					return err
 				}

@@ -142,6 +142,7 @@
 
         <input type="hidden" id="student_data" value={{.student_data}}>
         <input type="hidden" id="course_data" value={{.course_data}}>
+        <input type="hidden" id="students_score" value={{.students_score}}>
         
 
 
@@ -298,10 +299,25 @@
                                     function makePages() {
                                         var student_data = document.getElementById("student_data").value;
                                         var course_data = document.getElementById("course_data").value;
-
+                                        var score_data = document.getElementById("students_score").value;
                                         var json_stu_result = JSON.parse(student_data);
                                         var json_cre_result = JSON.parse(course_data);
+                                        var json_score_result = JSON.parse(score_data);
+                                        var score_type = 0;
+                                        
+                                        if (json_score_result[0]["ScoreType"] == 1) {
+                                            score_type = 1;
+                                        }
 
+                                        if (json_cre_result["Type"] == 1) {
+                                            $("#usual_percent").prop("readOnly", "true");
+                                            $("#mid_percent").prop("readOnly", "true");
+                                            $("#end_percent").prop("readOnly", "true");
+                                            
+                                        }
+                                        document.getElementById("usual_percent").value = json_cre_result["UsualPercent"];
+                                        document.getElementById("mid_percent").value = json_cre_result["MidPercent"];
+                                        document.getElementById("end_percent").value = json_cre_result["EndPercent"];
                                         var count = 1;
                                         var tr = "";
                                         $.each(json_stu_result, function (index, val) {
@@ -326,6 +342,20 @@
                                         \</tr\>";
                                         })
                                         $('#main_tbody').append(tr);
+                                        $.each(json_score_result, function (index, val) {
+                                            document.getElementById("usual_score_" + val["StudentUid"]).value = val["UsualScore"];
+                                            document.getElementById("mid_score_" + val["StudentUid"]).value = val["MidtermScore"];
+                                            document.getElementById("end_score_" + val["StudentUid"]).value = val["EndtermScore"];
+                                            document.getElementById("score_" + val["StudentUid"]).value = val["Score"];
+                                        })
+                                        // alert(document.getElementById("students_score").value)
+                                        // alert(score_type);
+                                        if(score_type == 0) {
+                                            document.getElementById("score_type").value = 0;
+                                        } else {
+                                            document.getElementById("score_type").value = 1;
+                                        }
+                                        changePercentUpdateScore();
                                     }
 
                                     function MakeJsonReq() {
@@ -335,13 +365,20 @@
                                         var json_cre_result = JSON.parse(course_data);
                                         var req_json = [];
                                         $.each(json_stu_result, function (index, val) {
+                                            var usu_s = document.getElementById("usual_score_" + val["StudentUid"]).value;
+                                            var mid_s = document.getElementById("mid_score_" + val["StudentUid"]).value;
+                                            var end_s = document.getElementById("end_score_" + val["StudentUid"]).value;
+                                            var usu_p = document.getElementById("usual_percent").value;
+                                            var mid_p = document.getElementById("mid_percent").value;
+                                            var end_p = document.getElementById("end_percent").value;
+                                            var score = Number(usu_s) * (Number(usu_p) / 100) + Number(mid_s) * (Number(mid_p) / 100) + Number(end_s) * (Number(end_p) / 100);
                                             var data = {
                                                 "CourseUid": json_cre_result["CourseUid"].toString(10),
                                                 "StudentUid": val["StudentUid"].toString(10),
                                                 "UsualScore": document.getElementById("usual_score_" + val["StudentUid"]).value,
                                                 "MidScore": document.getElementById("mid_score_" + val["StudentUid"]).value,
                                                 "EndScore": document.getElementById("end_score_" + val["StudentUid"]).value,
-                                                "Score": document.getElementById("score_" + val["StudentUid"]).value,
+                                                "Score": score.toString(),
                                             }
 
                                             req_json.push(data);

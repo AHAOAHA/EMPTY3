@@ -103,6 +103,14 @@ message ScoreInfo {
         UNDONE = 0;
         DONE = 1;
     }
+    enum SCORE_TYPE {
+        NUMBER = 0;
+        LEVEL = 1;
+    }
+    enum TYPE {
+        SAVE = 0;
+        SUBMIT = 1;
+    }
     uint64              ScoreUid = 1;
     uint64              StudentUid = 2;
     uint64              CourseUid = 3;
@@ -115,6 +123,8 @@ message ScoreInfo {
     STATUS              Status = 9;
     uint32              CreateTime = 10;
     uint32              Score = 11;
+    TYPE                Type = 12;
+    SCORE_TYPE          ScoreType = 13;
 }
 
 message StudentCourseInfo {
@@ -131,11 +141,15 @@ message NoticeInfo {
 }
 
 message CourseScorePercentInfo {
+    enum PERCENT_TYPE {
+        SAVE = 0;
+        SUBMIT = 1;
+    }
     uint64              CourseScorePercentUid = 1;
     uint64              CourseUid = 2;
     uint32              UsualPercent = 3;
     uint32              MidPercent = 4;
     uint32              EndPercent = 5;
-    uint32              Type = 6;
+    PERCENT_TYPE        Type = 6;
     uint32              CreateTime = 7;
 }

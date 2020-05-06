@@ -13,6 +13,8 @@ import (
 	DataCenter "GradeManager/src/proto"
 	"errors"
 	"strconv"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var TeacherCache *map[uint64]DataCenter.TeacherInfo
@@ -747,4 +749,68 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 	}
 
 	return ret, nil
+}
+
+func GetCoursePercent(course_uid uint64) (DataCenter.CourseScorePercentInfo, error) {
+	var ret DataCenter.CourseScorePercentInfo
+	m, err := dao.DataBase.Queryf("select * from `course_score_percent` where `course_uid`='%d'", course_uid)
+	if err != nil || len(m) != 1 {
+		return ret, err
+	}
+	usual_percent, _ := strconv.Atoi(string(m[0]["usual_percent"].([]uint8)))
+	mid_percent, _ := strconv.Atoi(string(m[0]["mid_percent"].([]uint8)))
+	end_percent, _ := strconv.Atoi(string(m[0]["end_percent"].([]uint8)))
+	percent_type, _ := strconv.Atoi(string(m[0]["type"].([]uint8)))
+
+	ret = DataCenter.CourseScorePercentInfo{
+		CourseUid:    course_uid,
+		UsualPercent: uint32(usual_percent),
+		MidPercent:   uint32(mid_percent),
+		EndPercent:   uint32(end_percent),
+		Type:         DataCenter.CourseScorePercentInfo_PERCENT_TYPE(percent_type),
+	}
+
+	return ret, nil
+}
+
+// 获取全班同学的某门课成绩
+func GetStudentScoreByClassUidAndCourseUid(class_uid uint64, course_uid uint64) ([]DataCenter.ScoreInfo, error) {
+	m, err := dao.DataBase.Queryf("select `student_uid` from `student` where `class_uid`='%d'", class_uid)
+	if err != nil || len(m) == 0 {
+		return nil, errors.New("Db Query err")
+	}
+	var students []uint64
+
+	for _, v := range m {
+		student_uid, _ := strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
+		students = append(students, student_uid)
+	}
+
+	var result []DataCenter.ScoreInfo
+	for _, student := range students {
+		score, err := dao.DataBase.Queryf("select * from `score` where `student_uid`='%d' and `course_uid`='%d'", student, course_uid)
+		if err != nil || len(score) != 1 {
+			log.Error("score query err", err)
+			continue
+		}
+
+		mid_s, _ := strconv.ParseFloat(string(score[0]["midterm_score"].([]uint8)), 32)
+		usu_s, _ := strconv.ParseFloat(string(score[0]["usual_score"].([]uint8)), 32)
+		end_s, _ := strconv.ParseFloat(string(score[0]["endterm_score"].([]uint8)), 32)
+		s, _ := strconv.Atoi(string(score[0]["score"].([]uint8)))
+		type_s, _ := strconv.Atoi(string(score[0]["score_type"].([]uint8)))
+		status, _ := strconv.Atoi(string(score[0]["status"].([]uint8)))
+		student_score := DataCenter.ScoreInfo{
+			StudentUid:   student,
+			CourseUid:    course_uid,
+			MidtermScore: float32(mid_s),
+			UsualScore:   float32(usu_s),
+			EndtermScore: float32(end_s),
+			Score:        uint32(s),
+			ScoreType:    DataCenter.ScoreInfo_SCORE_TYPE(type_s),
+			Status:       DataCenter.ScoreInfo_STATUS(status),
+		}
+		result = append(result, student_score)
+	}
+	return result, nil
 }
