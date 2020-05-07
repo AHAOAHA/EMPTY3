@@ -430,6 +430,14 @@ func TeacherInputScoreHandler(c *gin.Context) {
 		}
 	} else if cmd == "submit" {
 		// 提交
+		err = SavePercent(body_m, 1)
+		if err != nil {
+			err_code = 1002
+		}
+		err = SaveStudentScore(body_m, 1)
+		if err != nil {
+			err_code = 1002
+		}
 	} else {
 		// 错误
 	}

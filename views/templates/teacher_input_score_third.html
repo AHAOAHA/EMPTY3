@@ -414,13 +414,44 @@
                                             contentType:'application/json',
                                             data: post_data,
                                             dataType: "json",
-                                            success: function (data) {
-                                                alert("保存成功！");
+                                            success: function (rsp) {
+                                                is_ok(rsp);
                                             }
                                         })
                                     }
                                     function SubmitScore() {
+                                        var score = MakeJsonReq();
+                                        var percent = MakePercentReq();
+                                        var req = {
+                                            "ScoreType": document.getElementById("score_type").value,
+                                            "Data": score,
+                                            "Cmd": "submit",
+                                            "Percent": percent,
+                                        };
+                                        var post_data = JSON.stringify(req);
+                                        console.info(post_data);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/teacher_input_score",
+                                            contentType:'application/json',
+                                            data: post_data,
+                                            dataType: "json",
+                                            success: function (rsp) {
+                                                is_ok(rsp);
+                                            }
+                                        })
+                                        // 页面刷新只读 TODO:
+                                    }
+
+                                    function is_ok(json_rsp) {
                                         
+                                        if (json_rsp["err_code"] == 0) {
+                                            alert("操作成功！");
+                                            return;
+                                        } else {
+                                            alert("操作失败！");
+                                            return;
+                                        }
                                     }
                                     window.onload = function () {
                                         makePages();
