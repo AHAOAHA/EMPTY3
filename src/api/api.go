@@ -814,3 +814,33 @@ func GetStudentScoreByClassUidAndCourseUid(class_uid uint64, course_uid uint64) 
 	}
 	return result, nil
 }
+
+func GetStudentSubmitScoreByStudentUid(student_uid uint64) ([]DataCenter.ScoreInfo, error) {
+	var result []DataCenter.ScoreInfo
+	m, err := dao.DataBase.Queryf("select * from `score` where `student_uid`='%d' and `type`='1'", student_uid)
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range m {
+		course_uid, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		ms, _ := strconv.ParseFloat(string(v["midterm_score"].([]uint8)), 32)
+		us, _ := strconv.ParseFloat(string(v["usual_score"].([]uint8)), 32)
+		es, _ := strconv.ParseFloat(string(v["endterm_score"].([]uint8)), 32)
+		s, _ := strconv.Atoi(string(v["score"].([]uint8)))
+		ac, _ := strconv.ParseFloat(string(v["academic_credit"].([]uint8)), 32)
+		c, _ := strconv.ParseFloat(string(v["credit"].([]uint8)), 32)
+		st, _ := strconv.Atoi(string(v["score_type"].([]uint8)))
+		result = append(result, DataCenter.ScoreInfo{
+			StudentUid:     student_uid,
+			CourseUid:      course_uid,
+			MidtermScore:   float32(ms),
+			UsualScore:     float32(us),
+			EndtermScore:   float32(es),
+			Score:          uint32(s),
+			AcademicCredit: float32(ac),
+			Credit:         float32(c),
+			ScoreType:      DataCenter.ScoreInfo_SCORE_TYPE(st),
+		})
+	}
+	return result, nil
+}

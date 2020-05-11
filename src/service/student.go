@@ -13,6 +13,7 @@ import (
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
+	"encoding/json"
 	"net/http"
 	"sync"
 
@@ -75,5 +76,62 @@ func StudentIndexHandler(c *gin.Context) {
 		"major_count":   count_major,
 		"introduce":     notice.GetTitle(),
 		"school_title":  notice.GetNotice(),
+	})
+}
+
+// 学生成绩查询
+func StudentScoreQueryHandler(c *gin.Context) {
+	var s context.StudentContext
+	// check cookie
+	if err := s.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	result, _ := api.GetStudentSubmitScoreByStudentUid(s.Info.GetStudentUid())
+	var rsp_data []struct {
+		StudentUid     uint64
+		StudentName    string
+		CourseName     string
+		MidScore       float32
+		EndScore       float32
+		UsualScore     float32
+		Score          uint32
+		AcademicCredit float32
+		Credit         float32
+		ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
+	}
+
+	for _, v := range result {
+		student_name, _ := api.GetNamebyUid(v.GetStudentUid(), "student", "student_uid")
+		course_name, _ := api.GetNamebyUid(v.GetCourseUid(), "course", "course_uid")
+		rsp_data = append(rsp_data, struct {
+			StudentUid     uint64
+			StudentName    string
+			CourseName     string
+			MidScore       float32
+			EndScore       float32
+			UsualScore     float32
+			Score          uint32
+			AcademicCredit float32
+			Credit         float32
+			ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
+		}{
+			v.GetStudentUid(),
+			student_name,
+			course_name,
+			v.GetMidtermScore(),
+			v.GetEndtermScore(),
+			v.GetUsualScore(),
+			v.GetScore(),
+			v.GetAcademicCredit(),
+			v.GetCredit(),
+			v.GetScoreType(),
+		})
+	}
+	rsp, _ := json.Marshal(rsp_data)
+	c.HTML(http.StatusOK, "student_score_query.html", gin.H{
+		"loginer_name": s.Info.GetName(),
+		"score_data":   string(rsp),
 	})
 }

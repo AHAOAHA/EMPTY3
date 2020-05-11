@@ -98,6 +98,7 @@ func main() {
 	// student
 	r.GET("/student_index", service.StudentIndexHandler)
 	r.GET("/student_person_info", service.StudentInfoGetHandler)
+	r.GET("/student_score_query", service.StudentScoreQueryHandler)
 	r.POST("/student_person_info", service.UpdateStudentPersonInfoHandler)
 
 	// api

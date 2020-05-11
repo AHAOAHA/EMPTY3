@@ -1,0 +1,440 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>x学生主页</title>
+    <meta name="description" content="教师主页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <link rel="stylesheet" href="../static/assets/css/amazeui.min.css" />
+    <link rel="stylesheet" href="../static/assets/css/admin.css">
+    <link rel="stylesheet" href="../static/assets/css/app.css">
+    <script src="../static/assets/js/echarts.min.js"></script>
+    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body data-type="index">
+    <header class="am-topbar am-topbar-inverse admin-header">
+        <div class="am-topbar-brand">
+            <!-- <a href="javascript:;" class="tpl-logo">
+                <img src="../static/assets/img/logo.png" alt=""> 
+            </a> -->
+        </div>
+        <div class="am-icon-list tpl-header-nav-hover-ico am-fl am-margin-right">
+
+        </div>
+
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+            data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+                class="am-icon-bars"></span></button>
+
+        <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+            <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list tpl-header-list">
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-bell-o"></span> 提醒 <span class="am-badge tpl-badge-success am-round">5</span></span>
+                    </a> -->
+                </li>
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-comment-o"></span> 消息 <span class="am-badge tpl-badge-danger am-round">9</span></span>
+                    </a> -->
+                </li>
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-calendar"></span> 进度 <span class="am-badge tpl-badge-primary am-round">4</span></span>
+                    </a> -->
+                </li>
+                <!-- <li class="am-hide-sm-only"><a href="javascript:;" id="admin-fullscreen" class="tpl-header-list-link"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li> -->
+
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="tpl-header-list-user-nick">{{ .loginer_name }}</span><span
+                            class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
+                    </a>
+                    <ul class="am-dropdown-content">
+                        <li><a href="/teacher_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=teacher"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
+                    </ul>
+                </li>
+                <li><a href="sign_out" class="tpl-header-list-link"><span
+                            class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
+            </ul>
+        </div>
+    </header>
+
+
+    <div class="tpl-page-container tpl-page-header-fixed">
+
+
+        <div class="tpl-left-nav tpl-left-nav-hover">
+            <div class="tpl-left-nav-title">
+                学生功能列表
+            </div>
+            <div class="tpl-left-nav-list">
+                <ul class="tpl-left-nav-menu">
+                    <li class="tpl-left-nav-item">
+                        <a href="student_index" class="nav-link active">
+                            <i class="am-icon-bar-chart"></i>
+                            <span>首页</span>
+                        </a>
+                    </li>
+                    <li class="tpl-left-nav-item">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-table"></i>
+                            <span>课程管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                        </a>
+                        <ul class="tpl-left-nav-sub-menu">
+                            <li>
+                                <!-- TODO: -->
+                                <a href="form-amazeui.html">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>个人课表</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="tpl-left-nav-item">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-table"></i>
+                            <span>成绩管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                        </a>
+                        <ul class="tpl-left-nav-sub-menu">
+                            <li>
+                                <!-- TODO: -->
+                                <a href="/student_score_query">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>成绩查询</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+        <input type="hidden" id="score_data" value={{.score_data}}>
+
+
+
+
+        <div class="tpl-content-wrapper">
+            <div class="tpl-content-page-title">
+                成绩信息
+            </div>
+
+            <ol class="am-breadcrumb">
+            </ol>
+            <div class="am-g tpl-amazeui-form" id="main_div">
+                <div class="am-g">
+                    <form class="am-form">
+                        <table class="am-table am-table-striped am-table-hover table-main">
+                            <thead>
+                                <tr>
+                                    <th class="table-check"><input type="checkbox" class="tpl-table-fz-check"></th>
+                                    <th class="table-id">序号</th>
+                                    <th class="table-title">姓名</th>
+                                    <th class="table-title">学号</th>
+                                    <th class="table-title">学科</th>
+                                    <th class="table-title">学分</th>
+                                    <th class="table-title">绩点</th>
+                                    <th class="table-set">平时成绩</th>
+                                    <th class="table-set">期中成绩</th>
+                                    <th class="table-set">期末成绩</th>
+                                    <th class="table-set">总评成绩</th>
+                                </tr>
+                            </thead>
+                            <tbody id="main_tbody">
+                                <script type="text/javascript">
+                                    function changeScoreType() {
+                                        var score_type = document.getElementById("score_type").value;
+                                        var stu_info = JSON.parse(document.getElementById("student_data").value);
+                                        $.each(stu_info, function (index, val) {
+
+                                            var us = Number(document.getElementById("usual_score_" + val["StudentUid"]).value);
+                                            var ms = Number(document.getElementById("mid_score_" + val["StudentUid"]).value);
+                                            var es = Number(document.getElementById("end_score_" + val["StudentUid"]).value);
+
+                                            var upn = Number(document.getElementById("usual_percent").value);
+                                            var mpn = Number(document.getElementById("mid_percent").value);
+                                            var epn = Number(document.getElementById("end_percent").value);
+
+
+                                            score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+                                            if (score_type == 0) {
+                                                document.getElementById("score_" + val["StudentUid"]).value = score;
+                                            } else {
+                                                if (score < 60) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "不及格";
+                                                } else if (score >= 60 && score < 70) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "及格";
+                                                } else if (score >= 70 && score < 80) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "中";
+                                                } else if (score >= 80 && score < 90) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "良好";
+                                                } else {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "优秀";
+                                                }
+                                            }
+                                        })
+                                    }
+                                    function changePercentUpdateScore() {
+                                        var score_type = document.getElementById("score_type").value;
+                                        var stu_info = JSON.parse(document.getElementById("student_data").value);
+
+                                        $.each(stu_info, function (index, val) {
+
+                                            var us = Number(document.getElementById("usual_score_" + val["StudentUid"]).value);
+                                            var ms = Number(document.getElementById("mid_score_" + val["StudentUid"]).value);
+                                            var es = Number(document.getElementById("end_score_" + val["StudentUid"]).value);
+
+                                            var upn = Number(document.getElementById("usual_percent").value);
+                                            var mpn = Number(document.getElementById("mid_percent").value);
+                                            var epn = Number(document.getElementById("end_percent").value);
+
+
+
+                                            score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+                                            if (score_type == 0) {
+                                                document.getElementById("score_" + val["StudentUid"]).value = score;
+                                            } else {
+                                                if (score < 60) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "不及格";
+                                                } else if (score >= 60 && score < 70) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "及格";
+                                                } else if (score >= 70 && score < 80) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "中";
+                                                } else if (score >= 80 && score < 90) {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "良好";
+                                                } else {
+                                                    document.getElementById("score_" + val["StudentUid"]).value = "优秀";
+                                                }
+                                            }
+                                        })
+                                    }
+                                    function updateScore(StudentUid) {
+                                        var score_type = document.getElementById("score_type").value;
+                                        var usual_score = document.getElementById("usual_score_" + StudentUid).value;
+                                        var mid_score = document.getElementById("mid_score_" + StudentUid).value;
+                                        var end_score = document.getElementById("end_score_" + StudentUid).value;
+
+                                        var usual_percent = document.getElementById("usual_percent").value;
+                                        var mid_percent = document.getElementById("mid_percent").value;
+                                        var end_percent = document.getElementById("end_percent").value;
+
+
+
+                                        var upn = Number(usual_percent);
+                                        var mpn = Number(mid_percent);
+                                        var epn = Number(end_percent);
+
+                                        if ((upn + mpn + epn) != 100) {
+                                            alert("输入比例相加不等于100%，请重新输入！");
+                                            return;
+                                        }
+
+                                        var us = Number(usual_score);
+                                        var ms = Number(mid_score);
+                                        var es = Number(end_score);
+
+                                        score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+                                        if (score_type == 0) {
+                                            document.getElementById("score_" + StudentUid).value = score;
+                                        } else {
+                                            if (score < 60) {
+                                                document.getElementById("score_" + StudentUid).value = "不及格";
+                                            } else if (score >= 60 && score < 70) {
+                                                document.getElementById("score_" + StudentUid).value = "及格";
+                                            } else if (score >= 70 && score < 80) {
+                                                document.getElementById("score_" + StudentUid).value = "中";
+                                            } else if (score >= 80 && score < 90) {
+                                                document.getElementById("score_" + StudentUid).value = "良好";
+                                            } else {
+                                                document.getElementById("score_" + StudentUid).value = "优秀";
+                                            }
+                                        }
+
+                                    }
+                                    function makePages() {
+                                        var score_data = document.getElementById("score_data").value;
+                                        var json_score_result = JSON.parse(score_data);
+                                        var score_type = 0;
+
+                                        if (json_score_result[0]["ScoreType"] == 1) {
+                                            score_type = 1;
+                                        }
+
+                                        var count = 1;
+                                        var tr = "";
+                                        var last_score = "";
+                                        
+                                        $.each(json_score_result, function (index, val) {
+                                            var last_score = "";
+                                            if(val["ScoreType"] == 1) {
+                                                if (val["Score"] < 60) {
+                                                    last_score = "不及格";
+                                                } else if (val["Score"] >= 60 && val["Score"] < 70) {
+                                                    last_score = "及格";
+                                                } else if (val["Score"] >= 70 && val["Score"] < 80) {
+                                                    last_score = "中";
+                                                } else if (val["Score"] >= 80 && val["Score"] < 90) {
+                                                    last_score = "良";
+                                                } else {
+                                                    last_score = "优";
+                                                }
+                                            } else {
+                                                last_score = val["Score"];
+                                            }
+                                            tr += "\<tr\>\
+                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
+                                                        \<td\>"+ count++ + "\</td\>\
+                                                        \<td\>"+ val["StudentName"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["StudentUid"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["CourseName"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["AcademicCredit"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Credit"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["UsualScore"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["MidScore"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["EndScore"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ last_score + "\</td\>\
+                                        \</tr\>";
+                                        })
+                                        $('#main_tbody').append(tr);
+                                    }
+
+                                    function MakeJsonReq() {
+                                        var student_data = document.getElementById("student_data").value;
+                                        var course_data = document.getElementById("course_data").value;
+                                        var json_stu_result = JSON.parse(student_data);
+                                        var json_cre_result = JSON.parse(course_data);
+                                        var req_json = [];
+                                        $.each(json_stu_result, function (index, val) {
+                                            var usu_s = document.getElementById("usual_score_" + val["StudentUid"]).value;
+                                            var mid_s = document.getElementById("mid_score_" + val["StudentUid"]).value;
+                                            var end_s = document.getElementById("end_score_" + val["StudentUid"]).value;
+                                            var usu_p = document.getElementById("usual_percent").value;
+                                            var mid_p = document.getElementById("mid_percent").value;
+                                            var end_p = document.getElementById("end_percent").value;
+                                            var score = Number(usu_s) * (Number(usu_p) / 100) + Number(mid_s) * (Number(mid_p) / 100) + Number(end_s) * (Number(end_p) / 100);
+                                            var data = {
+                                                "CourseUid": json_cre_result["CourseUid"].toString(10),
+                                                "StudentUid": val["StudentUid"].toString(10),
+                                                "UsualScore": document.getElementById("usual_score_" + val["StudentUid"]).value,
+                                                "MidScore": document.getElementById("mid_score_" + val["StudentUid"]).value,
+                                                "EndScore": document.getElementById("end_score_" + val["StudentUid"]).value,
+                                                "Score": score.toString(),
+                                            }
+
+                                            req_json.push(data);
+                                        })
+
+                                        return req_json;
+                                    }
+                                    function MakePercentReq() {
+                                        var course_data = document.getElementById("course_data").value;
+                                        var json_cre_result = JSON.parse(course_data);
+                                        var data = {
+                                            "UsualPercent": document.getElementById("usual_percent").value,
+                                            "MidPercent": document.getElementById("mid_percent").value,
+                                            "EndPercent": document.getElementById("end_percent").value,
+                                            "CourseUid": json_cre_result["CourseUid"].toString(10),
+                                        }
+                                        return data;
+                                    }
+                                    function SaveScore() {
+                                        var score = MakeJsonReq();
+                                        var percent = MakePercentReq();
+                                        var req = {
+                                            "ScoreType": document.getElementById("score_type").value,
+                                            "Data": score,
+                                            "Cmd": "save",
+                                            "Percent": percent,
+                                        };
+                                        var post_data = JSON.stringify(req);
+                                        console.info(post_data);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/teacher_input_score",
+                                            contentType: 'application/json',
+                                            data: post_data,
+                                            dataType: "json",
+                                            success: function (rsp) {
+                                                is_ok(rsp);
+                                            }
+                                        })
+                                    }
+                                    function SubmitScore() {
+                                        var score = MakeJsonReq();
+                                        var percent = MakePercentReq();
+                                        var req = {
+                                            "ScoreType": document.getElementById("score_type").value,
+                                            "Data": score,
+                                            "Cmd": "submit",
+                                            "Percent": percent,
+                                        };
+                                        var post_data = JSON.stringify(req);
+                                        console.info(post_data);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/teacher_input_score",
+                                            contentType: 'application/json',
+                                            data: post_data,
+                                            dataType: "json",
+                                            success: function (rsp) {
+                                                is_ok(rsp);
+                                            }
+                                        })
+                                        // 页面刷新只读 TODO:
+                                    }
+
+                                    function is_ok(json_rsp) {
+
+                                        if (json_rsp["err_code"] == 0) {
+                                            alert("操作成功！");
+                                            return;
+                                        } else {
+                                            alert("操作失败！");
+                                            return;
+                                        }
+                                    }
+                                    window.onload = function () {
+                                        makePages();
+                                    }
+
+                                </script>
+
+                            </tbody>
+                        </table>
+                        <div class="am-form-group">
+                            <div class="am-u-sm-9 am-u-sm-push-3">
+                            </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+
+
+            <script src="../static/assets/js/jquery.min.js"></script>
+            <script src="../static/assets/js/amazeui.min.js"></script>
+            <script src="../static/assets/js/iscroll.js"></script>
+            <script src="../static/assets/js/app.js"></script>
+</body>
+
+</html>
