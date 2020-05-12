@@ -58,6 +58,43 @@ func GetAllClassNameHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, string(val))
 }
 
+func GetAllClassHandler(c *gin.Context) {
+	data, _ := api.GetAllClassInfo()
+	var result []struct {
+		ClassUid  uint64
+		ClassName string
+	}
+	for _, v := range data {
+		result = append(result, struct {
+			ClassUid  uint64
+			ClassName string
+		}{
+			v.GetClassUid(),
+			v.GetName(),
+		})
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func GetAllCourseInfoHandler(c *gin.Context) {
+	data, _ := api.GetAllCourseInfo()
+	var result []struct {
+		CourseUid  uint64
+		CourseName string
+	}
+	for _, v := range data {
+		result = append(result, struct {
+			CourseUid  uint64
+			CourseName string
+		}{
+			v.GetCourseUid(),
+			v.GetName(),
+		})
+	}
+	c.JSON(http.StatusOK, result)
+}
+
 func DebugHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "debug.html", nil)
 }

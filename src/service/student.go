@@ -135,3 +135,48 @@ func StudentScoreQueryHandler(c *gin.Context) {
 		"score_data":   string(rsp),
 	})
 }
+
+func StudentQueryCourseHandler(c *gin.Context) {
+	var s context.StudentContext
+	// check cookie
+	if err := s.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	studentUID := s.Info.GetStudentUid()
+	courses, _ := api.GetCourseByStudentUid(studentUID)
+	var result []struct {
+		CourseName  string
+		CollegeName string
+		Hour        float32
+		Credit      float32
+		CourseType  DataCenter.CourseInfo_TYPE
+		Status      DataCenter.CourseInfo_STATUS
+	}
+
+	for _, v := range courses {
+		collegeName, _ := api.GetNamebyUid(v.GetCollegeUid(), "college", "college_uid")
+		result = append(result, struct {
+			CourseName  string
+			CollegeName string
+			Hour        float32
+			Credit      float32
+			CourseType  DataCenter.CourseInfo_TYPE
+			Status      DataCenter.CourseInfo_STATUS
+		}{
+			v.GetName(),
+			collegeName,
+			v.GetHour(),
+			v.GetCredit(),
+			v.GetType(),
+			v.GetStatus(),
+		})
+	}
+
+	rsp, _ := json.Marshal(result)
+	c.HTML(http.StatusOK, "student_query_course.html", gin.H{
+		"loginer_name": s.Info.GetName(),
+		"course_data":  string(rsp),
+	})
+}

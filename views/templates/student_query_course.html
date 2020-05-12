@@ -60,8 +60,8 @@
                             class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
                     </a>
                     <ul class="am-dropdown-content">
-                        <li><a href="/student_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
-                        <li><a href="/update_password?type=student"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/teacher_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=teacher"><span class="am-icon-cog"></span> 修改密码</a></li>
                         <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
                     </ul>
                 </li>
@@ -82,18 +82,18 @@
             <div class="tpl-left-nav-list">
                 <ul class="tpl-left-nav-menu">
                     <li class="tpl-left-nav-item">
-                        <a href="student_index" class="nav-link active">
+                        <a href="student_index" class="nav-link">
                             <i class="am-icon-bar-chart"></i>
                             <span>首页</span>
                         </a>
                     </li>
                     <li class="tpl-left-nav-item">
-                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list  active">
                             <i class="am-icon-table"></i>
                             <span>课程管理</span>
                             <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu"  style="display: block;">
                             <li>
                                 <!-- TODO: -->
                                 <a href="/student_query_course">
@@ -108,9 +108,10 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-table"></i>
                             <span>成绩管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
-                        <ul class="tpl-left-nav-sub-menu">
+                        <ul class="tpl-left-nav-sub-menu" >
                             <li>
                                 <!-- TODO: -->
                                 <a href="/student_score_query">
@@ -124,96 +125,98 @@
             </div>
         </div>
 
-
+        <input type="hidden" id="course_data" value={{.course_data}}>
+        
 
 
 
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                学生首页
+                学生信息
             </div>
+
             <ol class="am-breadcrumb">
-                <!-- <li><a href="#" class="am-icon-home">首页</a></li>
-                <li><a href="#">分类</a></li>
-                <li class="am-active">内容</li> -->
             </ol>
-            <a href="https://www.xust.edu.cn/">
-                <div class="tpl-content-scope">
-                    <div class="note note-info">
-                        <h3>{{.school_title}}
-                            <span class="close" data-close="note"></span>
-                        </h3>
-                        <p>{{.introduce}}</p>
-                    </div>
-                </div>
-            </a>
+            <div class="am-g tpl-amazeui-form" id="main_div">
+                <div class="am-g">
+                    <form class="am-form">
+                        <table class="am-table am-table-striped am-table-hover table-main">
+                            <thead>
+                                <tr>
+                                    <th class="table-check"><input type="checkbox" class="tpl-table-fz-check"></th>
+                                    <th class="table-id">序号</th>
+                                    <th class="table-title">课程</th>
+                                    <th class="table-title">所属学院</th>
+                                    <th class="table-title">学时</th>
+                                    <th class="table-set">总学分</th>
+                                    <th class="table-set">类型</th>
+                                    <th class="table-set">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="main_tbody">
+                                <script type="text/javascript">
+                                
+                                    function makePages() {
+                                        var course_data = document.getElementById("course_data").value;
+                                        
+                                        var json_course_result = JSON.parse(course_data);
+                                        
+                                        var count = 1;
+                                        var tr = "";
+                                        $.each(json_course_result, function (index, val) {
+                                            var typeC = "";
+                                            var status = "";
+                                            if (val["typeC"] == 0) {
+                                                typeC = "必修";
+                                            } else {
+                                                typeC = "选修";
+                                            }
+                                            if (val["status"] == 0) {
+                                                status = "计划";
+                                            } else if (val["status"] == 1) {
+                                                status = "进行中";
+                                            } else {
+                                                status = "已完成";
+                                            }
+                                            tr += "\<tr\>\
+                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
+                                                        \<td\>"+ count++ + "\</td\>\
+                                                        \<td\>"+ val["CourseName"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["CollegeName"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Hour"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ val["Credit"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ typeC + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ status + "\</td\>\
+                                                        ";
+                                        })
+                                        $('#main_tbody').append(tr);
+                                        
+                                    }
 
-            <div class="row">
-                <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
-                    <div class="dashboard-stat blue">
-                        <div class="visual">
-                            <i class="am-icon-bar-chart-o"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number"> {{ .student_count }} </div>
-                            <div class="desc"> 学生总人数 </div>
-                        </div>
-                        <a class="more" href="#"> 查看更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
-                    <div class="dashboard-stat red">
-                        <div class="visual">
-                            <i class="am-icon-bar-chart-o"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number"> {{ .teacher_count }} </div>
-                            <div class="desc"> 教师总人数 </div>
-                        </div>
-                        <a class="more" href="#"> 查看更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
-                    <div class="dashboard-stat green">
-                        <div class="visual">
-                            <i class="am-icon-bar-chart-o"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number"> {{ .college_count }} </div>
-                            <div class="desc"> 学院总数 </div>
-                        </div>
-                        <a class="more" href="#"> 查看更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
-                    <div class="dashboard-stat purple">
-                        <div class="visual">
-                            <i class="am-icon-bar-chart-o"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number"> {{ .major_count }} </div>
-                            <div class="desc"> 专业总数 </div>
-                        </div>
-                        <a class="more" href="#"> 查看更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
-                    </div>
+                                    
+                                    window.onload = function () {
+                                        makePages();
+                                    }
+
+                                </script>
+
+                            </tbody>
+                        </table>
+                        <div class="am-form-group">
+                            
+                    </form>
                 </div>
             </div>
-        </div>
-    </div>
 
 
-    <script src="../static/assets/js/jquery.min.js"></script>
-    <script src="../static/assets/js/amazeui.min.js"></script>
-    <script src="../static/assets/js/iscroll.js"></script>
-    <script src="../static/assets/js/app.js"></script>
+
+
+
+
+            <script src="../static/assets/js/jquery.min.js"></script>
+            <script src="../static/assets/js/amazeui.min.js"></script>
+            <script src="../static/assets/js/iscroll.js"></script>
+            <script src="../static/assets/js/app.js"></script>
 </body>
 
 </html>

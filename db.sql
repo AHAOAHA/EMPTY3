@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `score` (
 	CONSTRAINT score_sc_course_uid FOREIGN KEY (`course_uid`) REFERENCES course(`course_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `student_score` (
+CREATE TABLE IF NOT EXISTS `student_course` (
 	`student_score_uid` BIGINT UNSIGNED NOT NULL,
 	`student_uid` BIGINT UNSIGNED,
 	`course_uid` BIGINT UNSIGNED,

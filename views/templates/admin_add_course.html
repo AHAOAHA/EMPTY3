@@ -216,19 +216,21 @@
                     <form action="/admin_teacher_manager" method="post" id="form1" class="am-form am-form-horizontal"
                         name="input_form">
                         <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">班级 </label>
+                            <label for="user-name" class="am-u-sm-3 am-form-label">课程： </label>
+                            
                             <div class="am-u-sm-9">
-                                <select id="input_class" name="class_uid" value="">
+                                <input type="hidden" id="class_uid" value={{.class_uid}}>
+                                <select id="course_uid" name="course_uid" value="">
 
                                 </select>
+
                                 
-                                </datalist>
                                 <script type="text/javascript">
-                                    function get_class_name() {
+                                    function get_course_name() {
 
                                         $.ajax({
                                             type: "GET",
-                                            url: "/get_all_class_name",
+                                            url: "/get_all_course_name",
                                             dataType: "json",
                                             success: function (data) {
                                                 addOption(data);
@@ -236,17 +238,17 @@
                                         })
                                     }
                                     function addOption(data) {
-                                        //console.log(data);
-                                        var ss = document.getElementById("input_class");
+                                        console.log(data);
+                                        var ss = document.getElementById("course_uid");
                                         $.each(data, function (index, val) {
                                             var op = document.createElement("option");
-                                            op.setAttribute("value", val["ClassUid"]);
-                                            op.innerHTML = val["ClassName"];
+                                            op.setAttribute("value", val["CourseUid"]);
+                                            op.innerHTML = val["CourseName"];
                                             ss.appendChild(op);
                                         })
                                     }
                                     window.onload = function () {
-                                        get_class_name();
+                                        get_course_name();
                                     }
                                 </script>
                             </div>
@@ -256,68 +258,28 @@
                         <div class="am-form-group">
                             <div class="am-u-sm-9 am-u-sm-push-3">
                                 <input type="button" id="submit_button" class="am-btn am-btn-primary"
-                                    onclick="GetTeacherInfo()" value="查询" />
+                                    onclick="AddCourse()" value="添加" />
                                 <script type="text/javascript">
-                                    function GetTeacherInfo() {
-                                        var form = document.forms.namedItem("input_form");
-                                        var formData = new FormData(form);
+
+                                    function AddCourse() {
+                                        var class_uid = document.getElementById("class_uid").value;
+                                        var course_uid = document.getElementById("course_uid").value;
                                         $.ajax({
-                                            type: "POST",
+                                            type: "GET",
                                             dataType: "json",
-                                            url: "/admin_query_class_course",
-                                            data: $('#form1').serialize(),
+                                            url: "/admin_add_course_second?class_uid=" + class_uid + "&course_uid=" + course_uid,
                                             success: function (result) {
                                                 showResult(result);
                                             },
                                             error: function () {
-                                                alert("获取后台数据失败！");
+                                                alert("连接错误,请重试！");
                                             }
                                         })
                                     }
 
                                     function showResult(result) {
                                         console.log(result);
-                                        
-                                        document.getElementById("form1").style.display = "none";
-                                        //alert(result);
-                                        
-                                        var perfix = "\<div class=\"am-g\"\>\<form class=\"am-form\"\>\
-                                                        \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
-                                                        \<thead\>\
-                                                        \<tr\>\
-                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
-                                            \<th class=\"table-id\"\>序号\</th\>\
-                                            \<th class=\"table-title\">课程名\</th\>\
-                                            \<th class=\"table-type\"\>所属学院\</th\>\
-                                            \<th class=\"table-date am-hide-sm-only\"\>学分\</th\>\
-                                            \<th class=\"table-date am-hide-sm-only\"\>学时\</th\>\
-                                            \</tr\>\
-                                            \</thead\>\
-                                            \<tbody\>";
-                                            
-                                            var count = 1;
-
-                                            var mid = "";
-
-                                        $.each(result, function (index, obj) {
-
-                                            mid += "\<tr\>\
-                                                    \<td\>\<input type=\"checkbox\"\>\</td\>\
-                                                    \<td\>"+ count++ +"\</td\>\
-                                                    \<td\>"+ obj["CourseName"] +"\</td\>\
-                                                    \<td class=\"am-hide-sm-only\"\>"+ obj["CollegeName"] +"\</td\>\
-                                                    \<td class=\"am-hide-sm-only\"\>"+ obj["Credit"] +"\</td\>\
-                                                    \<td class=\"am-hide-sm-only\"\>"+ obj["Hour"] +"\</td\>\
-                                                    \</tr\>";
-                                        })
-                                        
-                                        var suffix = "\</tbody\>\
-                                                        \</table\>\</form\>\
-                                                        \<a href=\"/admin_add_course?class_uid="+ document.getElementById("input_class").value +"\"\>\<button type=\"button\" class=\"am-btn am-btn-primary\"\>添加课程\</button\>\</a\>\
-                                                        \</div\>";
-
-                                        var tmp = perfix + mid + suffix;
-                                        $('#main_div').append(tmp);
+                                        alert(result["err_msg"]);
                                     }
                                 </script>
                                 

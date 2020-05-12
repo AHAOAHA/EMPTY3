@@ -909,3 +909,109 @@ func AdminCourseGetHandler(c *gin.Context) {
 		"loginer_name": a.Info.GetUser(),
 	})
 }
+
+func AdminQueryClassCourseHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.Request.ParseForm()
+	class_uid_str := c.Request.PostForm.Get("class_uid")
+	class_uid, _ := strconv.ParseUint(class_uid_str, 10, 64)
+	courses, _ := api.GetCourseByClassUid(class_uid)
+	var result []struct {
+		CourseName  string
+		CollegeName string
+		Credit      float32
+		Hour        float32
+		Type        DataCenter.CourseInfo_TYPE
+		Status      DataCenter.CourseInfo_STATUS
+	}
+
+	for _, v := range courses {
+		college_name, _ := api.GetNamebyUid(v.GetCollegeUid(), "college", "college_uid")
+		result = append(result, struct {
+			CourseName  string
+			CollegeName string
+			Credit      float32
+			Hour        float32
+			Type        DataCenter.CourseInfo_TYPE
+			Status      DataCenter.CourseInfo_STATUS
+		}{
+			v.GetName(),
+			college_name,
+			v.GetCredit(),
+			v.GetHour(),
+			v.GetType(),
+			v.GetStatus(),
+		})
+	}
+
+	//json_result, _ := json.Marshal(result)
+	c.JSON(http.StatusOK, result)
+
+}
+
+func AdminAddCourseHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	classUIDStr := c.Query("class_uid")
+	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
+
+	c.HTML(http.StatusOK, "admin_add_course.html", gin.H{
+		"loginer_name": a.GetLoginerName(),
+		"class_uid":    classUID,
+	})
+}
+
+func AdminAddCourseSecondHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	classUIDStr := c.Query("class_uid")
+	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
+	courseUIDStr := c.Query("course_uid")
+	courseUID, _ := strconv.ParseUint(courseUIDStr, 10, 64)
+	// 查看班级是否包含改课程
+	m, err := dao.DataBase.Queryf("select * from `student_course` where `class_uid`='%d' and `course_uid`='%d'", classUID, courseUID)
+	if err != nil || len(m) != 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"err_code": 1001,
+			"err_msg":  "课程已存在",
+		})
+		return
+	}
+
+	students, _ := api.GetStudentListByClassUid(classUID)
+	var ok = true
+	for _, v := range students {
+		err := dao.DataBase.Execf("insert into `student_course`(`student_uid`, `class_uid`, `course_uid`) values ('%d', '%d', '%d')", v.GetStudentUid(), classUID, courseUID)
+		if err != nil {
+			ok = false
+			continue
+		}
+	}
+
+	if ok {
+		c.JSON(http.StatusOK, gin.H{
+			"err_code": 0,
+			"err_msg":  "添加成功！",
+		})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"err_code": 1002,
+			"err_msg":  "数据插入不完全!",
+		})
+	}
+
+}

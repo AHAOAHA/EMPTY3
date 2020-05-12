@@ -844,3 +844,122 @@ func GetStudentSubmitScoreByStudentUid(student_uid uint64) ([]DataCenter.ScoreIn
 	}
 	return result, nil
 }
+
+func GetCourseByClassUid(class_uid uint64) ([]DataCenter.CourseInfo, error) {
+	var result []DataCenter.CourseInfo
+	m, err := dao.DataBase.Queryf("select * from `student_course` where `class_uid`='%d'", class_uid)
+	if err != nil {
+		return result, err
+	}
+	var courses []uint64
+	for _, v := range m {
+		course_uid, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		courses = append(courses, course_uid)
+	}
+
+	for _, v := range courses {
+		cm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%d'", v)
+		if err != nil {
+			continue
+		}
+		college_uid, _ := strconv.ParseUint(string(cm[0]["college_uid"].([]uint8)), 10, 64)
+		credit, _ := strconv.ParseFloat(string(cm[0]["credit"].([]uint8)), 32)
+		hour, _ := strconv.ParseFloat(string(cm[0]["hour"].([]uint8)), 32)
+		type_c, _ := strconv.Atoi(string(cm[0]["type"].([]uint8)))
+		status, _ := strconv.Atoi(string(cm[0]["status"].([]uint8)))
+		result = append(result, DataCenter.CourseInfo{
+			CourseUid:  v,
+			CollegeUid: college_uid,
+			Name:       string(cm[0]["name"].([]uint8)),
+			Credit:     float32(credit),
+			Hour:       float32(hour),
+			Type:       DataCenter.CourseInfo_TYPE(type_c),
+			Status:     DataCenter.CourseInfo_STATUS(status),
+		})
+	}
+
+	return result, nil
+}
+
+func GetAllClassInfo() ([]DataCenter.ClassInfo, error) {
+	var result []DataCenter.ClassInfo
+	m, err := dao.DataBase.Queryf("select * from `class`")
+	if err != nil {
+		return result, err
+	}
+
+	for _, v := range m {
+		classUID, _ := strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		collegeUID, _ := strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+		majorUID, _ := strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
+		result = append(result, DataCenter.ClassInfo{
+			ClassUid:   classUID,
+			CollegeUid: collegeUID,
+			MajorUid:   majorUID,
+			Name:       string(v["name"].([]uint8)),
+		})
+	}
+	return result, nil
+}
+
+func GetAllCourseInfo() ([]DataCenter.CourseInfo, error) {
+	var result []DataCenter.CourseInfo
+	m, err := dao.DataBase.Queryf("select * from `course`")
+	if err != nil {
+		return result, err
+	}
+	for _, v := range m {
+		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		collegeUID, _ := strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+		credit, _ := strconv.ParseFloat(string(v["credit"].([]uint8)), 32)
+		status, _ := strconv.Atoi(string(v["status"].([]uint8)))
+		typeC, _ := strconv.Atoi(string(v["type"].([]uint8)))
+		result = append(result, DataCenter.CourseInfo{
+			CourseUid:  courseUID,
+			CollegeUid: collegeUID,
+			Name:       string(v["name"].([]uint8)),
+			Credit:     float32(credit),
+			Status:     DataCenter.CourseInfo_STATUS(status),
+			Type:       DataCenter.CourseInfo_TYPE(typeC),
+		})
+	}
+
+	return result, nil
+}
+
+func GetCourseByStudentUid(studentUID uint64) ([]DataCenter.CourseInfo, error) {
+	var result []DataCenter.CourseInfo
+	m, err := dao.DataBase.Queryf("select * from `student_course` where `student_uid`='%d'", studentUID)
+	if err != nil {
+		return result, err
+	}
+	var courseUIDs []uint64
+	for _, v := range m {
+		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		courseUIDs = append(courseUIDs, courseUID)
+	}
+
+	for _, v := range courseUIDs {
+		cm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%d'", v)
+		if err != nil {
+			continue
+		}
+		collegeUID, _ := strconv.ParseUint(string(cm[0]["college_uid"].([]uint8)), 10, 64)
+		credit, _ := strconv.ParseFloat(string(cm[0]["credit"].([]uint8)), 32)
+		hour, _ := strconv.ParseFloat(string(cm[0]["hour"].([]uint8)), 32)
+		courseName := string(cm[0]["name"].([]uint8))
+		typeC, _ := strconv.Atoi(string(cm[0]["type"].([]uint8)))
+		status, _ := strconv.Atoi(string(cm[0]["status"].([]uint8)))
+		result = append(result, DataCenter.CourseInfo{
+			CourseUid:  v,
+			CollegeUid: collegeUID,
+			Credit:     float32(credit),
+			Hour:       float32(hour),
+			Name:       courseName,
+			Type:       DataCenter.CourseInfo_TYPE(typeC),
+			Status:     DataCenter.CourseInfo_STATUS(status),
+		})
+	}
+
+	return result, nil
+}
