@@ -104,7 +104,7 @@
                             </li>
 
                             <li class="tpl-left-nav-item">
-                                <a href="/add_student" class="nav-link tpl-left-nav-link-list">
+                                <a href="/add_student" class="nav-link tpl-left-nav-link-list ">
                                     <i class="am-icon-table"></i>
                                     <span>添加学生</span>
                                     <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
@@ -165,12 +165,12 @@
                                     <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
                             </li>
-                            <li class="tpl-left-nav-item">
+                            <li>
                                 <!-- TODO: -->
                                 <a href="/admin_course_manager" class="nav-link tpl-left-nav-link-list">
-                                    <i class="am-icon-key"></i>
+                                    <i class="am-icon-wpforms"></i>
                                     <span>课程信息管理</span>
-                                    <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                                    <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
                                 </a>
                             </li>
                             <li>
@@ -184,19 +184,17 @@
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="tpl-left-nav-item">
                         <!-- TODO: -->
-                        <a href="admin_score_manager" class="nav-link tpl-left-nav-link-list">
-                            <i class="am-icon-wpforms"></i>
-                            <span>课程信息管理</span>
-                            <!-- <i class="am-icon-star tpl-left-nav-content-ico am-fr am-margin-right"></i> 星标 -->
+                        <a href="/student_score_manager" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-key"></i>
+                            <span>学生成绩管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
-
-
 
 
 
@@ -231,7 +229,7 @@
 
 
                         <div class="am-u-sm-12 am-u-md-9">
-                            <form action="/add_teacher" method="post" class="am-form am-form-horizontal">
+                            <form id="submit_form" class="am-form am-form-horizontal">
                                 <div class="am-form-group">
                                     <label for="user-name" class="am-u-sm-3 am-form-label">姓名</label>
                                     <div class="am-u-sm-9">
@@ -257,8 +255,9 @@
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <input type="tel" id="college_name" name="college_name" value=""
-                                            placeholder="所属学院">
+                                        <select id="college_name" name="college_name" value="">
+
+                                        </select>
                                     </div>
                                 </div>
 
@@ -283,25 +282,67 @@
                                         <input type="password" id="password" placeholder="登录密码">
                                         <input type="hidden" id="hidden_password" name="password" value="">
                                         <script>
-                                            function EncodePassword() {
+                                            function EncodePasswordAndSubmit() {
                                                 var password = document.getElementById("password").value;
                                                 document.getElementById("hidden_password").value = md5(password);
+
+
+                                                $.ajax({
+                                                    type: "post",
+                                                    dataType: "json",
+                                                    url: "/add_teacher",
+                                                    data: $('#submit_form').serialize(),
+                                                    success: function (result) {
+                                                        showResult(result);
+                                                    },
+                                                    error: function () {
+                                                        alert("连接错误,请重试！");
+                                                    }
+                                                })
+                                            }
+
+                                            function showResult(result) {
+                                                alert(result["err_msg"]);
+                                            }
+
+                                            function get_college_name() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_college_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        addOption(data);
+                                                    }
+                                                })
+                                            }
+
+                                            function addOption(data) {
+                                                console.log(data);
+                                                var ss = document.getElementById("college_name");
+                                                $.each(data, function (index, val) {
+                                                    var op = document.createElement("option");
+                                                    op.setAttribute("value", val["name"]);
+                                                    op.innerHTML = val["name"];
+                                                    ss.appendChild(op);
+                                                })
+                                            }
+
+                                            function MakePage() {
+                                                get_college_name();
+                                            }
+
+                                            window.onload = function () {
+                                                MakePage();
                                             }
                                         </script>
                                     </div>
                                 </div>
 
-                                <!-- <div class="am-form-group">
-                                    <label for="user-intro" class="am-u-sm-3 am-form-label">简介 / Intro</label>
-                                    <div class="am-u-sm-9">
-                                        <textarea class="" rows="5" id="user-intro" placeholder="输入个人简介"></textarea>
-                                    </div>
-                                </div> -->
 
                                 <div class="am-form-group">
                                     <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button type="submit" class="am-btn am-btn-primary"
-                                            onclick="EncodePassword()">提交</button>
+                                        <button type="button" class="am-btn am-btn-primary"
+                                            onclick="EncodePasswordAndSubmit()">提交</button>
                                     </div>
                                 </div>
                             </form>

@@ -215,9 +215,6 @@
                     </div>
                     <div class="tpl-portlet-input tpl-fz-ml">
                         <div class="portlet-input input-small input-inline">
-                            <!-- <div class="input-icon right">
-                                <i class="am-icon-search"></i>
-                                <input type="text" class="form-control form-control-solid" placeholder="搜索..."> </div> -->
                         </div>
                     </div>
 
@@ -229,7 +226,7 @@
 
 
                         <div class="am-u-sm-12 am-u-md-9">
-                            <form action="/add_major" method="post" class="am-form am-form-horizontal">
+                            <form id="submit_form" class="am-form am-form-horizontal">
                                 <div class="am-form-group">
                                     <label for="name" class="am-u-sm-3 am-form-label">专业名称</label>
                                     <div class="am-u-sm-9">
@@ -255,14 +252,26 @@
 
                                 <div class="am-form-group">
                                     <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button type="submit" class="am-btn am-btn-primary">提交</button>
+                                        <button type="button" class="am-btn am-btn-primary" onclick="SubmitForm()">提交</button>
+                                        <script>
+                                            function SubmitForm() {
+                                                $.ajax({
+                                                    type: "post",
+                                                    dataType: "json",
+                                                    url: "/add_major",
+                                                    data: $('#submit_form').serialize(),
+                                                    success: function (result) {
+                                                        alert(result["err_msg"]);
+                                                    }
+                                                })
+                                            }
+                                        </script>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-
             </div>
 
 

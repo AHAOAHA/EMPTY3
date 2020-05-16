@@ -231,7 +231,7 @@
 
 
                         <div class="am-u-sm-12 am-u-md-9">
-                            <form action="/add_college" method="post" class="am-form am-form-horizontal">
+                            <form id="submit_form" class="am-form am-form-horizontal">
                                 <div class="am-form-group">
                                     <label for="user-name" class="am-u-sm-3 am-form-label">学院名</label>
                                     <div class="am-u-sm-9">
@@ -249,7 +249,20 @@
 
                                 <div class="am-form-group">
                                     <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button type="submit" class="am-btn am-btn-primary">提交</button>
+                                        <button type="button" class="am-btn am-btn-primary" onclick="SubmitForm()">提交</button>
+                                        <script>
+                                            function SubmitForm() {
+                                                $.ajax({
+                                                    type: "post",
+                                                    dataType: "json",
+                                                    url: "/add_college",
+                                                    data: $('#submit_form').serialize(),
+                                                    success: function (result) {
+                                                        alert(result["err_msg"]);
+                                                    }
+                                                })
+                                            }
+                                        </script>
                                     </div>
                                 </div>
                             </form>

@@ -103,43 +103,27 @@ func AdminAddStudentGetHandler(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "form_add_student.html", gin.H{
-		"err_code": "ok",
+		"loginer_name": a.Info.GetUser(),
 	})
 }
 
 // 添加教师
 func AdminAddTeacherPostHandler(c *gin.Context) {
 	var a context.AdminContext
-	cookie, err := c.Request.Cookie("user_cookie")
-	if err != nil {
-		// cookie不存在，跳转401
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		log.Error(err)
-		return
-	}
-	err = a.Detcry(cookie.Value)
-	if err != nil {
-		// cookie内容验证失败
-		log.Error(err)
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
 
 	c.Request.ParseForm()
-	for k, v := range c.Request.PostForm {
-		if len(v) == 0 {
-			// 表单内容为空，拒绝注册
-			log.Warn("Form value is nil, ", k)
-			return
-		}
-	}
 
 	// 获取学院id
 	m, err := dao.DataBase.Queryf("select `college_uid` from `college` where name='%s'", c.Request.PostForm.Get("college_name"))
 	if err != nil || len(m) == 0 {
 		log.Warn("college not exist err")
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": "college name err",
+			"err_msg":  "college name err",
+			"err_code": 2,
 		})
 		return
 	}
@@ -151,14 +135,15 @@ func AdminAddTeacherPostHandler(c *gin.Context) {
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err,
+			"err_code": 1,
 		})
 		return
 	}
 
-	c.HTML(http.StatusOK, "success.html", gin.H{
-		"second": 3,
-		"url":    "admin_index",
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "添加成功！",
 	})
 }
 
@@ -171,13 +156,6 @@ func AdminAddStudentPostHandler(c *gin.Context) {
 	}
 
 	c.Request.ParseForm()
-	for k, v := range c.Request.PostForm {
-		if len(v) == 0 {
-			// 表单内容为空，拒绝注册
-			log.Warn("Form value is nil, ", k)
-			return
-		}
-	}
 
 	// 获取学院id 班级id 专业id
 	var ok bool = true
@@ -213,7 +191,8 @@ func AdminAddStudentPostHandler(c *gin.Context) {
 	if !ok {
 		// 输入内容错误，拒绝创建
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": "format err",
+			"err_msg":  "format err",
+			"err_code": 1,
 		})
 		return
 	}
@@ -225,14 +204,15 @@ func AdminAddStudentPostHandler(c *gin.Context) {
 		// 插入失败
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": "insert student err",
+			"err_msg":  "insert student err",
+			"err_code": 2,
 		})
 		return
 	}
 
-	c.HTML(http.StatusOK, "success.html", gin.H{
-		"second": 3,
-		"url":    "admin_index",
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "插入成功！",
 	})
 }
 
@@ -256,29 +236,20 @@ func AdminAddCollegePostHandler(c *gin.Context) {
 	}
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
-	for k, v := range formdata {
-		log.Debug(k, ":", v)
-		if len(v) == 0 {
-			log.Error("form format err", k)
-			c.JSON(http.StatusOK, gin.H{
-				"err_msg": "form format err",
-			})
-			return
-		}
-	}
 
 	err := dao.DataBase.Execf("insert into `college`(`college_uid`, `name`) values('%s', '%s')", formdata.Get("college_uid"), formdata.Get("name"))
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err.Error(),
+			"err_code": 2,
 		})
 		return
 	}
 
-	c.HTML(http.StatusOK, "success.html", gin.H{
-		"second": 3,
-		"url":    "admin_index",
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "添加成功！",
 	})
 
 }
@@ -297,17 +268,7 @@ func AdminAddMajorGetHandler(c *gin.Context) {
 
 func AdminAddMajorPostHandler(c *gin.Context) {
 	var a context.AdminContext
-	cookie, err := c.Request.Cookie("user_cookie")
-	if err != nil {
-		// cookie不存在，跳转401
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		log.Error(err)
-		return
-	}
-	err = a.Detcry(cookie.Value)
-	if err != nil {
-		// cookie内容验证失败
-		log.Error(err)
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
@@ -316,14 +277,16 @@ func AdminAddMajorPostHandler(c *gin.Context) {
 	formdata := c.Request.PostForm
 	if err := postFormIsValid(c); err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"err_mag": err,
+			"err_mag":  err.Error(),
+			"err_code": 1,
 		})
 		return
 	}
 	m, err := dao.DataBase.Queryf("select `college_uid` from `college` where `name`='%s'", formdata.Get("college_name"))
 	if err != nil || len(m) == 0 {
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err.Error(),
+			"err_code": 2,
 		})
 		return
 	}
@@ -331,13 +294,14 @@ func AdminAddMajorPostHandler(c *gin.Context) {
 	err = dao.DataBase.Execf("insert into `major`(`major_uid`, `college_uid`, `name`)values('%s', '%s', '%s')", formdata.Get("major_uid"), college_uid, formdata.Get("name"))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err.Error(),
+			"err_code": 3,
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "success.html", gin.H{
-		"second": 3,
-		"url":    "admin_index",
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "添加成功！",
 	})
 }
 

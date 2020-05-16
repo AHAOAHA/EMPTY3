@@ -92,7 +92,8 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
                             <i class="am-icon-wpforms"></i>
                             <span>信息添加</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
                         <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li class="tpl-left-nav-item">
@@ -231,7 +232,7 @@
 
 
                         <div class="am-u-sm-12 am-u-md-9">
-                            <form action="/add_student" method="post" class="am-form am-form-horizontal">
+                            <form id="submit_form" class="am-form am-form-horizontal">
                                 <div class="am-form-group">
                                     <label for="user-name" class="am-u-sm-3 am-form-label">姓名</label>
                                     <div class="am-u-sm-9">
@@ -242,7 +243,10 @@
                                 <div class="am-form-group">
                                     <label for="sex" class="am-u-sm-3 am-form-label">性别</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="sex" name="sex" value="" placeholder="输入性别">
+                                        <select name="sex" placeholder="输入性别">
+                                            <option value="男">男</option>
+                                            <option value="女">女</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -250,24 +254,27 @@
                                 <div class="am-form-group">
                                     <label for="user-email" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="college_name" name="college_name" value=""
-                                            placeholder="输入所属学院名称">
+                                        <select id="college_name" name="college_name" placeholder="输入性别">
+
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属专业</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="major_name" name="major_name" value=""
-                                            placeholder="输入所属专业名称">
+                                        <select id="major_name" name="major_name" placeholder="输入性别">
+
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属班级</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="class_name" name="class_name" value=""
-                                            placeholder="输入所属班级名">
+                                        <select id="class_name" name="class_name" placeholder="输入性别">
+
+                                        </select>
                                     </div>
                                 </div>
 
@@ -292,9 +299,83 @@
                                         <input type="password" id="password" placeholder="登录密码">
                                         <input type="hidden" id="hidden_password" name="password" value="">
                                         <script>
-                                            function EncodePassword() {
+                                            function EncodePasswordAndSubmit() {
                                                 var password = document.getElementById("password").value;
                                                 document.getElementById("hidden_password").value = md5(password);
+
+                                                $.ajax({
+                                                    type: "post",
+                                                    dataType: "json",
+                                                    url: "/add_student",
+                                                    data: $('#submit_form').serialize(),
+                                                    success: function (result) {
+                                                        showResult(result);
+                                                    }
+                                                })
+                                            }
+                                            function showResult(result) {
+                                                alert(result["err_msg"]);
+                                            }
+
+                                            function make_college_options() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_college_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ss = document.getElementById("college_name");
+                                                        $.each(data, function (index, val) {
+                                                            var op = document.createElement("option");
+                                                            op.setAttribute("value", val["name"]);
+                                                            op.innerHTML = val["name"];
+                                                            ss.appendChild(op);
+                                                        })
+                                                    }
+                                                })
+                                            }
+
+                                            function make_major_options() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_major_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ss = document.getElementById("major_name");
+                                                        $.each(data, function (index, val) {
+                                                            var op = document.createElement("option");
+                                                            op.setAttribute("value", val["name"]);
+                                                            op.innerHTML = val["name"];
+                                                            ss.appendChild(op);
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                            
+                                            function make_class_options() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_class_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ss = document.getElementById("class_name");
+                                                        $.each(data, function (index, val) {
+                                                            var op = document.createElement("option");
+                                                            op.setAttribute("value", val["ClassName"]);
+                                                            op.innerHTML = val["ClassName"];
+                                                            ss.appendChild(op);
+                                                        })
+                                                    }
+                                                })
+                                            }
+
+                                            function MakePage() {
+                                                make_college_options();
+                                                make_major_options();
+                                                make_class_options();
+                                            }
+
+                                            window.onload = function () {
+                                                MakePage();
                                             }
                                         </script>
                                     </div>
@@ -309,8 +390,8 @@
 
                                 <div class="am-form-group">
                                     <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button type="submit" class="am-btn am-btn-primary"
-                                            onclick="EncodePassword()">提交</button>
+                                        <button type="button" class="am-btn am-btn-primary"
+                                            onclick="EncodePasswordAndSubmit()">提交</button>
                                     </div>
                                 </div>
                             </form>
