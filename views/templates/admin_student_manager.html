@@ -144,7 +144,8 @@
                         <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
                             <i class="am-icon-wpforms"></i>
                             <span>信息管理</span>
-                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
                         </a>
                         <ul class="tpl-left-nav-sub-menu" style="display: block;">
                             <li>
@@ -219,74 +220,69 @@
                         <div class="am-form-group">
                             <label for="user-name" class="am-u-sm-3 am-form-label">学院 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="college_name" placeholder="请选择学院（可选项）"
-                                    list="listItem">
-                                <datalist id="listItem">
-                                </datalist>
-                                <script type="text/javascript">
-                                    function get_college_name() {
+                                <select id="college_name" name="college_name" placeholder="输入性别">
 
+                                </select>
+                                <script type="text/javascript">
+                                    function make_college_options() {
                                         $.ajax({
                                             type: "GET",
                                             url: "/get_all_college_name",
                                             dataType: "json",
                                             success: function (data) {
-                                                addOption(data);
+                                                var ss = document.getElementById("college_name");
+                                                $.each(data, function (index, val) {
+                                                    var op = document.createElement("option");
+                                                    op.setAttribute("value", val["name"]);
+                                                    op.innerHTML = val["name"];
+                                                    ss.appendChild(op);
+                                                })
                                             }
                                         })
                                     }
-                                    function addOption(data) {
-                                        var ss = document.getElementById("listItem");
-                                        $.each(JSON.parse(data), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["name"]);
-                                            ss.appendChild(op);
-                                        })
 
-                                    }
-                                    function get_major_name() {
+                                    function make_major_options() {
                                         $.ajax({
                                             type: "GET",
                                             url: "/get_all_major_name",
                                             dataType: "json",
                                             success: function (data) {
-                                                addMajorOption(data);
+                                                var ss = document.getElementById("major_name");
+                                                $.each(data, function (index, val) {
+                                                    var op = document.createElement("option");
+                                                    op.setAttribute("value", val["name"]);
+                                                    op.innerHTML = val["name"];
+                                                    ss.appendChild(op);
+                                                })
                                             }
                                         })
-
                                     }
 
-                                    function get_class_name() {
+                                    function make_class_options() {
                                         $.ajax({
                                             type: "GET",
                                             url: "/get_all_class_name",
                                             dataType: "json",
                                             success: function (data) {
-                                                addClassOption(data);
+                                                var ss = document.getElementById("class_name");
+                                                $.each(data, function (index, val) {
+                                                    var op = document.createElement("option");
+                                                    op.setAttribute("value", val["ClassName"]);
+                                                    op.innerHTML = val["ClassName"];
+                                                    ss.appendChild(op);
+                                                })
                                             }
                                         })
+                                    }
 
+                                    function MakePage() {
+                                        make_college_options();
+                                        make_major_options();
+                                        make_class_options();
                                     }
-                                    function addMajorOption(data) {
-                                        var ss = document.getElementById("listItem_major");
-                                        $.each(JSON.parse(data), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["name"]);
-                                            ss.appendChild(op);
-                                        })
-                                    }
-                                    function addClassOption(data) {
-                                        var ss = document.getElementById("listItem_class");
-                                        $.each(JSON.parse(data), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["name"]);
-                                            ss.appendChild(op);
-                                        })
-                                    }
+
                                     window.onload = function () {
-                                        get_college_name();
-                                        get_major_name();
-                                        get_class_name();
+                                        MakePage();
                                     }
                                 </script>
                             </div>
@@ -295,20 +291,18 @@
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">专业 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_major" name="major_name" value="" placeholder="请输入专业（可选项）"
-                                    list="listItem_major">
-                                <datalist id="listItem_major">
-                                </datalist>
+                                <select id="major_name" name="major_name" placeholder="输入性别">
+
+                                </select>
                             </div>
                         </div>
 
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">班级 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_class" name="class_name" value="" placeholder="请输入班级（可选项）"
-                                    list="listItem_class">
-                                <datalist id="listItem_class">
-                                </datalist>
+                                <select id="class_name" name="class_name" placeholder="输入性别">
+
+                                </select>
                             </div>
                         </div>
 
@@ -363,12 +357,11 @@
 
                                         document.getElementById("mid_div").style.display = "none";
                                         // alert(result);
-                                        var json_result = JSON.parse(result)
+                                        var json_result = result
                                         var perfix = "\<div class=\"am-g\"\>\<form class=\"am-form\"\>\
                                                         \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
                                                         \<thead\>\
                                                         \<tr\>\
-                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
                                             \<th class=\"table-id\"\>序号\</th\>\
                                             \<th class=\"table-title\">姓名\</th\>\
                                             \<th class=\"table-type\"\>性别\</th\>\
@@ -386,16 +379,14 @@
                                         var mid = "";
 
                                         $.each(json_result, function (index, obj) {
-
                                             mid += "\<tr\>\
-                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
                                                         \<td\>"+ count++ + "\</td\>\
-                                                        \<td\>\<a href=\"admin_edit_student?student_uid="+ obj["StudentUid"] + "\"\>" + obj["Name"] + "\</a\>\</td\>\
-                                                        \<td\>"+ obj["Sex"] + "\</td\>\
+                                                        \<td\>\<a href=\"admin_edit_student?student_uid="+ obj["StudentUid"] + "\"\>" + obj["StudentName"] + "\</a\>\</td\>\
+                                                        \<td\>"+ obj["StudentSex"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ obj["StudentUid"] + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "TODO" + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "TODO" + "\</td\>\
-                                                                \<td class=\"am-hide-sm-only\"\>"+ "TODO" + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["ClassName"] + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["MajorName"] + "\</td\>\
+                                                                \<td class=\"am-hide-sm-only\"\>"+ obj["CollegeName"] + "\</td\>\
                                                         \<td\>\
                                                 \<div class=\"am-btn-toolbar\"\>\
                                                     \<div class=\"am-btn-group am-btn-group-xs\"\>\

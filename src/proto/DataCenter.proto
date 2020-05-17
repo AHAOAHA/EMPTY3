@@ -33,7 +33,7 @@ message StudentInfo {
     string              Sex = 7;
     string              NRIC = 8;
     STATUS              Status = 9;
-    int32               CreateTime = 10;
+    string              CreateTime = 10;
     LoginType           LType = 11;
 }
 
@@ -49,7 +49,7 @@ message TeacherInfo {
     string              Sex = 5;
     string              NRIC = 6;
     STATUS              Status = 7;
-    uint32              CreateTime = 8;
+    string              CreateTime = 8;
     string              Name = 9;
     LoginType           LType = 10;
 }
@@ -57,14 +57,14 @@ message TeacherInfo {
 message CollegeInfo {
     uint64              CollegeUid = 1;
     string              Name = 2;
-    uint32              CreateTime = 3;
+    string              CreateTime = 3;
 }
 
 message MajorInfo {
     uint64              MajorUid = 1;
     uint64              CollegeUid = 2;
     string              Name = 3;
-    uint32              CreateTime = 4;
+    string              CreateTime = 4;
 }
 
 message ClassInfo {
@@ -73,7 +73,7 @@ message ClassInfo {
     uint64              CollegeUid = 3;
     string              Name = 4;
     uint32              StudentNum = 5;
-    uint32              CreateTime = 6;
+    string              CreateTime = 6;
 }
 
 // 课程表
@@ -93,8 +93,8 @@ message CourseInfo {
     float               Credit = 4;
     float               Hour = 5;
     STATUS              Status = 6;
-    uint32              CreateTime = 7;
-    TYPE              Type = 8;
+    string              CreateTime = 7;
+    TYPE               Type = 8;
 }
 
 // 成绩信息
@@ -121,7 +121,7 @@ message ScoreInfo {
     float               Credit = 7;
     float               AcademicCredit = 8;
     STATUS              Status = 9;
-    uint32              CreateTime = 10;
+    string              CreateTime = 10;
     uint32              Score = 11;
     TYPE                Type = 12;
     SCORE_TYPE          ScoreType = 13;
@@ -131,13 +131,13 @@ message StudentCourseInfo {
     uint64              StudentCourseUid = 1;
     uint64              StudentUid = 2;
     uint64              CourseUid = 3;
-    uint32              CreateTime = 4;
+    string              CreateTime = 4;
 }
 
 message NoticeInfo {
     string              Title = 1;
     string              Notice = 2;
-    uint32              CreateTime = 3;
+    string              CreateTime = 3;
 }
 
 message CourseScorePercentInfo {
@@ -151,5 +151,5 @@ message CourseScorePercentInfo {
     uint32              MidPercent = 4;
     uint32              EndPercent = 5;
     PERCENT_TYPE        Type = 6;
-    uint32              CreateTime = 7;
+    string              CreateTime = 7;
 }

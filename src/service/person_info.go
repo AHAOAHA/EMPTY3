@@ -70,7 +70,7 @@ func TeacherInfoGetHandler(c *gin.Context) {
 		"NRIC":         t.Info.GetNRIC(),
 		"college_name": t.Info.GetCollegeUid(),
 		"status":       t.Info.GetStatus(),
-		"create_time":  time.Unix(int64(t.Info.GetCreateTime()), 0).Format("2006-01-02 03:04:05 PM"),
+		"create_time":  t.Info.GetCreateTime(),
 		"loginer_name": t.Info.GetName(),
 		"login_ip":     c.ClientIP(),
 	})
@@ -113,7 +113,7 @@ func StudentInfoGetHandler(c *gin.Context) {
 		"major_name":   s.Info.GetMajorUid(),
 		"class_name":   s.Info.GetClassUid(),
 		"status":       s.Info.GetStatus(),
-		"create_time":  time.Unix(int64(s.Info.GetCreateTime()), 0).Format("2006-01-02 03:04:05 PM"),
+		"create_time":  s.Info.GetCreateTime(),
 		"loginer_name": s.Info.GetName(),
 		"login_ip":     c.ClientIP(),
 	})

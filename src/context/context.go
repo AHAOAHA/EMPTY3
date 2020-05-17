@@ -91,8 +91,7 @@ func (s *StudentContext) Login(username string, password string) error {
 	if string(m[0]["password"].([]uint8)) != password {
 		return errors.New("student password err")
 	}
-	var crtt, stuid, colid, majid, claid uint64
-	crtt, _ = strconv.ParseUint(string(m[0]["create_time"].([]uint8)), 10, 64)
+	var stuid, colid, majid, claid uint64
 	stuid, _ = strconv.ParseUint(string(m[0]["student_uid"].([]uint8)), 10, 64)
 	colid, _ = strconv.ParseUint(string(m[0]["college_uid"].([]uint8)), 10, 64)
 	majid, _ = strconv.ParseUint(string(m[0]["major_uid"].([]uint8)), 10, 64)
@@ -106,7 +105,7 @@ func (s *StudentContext) Login(username string, password string) error {
 		Name:       string(m[0]["name"].([]uint8)),
 		Sex:        string(m[0]["sex"].([]uint8)),
 		NRIC:       string(m[0]["NRIC"].([]uint8)),
-		CreateTime: int32(crtt),
+		CreateTime: string(m[0]["create_time"].([]uint8)),
 		LType:      DataCenter.LoginType_STUDENT,
 	}
 	// success
@@ -128,7 +127,6 @@ func (t *TeacherContext) Login(username string, password string) error {
 	sta, _ = strconv.Atoi(string(m[0]["status"].([]uint8)))
 	teaid, _ = strconv.ParseUint(string(m[0]["teacher_uid"].([]uint8)), 10, 64)
 	colid, _ = strconv.ParseUint(string(m[0]["college_uid"].([]uint8)), 10, 64)
-	crtt, _ := strconv.Atoi(string(m[0]["create_time"].([]uint8)))
 	t.Info = DataCenter.TeacherInfo{
 		TeacherUid: teaid,
 		Password:   password,
@@ -136,7 +134,7 @@ func (t *TeacherContext) Login(username string, password string) error {
 		Status:     DataCenter.TeacherInfo_STATUS(sta),
 		Sex:        string(m[0]["sex"].([]uint8)),
 		NRIC:       string(m[0]["NRIC"].([]uint8)),
-		CreateTime: uint32(crtt),
+		CreateTime: string(m[0]["create_time"].([]uint8)),
 		Name:       string(m[0]["name"].([]uint8)),
 		LType:      DataCenter.LoginType_TEACHER,
 	}

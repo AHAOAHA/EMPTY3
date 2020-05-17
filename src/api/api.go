@@ -50,7 +50,6 @@ func GetAllTeacherList() (map[uint64]DataCenter.TeacherInfo, error) {
 		var teacher_uid, college_uid uint64
 		var sta int
 		sta, _ = strconv.Atoi(string(v["status"].([]uint8)))
-		crtt, _ := strconv.Atoi(string(v["create_time"].([]uint8)))
 		teacher_uid, _ = strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		m[teacher_uid] = DataCenter.TeacherInfo{
@@ -61,7 +60,7 @@ func GetAllTeacherList() (map[uint64]DataCenter.TeacherInfo, error) {
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.TeacherInfo_STATUS(sta),
-			CreateTime: uint32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -80,9 +79,8 @@ func GetAllStudentList() (map[uint64]DataCenter.StudentInfo, error) {
 
 	for _, v := range sm {
 		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
-		var student_uid, class_uid, college_uid, major_uid, crtt uint64
+		var student_uid, class_uid, college_uid, major_uid uint64
 		var sta int
-		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
 		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
@@ -97,7 +95,7 @@ func GetAllStudentList() (map[uint64]DataCenter.StudentInfo, error) {
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.StudentInfo_STATUS(sta),
-			CreateTime: int32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -125,8 +123,8 @@ func GetTeacherListByTeacherUid(teacher_uid uint64) (DataCenter.TeacherInfo, err
 	}
 	var college_uid uint64
 	var sta int
+
 	sta, _ = strconv.Atoi(string(db_m[0]["status"].([]uint8)))
-	crtt, _ := strconv.Atoi(string(db_m[0]["create_time"].([]uint8)))
 	college_uid, _ = strconv.ParseUint(string(db_m[0]["college_uid"].([]uint8)), 10, 64)
 	m[teacher_uid] = DataCenter.TeacherInfo{
 		TeacherUid: teacher_uid,
@@ -136,13 +134,9 @@ func GetTeacherListByTeacherUid(teacher_uid uint64) (DataCenter.TeacherInfo, err
 		Sex:        string(db_m[0]["sex"].([]uint8)),
 		NRIC:       string(db_m[0]["NRIC"].([]uint8)),
 		Status:     DataCenter.TeacherInfo_STATUS(sta),
-		CreateTime: uint32(crtt),
+		CreateTime: string(db_m[0]["create_time"].([]uint8)),
 	}
 
-	// update TeacherCache
-	if TeacherCache != nil {
-		(*TeacherCache)[teacher_uid] = m[teacher_uid]
-	}
 	rsp = m[teacher_uid]
 	return rsp, nil
 }
@@ -156,7 +150,6 @@ func GetTeacherListByNRIC(NRIC string) (map[uint64]DataCenter.TeacherInfo, error
 	var college_uid, teacher_uid uint64
 	var sta int
 	sta, _ = strconv.Atoi(string(db_m[0]["status"].([]uint8)))
-	crtt, _ := strconv.Atoi(string(db_m[0]["create_time"].([]uint8)))
 	college_uid, _ = strconv.ParseUint(string(db_m[0]["college_uid"].([]uint8)), 10, 64)
 	teacher_uid, _ = strconv.ParseUint(string(db_m[0]["teacher_uid"].([]uint8)), 10, 64)
 	m[teacher_uid] = DataCenter.TeacherInfo{
@@ -167,7 +160,7 @@ func GetTeacherListByNRIC(NRIC string) (map[uint64]DataCenter.TeacherInfo, error
 		Sex:        string(db_m[0]["sex"].([]uint8)),
 		NRIC:       string(db_m[0]["NRIC"].([]uint8)),
 		Status:     DataCenter.TeacherInfo_STATUS(sta),
-		CreateTime: uint32(crtt),
+		CreateTime: string(db_m[0]["create_time"].([]uint8)),
 	}
 	return m, nil
 }
@@ -185,7 +178,6 @@ func GetTeacherListByTeacherName(teacher_name string) (map[uint64]DataCenter.Tea
 		var teacher_uid, college_uid uint64
 		var sta int
 		sta, _ = strconv.Atoi(string(v["status"].([]uint8)))
-		crtt, _ := strconv.Atoi(string(v["create_time"].([]uint8)))
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		teacher_uid, err = strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
 		m[teacher_uid] = DataCenter.TeacherInfo{
@@ -196,7 +188,7 @@ func GetTeacherListByTeacherName(teacher_name string) (map[uint64]DataCenter.Tea
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.TeacherInfo_STATUS(sta),
-			CreateTime: uint32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -216,7 +208,6 @@ func GetTeacherListByCollegeUid(college_uid uint64) (map[uint64]DataCenter.Teach
 		var teacher_uid, college_uid uint64
 		var sta int
 		sta, _ = strconv.Atoi(string(v["status"].([]uint8)))
-		crtt, _ := strconv.Atoi(string(v["create_time"].([]uint8)))
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		teacher_uid, err = strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
 		m[teacher_uid] = DataCenter.TeacherInfo{
@@ -227,7 +218,7 @@ func GetTeacherListByCollegeUid(college_uid uint64) (map[uint64]DataCenter.Teach
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.TeacherInfo_STATUS(sta),
-			CreateTime: uint32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -340,7 +331,6 @@ func GetStudentByStudentUid(student_uid uint64) (DataCenter.StudentInfo, error) 
 	var college_uid, major_uid, class_uid uint64
 	var sta int
 	sta, _ = strconv.Atoi(string(v["status"].([]uint8)))
-	crtt, _ := strconv.Atoi(string(v["create_time"].([]uint8)))
 	college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 	class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
 	major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
@@ -354,7 +344,7 @@ func GetStudentByStudentUid(student_uid uint64) (DataCenter.StudentInfo, error) 
 		Sex:        string(v["sex"].([]uint8)),
 		NRIC:       string(v["NRIC"].([]uint8)),
 		Status:     DataCenter.StudentInfo_STATUS(sta),
-		CreateTime: int32(crtt),
+		CreateTime: string(v["create_time"].([]uint8)),
 	}
 	return s, nil
 }
@@ -370,9 +360,8 @@ func GetStudentByNRIC(NRIC string) (map[uint64]DataCenter.StudentInfo, error) {
 
 	for _, v := range sm {
 		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
-		var class_uid, student_uid, college_uid, major_uid, crtt uint64
+		var class_uid, student_uid, college_uid, major_uid uint64
 		var sta int
-		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
 		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
@@ -387,7 +376,7 @@ func GetStudentByNRIC(NRIC string) (map[uint64]DataCenter.StudentInfo, error) {
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.StudentInfo_STATUS(sta),
-			CreateTime: int32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 	return m, nil
@@ -423,9 +412,8 @@ func GetStudentListByClassUid(class_uid uint64) (map[uint64]DataCenter.StudentIn
 
 	for _, v := range sm {
 		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
-		var student_uid, college_uid, major_uid, crtt uint64
+		var student_uid, college_uid, major_uid uint64
 		var sta int
-		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
 		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
@@ -439,7 +427,7 @@ func GetStudentListByClassUid(class_uid uint64) (map[uint64]DataCenter.StudentIn
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.StudentInfo_STATUS(sta),
-			CreateTime: int32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -455,9 +443,8 @@ func GetStudentListByMajorUid(major_uid uint64) (map[uint64]DataCenter.StudentIn
 
 	for _, v := range sm {
 		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
-		var student_uid, class_uid, college_uid, crtt uint64
+		var student_uid, class_uid, college_uid uint64
 		var sta int
-		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
 		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
 		class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
@@ -471,7 +458,7 @@ func GetStudentListByMajorUid(major_uid uint64) (map[uint64]DataCenter.StudentIn
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.StudentInfo_STATUS(sta),
-			CreateTime: int32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -487,9 +474,9 @@ func GetStudentListByCollegeUid(college_uid uint64) (map[uint64]DataCenter.Stude
 
 	for _, v := range sm {
 		// student_uid class_uid college_uid major_uid password name sex NRIC status create_time
-		var student_uid, class_uid, major_uid, crtt uint64
+		var student_uid, class_uid, major_uid uint64
 		var sta int
-		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
+
 		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
 		class_uid, _ = strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
 		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
@@ -503,7 +490,7 @@ func GetStudentListByCollegeUid(college_uid uint64) (map[uint64]DataCenter.Stude
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.StudentInfo_STATUS(sta),
-			CreateTime: int32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -518,9 +505,8 @@ func GetStudentByName(student_name string) (map[uint64]DataCenter.StudentInfo, e
 	m := make(map[uint64]DataCenter.StudentInfo)
 
 	for _, v := range sm {
-		var student_uid, class_uid, college_uid, major_uid, crtt uint64
+		var student_uid, class_uid, college_uid, major_uid uint64
 		var sta int
-		crtt, _ = strconv.ParseUint(string(v["create_time"].([]uint8)), 10, 64)
 		student_uid, _ = strconv.ParseUint(string(v["student_uid"].([]uint8)), 10, 64)
 		college_uid, _ = strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
 		major_uid, _ = strconv.ParseUint(string(v["major_uid"].([]uint8)), 10, 64)
@@ -535,7 +521,7 @@ func GetStudentByName(student_name string) (map[uint64]DataCenter.StudentInfo, e
 			Sex:        string(v["sex"].([]uint8)),
 			NRIC:       string(v["NRIC"].([]uint8)),
 			Status:     DataCenter.StudentInfo_STATUS(sta),
-			CreateTime: int32(crtt),
+			CreateTime: string(v["create_time"].([]uint8)),
 		}
 	}
 
@@ -549,6 +535,22 @@ func GetNamebyUid(uid uint64, table string, field string) (string, error) {
 	}
 
 	return string(m[0]["name"].([]uint8)), nil
+}
+
+func GetCollegeInfoByCollegeUid(collegeUID uint64) (DataCenter.CollegeInfo, error) {
+	var result DataCenter.CollegeInfo
+
+	cm, err := dao.DataBase.Queryf("select * from `college` where `college_uid`='%d'", collegeUID)
+	if err != nil || len(cm) != 1 {
+		return result, err
+	}
+
+	result = DataCenter.CollegeInfo{
+		CollegeUid: collegeUID,
+		Name:       string(cm[0]["name"].([]uint8)),
+	}
+
+	return result, nil
 }
 
 func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, error) {
@@ -578,7 +580,6 @@ func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, 
 		hour, _ := strconv.ParseFloat(string(sm[0]["hour"].([]uint8)), 32)
 		course_type, _ := strconv.Atoi(string(sm[0]["type"].([]uint8)))
 		status, _ := strconv.Atoi(string(sm[0]["status"].([]uint8)))
-		crt, _ := strconv.Atoi(string(sm[0]["create_time"].([]uint8)))
 		coursesInfo = append(coursesInfo, DataCenter.CourseInfo{
 			CourseUid:  course_uid,
 			CollegeUid: college_uid,
@@ -587,7 +588,7 @@ func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, 
 			Hour:       float32(hour),
 			Type:       DataCenter.CourseInfo_TYPE(course_type),
 			Status:     DataCenter.CourseInfo_STATUS(status),
-			CreateTime: uint32(crt),
+			CreateTime: string(sm[0]["create_time"].([]uint8)),
 		})
 		// log.Infof("%v", coursesInfo)
 	}
@@ -617,12 +618,11 @@ func GetTeacherCourseClass(teacher_uid uint64, course_uid uint64) ([]DataCenter.
 		major_uid, _ := strconv.ParseUint(string(sm[0]["major_uid"].([]uint8)), 10, 64)
 
 		class_name := string(sm[0]["name"].([]uint8))
-		crt, _ := strconv.Atoi(string(sm[0]["create_time"].([]uint8)))
 		classInfo = append(classInfo, DataCenter.ClassInfo{
 			CollegeUid: college_uid,
 			Name:       class_name,
 			MajorUid:   major_uid,
-			CreateTime: uint32(crt),
+			CreateTime: string(sm[0]["create_time"].([]uint8)),
 		})
 	}
 
@@ -659,13 +659,12 @@ func GetTeacherClassByTeacherUid(teacher_uid uint64) ([]DataCenter.ClassInfo, er
 		major_uid, _ := strconv.ParseUint(string(sm[0]["major_uid"].([]uint8)), 10, 64)
 		class_uid, _ := strconv.ParseUint(string(sm[0]["class_uid"].([]uint8)), 10, 64)
 		class_name := string(sm[0]["name"].([]uint8))
-		crt, _ := strconv.Atoi(string(sm[0]["create_time"].([]uint8)))
 		classInfo = append(classInfo, DataCenter.ClassInfo{
 			CollegeUid: college_uid,
 			ClassUid:   class_uid,
 			Name:       class_name,
 			MajorUid:   major_uid,
-			CreateTime: uint32(crt),
+			CreateTime: string(sm[0]["create_time"].([]uint8)),
 		})
 	}
 
@@ -691,14 +690,13 @@ func GetCourseScorePercentByCourseUid(course_uid uint64) (DataCenter.CourseScore
 	usual_percent, _ := strconv.ParseUint(string(m[0]["usual_percent"].([]uint8)), 10, 32)
 	mid_percent, _ := strconv.ParseUint(string(m[0]["mid_percent"].([]uint8)), 10, 32)
 	end_percent, _ := strconv.ParseUint(string(m[0]["end_percent"].([]uint8)), 10, 32)
-	crt, _ := strconv.ParseUint(string(m[0]["create_time"].([]uint8)), 10, 32)
 	ret = DataCenter.CourseScorePercentInfo{
 		CourseScorePercentUid: course_score_percent_uid,
 		CourseUid:             course_uid,
 		UsualPercent:          uint32(usual_percent),
 		MidPercent:            uint32(mid_percent),
 		EndPercent:            uint32(end_percent),
-		CreateTime:            uint32(crt),
+		CreateTime:            string(m[0]["create_time"].([]uint8)),
 	}
 
 	return ret, nil
@@ -733,7 +731,6 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 	academic_credit, _ := strconv.ParseFloat(string(val["academic_credit"].([]uint8)), 32)
 	credit, _ := strconv.ParseFloat(string(val["credit"].([]uint8)), 32)
 	status, _ := strconv.Atoi(string(val["status"].([]uint8)))
-	crt, _ := strconv.ParseUint(string(val["create_time"].([]uint8)), 10, 32)
 
 	ret = DataCenter.ScoreInfo{
 		ScoreUid:       score_uid,
@@ -745,7 +742,7 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 		AcademicCredit: float32(academic_credit),
 		Credit:         float32(credit),
 		Status:         DataCenter.ScoreInfo_STATUS(status),
-		CreateTime:     uint32(crt),
+		CreateTime:     string(val["create_time"].([]uint8)),
 	}
 
 	return ret, nil

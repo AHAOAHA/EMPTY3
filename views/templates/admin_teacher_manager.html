@@ -218,10 +218,9 @@
                         <div class="am-form-group">
                             <label for="user-name" class="am-u-sm-3 am-form-label">学院 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_name" name="college_name" placeholder="请选择学院（可选项）"
-                                    list="listItem" />
-                                <datalist id="listItem">
-                                </datalist>
+                                <select id="college_name" name="college_name" placeholder="输入性别">
+
+                                </select>
                                 <script type="text/javascript">
                                     function get_college_name() {
 
@@ -230,28 +229,17 @@
                                             url: "/get_all_college_name",
                                             dataType: "json",
                                             success: function (data) {
-                                                addOption(data);
-                                                // console.log(data);
-                                                // var ss = document.getElementById("listItem");
-                                                // alert(data);
-                                                // $(data).each(function(){
-                                                //     var op=document.createElement("option");
-                                                //     op.setAttribute("value", this.name);
-                                                //     ss.appendChild(op);
-
-                                                // });
+                                                var ss = document.getElementById("college_name");
+                                                $.each(data, function (index, val) {
+                                                    var op = document.createElement("option");
+                                                    op.setAttribute("value", val["name"]);
+                                                    op.innerHTML = val["name"];
+                                                    ss.appendChild(op);
+                                                })
                                             }
                                         })
                                     }
-                                    function addOption(data) {
-                                        var ss = document.getElementById("listItem");
-                                        $.each(JSON.parse(data), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["name"]);
-                                            ss.appendChild(op);
-                                        })
 
-                                    }
                                     window.onload = function () {
                                         get_college_name();
                                     }
@@ -295,9 +283,6 @@
                                             data: $('#form1').serialize(),
                                             success: function (result) {
                                                 showResult(result);
-                                            },
-                                            error: function () {
-                                                alert("获取后台数据失败！");
                                             }
                                         })
                                     }
@@ -307,15 +292,14 @@
                                             alert("查询结果为空！");
                                             return;
                                         }
-                                        
+
                                         document.getElementById("mid_div").style.display = "none";
                                         //alert(result);
-                                        var json_result = JSON.parse(result)
+                                        var json_result = result;
                                         var perfix = "\<div class=\"am-g\"\>\<form class=\"am-form\"\>\
                                                         \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
                                                         \<thead\>\
                                                         \<tr\>\
-                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
                                             \<th class=\"table-id\"\>序号\</th\>\
                                             \<th class=\"table-title\">姓名\</th\>\
                                             \<th class=\"table-type\"\>性别\</th\>\
@@ -325,32 +309,31 @@
                                             \</tr\>\
                                             \</thead\>\
                                             \<tbody\>";
-                                            
-                                            var count = 1;
 
-                                            var mid = "";
+                                        var count = 1;
 
-                                        $.each(json_result, function (index, obj) {
+                                        var mid = "";
+
+                                        $.each(json_result["result"], function (index, obj) {
 
                                             mid += "\<tr\>\
-                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
-                                                        \<td\>"+ count++ +"\</td\>\
-                                                        \<td\>\<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>" + obj["Name"] + "\</a\>\</td\>\
-                                                        \<td\>"+ obj["Sex"] +"\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["TeacherUid"] +"\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "TODO" +"\</td\>\
+                                                        \<td\>"+ count++ + "\</td\>\
+                                                        \<td\>\<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] + "\"\>" + obj["TeacherName"] + "\</a\>\</td\>\
+                                                        \<td\>"+ obj["TeacherSex"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["TeacherUid"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ obj["CollegeName"] + "\</td\>\
                                                         \<td\>\
                                                 \<div class=\"am-btn-toolbar\"\>\
                                                     \<div class=\"am-btn-group am-btn-group-xs\"\>\
-                                                        \<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>编辑\</a\>\
-                                                        \<a href=\"admin_delete_teacher?teacher_uid="+ obj["TeacherUid"] +"\"\>删除\</a\>\
+                                                        \<a href=\"admin_edit_teacher?teacher_uid="+ obj["TeacherUid"] + "\"\>编辑\</a\>\
+                                                        \<a href=\"admin_delete_teacher?teacher_uid="+ obj["TeacherUid"] + "\"\>删除\</a\>\
                                                     \</div\>\
                                                 \</div\>\
                                             \</td\>\
                                         \</tr\>";
 
                                         })
-                                        
+
                                         var suffix = "\</tbody\>\
                                                         \</table\>\</form\>\</div\>";
 

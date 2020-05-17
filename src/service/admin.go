@@ -13,7 +13,6 @@ import (
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
-	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -443,16 +442,8 @@ func TeacherManagerHandler(c *gin.Context) {
 		return
 	}
 
-	college_name, _ := api.GetALlCollegeName()
-	var college_option string
-	for _, v := range college_name {
-		college_option += "<option>" + v + "</option>"
-	}
-
 	c.HTML(http.StatusOK, "admin_teacher_manager.html", gin.H{
-		"loginer_name":   a.Info.GetUser(),
-		"college_name":   college_name,
-		"college_option": college_option,
+		"loginer_name": a.Info.GetUser(),
 	})
 }
 
@@ -484,7 +475,10 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 		m[teacher_uid] = data
 		if err != nil {
 			// 出现错误
-			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			c.JSON(http.StatusOK, gin.H{
+				"err_code": 1,
+				"err_msg":  err.Error(),
+			})
 			return
 		}
 
@@ -492,14 +486,20 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 		m, err = api.GetTeacherListByNRIC(NRIC)
 		if err != nil {
 			// 出现错误
-			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			c.JSON(http.StatusOK, gin.H{
+				"err_code": 2,
+				"err_msg":  err.Error(),
+			})
 			return
 		}
 	} else if name != "" {
 		m, err = api.GetTeacherListByTeacherName(name)
 		if err != nil {
 			// 出现错误
-			c.HTML(http.StatusInternalServerError, "401.html", nil)
+			c.JSON(http.StatusOK, gin.H{
+				"err_code": 3,
+				"err_msg":  err.Error(),
+			})
 			return
 		}
 
@@ -515,12 +515,40 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 
 	// 渲染html
 	if len(m) == 0 {
-		c.JSON(http.StatusOK, nil)
+		c.JSON(http.StatusOK, gin.H{
+			"err_code": 4,
+			"err_msg":  "查询结果为空",
+		})
 		return
 	}
-	val, _ := json.Marshal(m)
-	c.JSON(http.StatusOK, string(val))
 
+	var result []struct {
+		TeacherName string
+		TeacherSex  string
+		TeacherUid  uint64
+		CollegeName string
+	}
+
+	for _, v := range m {
+		college, _ := api.GetCollegeInfoByCollegeUid(v.GetCollegeUid())
+		result = append(result, struct {
+			TeacherName string
+			TeacherSex  string
+			TeacherUid  uint64
+			CollegeName string
+		}{
+			v.GetName(),
+			v.GetSex(),
+			v.GetTeacherUid(),
+			college.GetName(),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"result":   result,
+		"err_msg":  "查询成功！",
+	})
 }
 
 func AdminStudentManagerHandler(c *gin.Context) {
@@ -604,6 +632,7 @@ func AdminEditTeacherHandler(c *gin.Context) {
 	teacher_uid, _ := strconv.ParseUint(teacher_uid_str, 10, 64)
 	m, _ := api.GetTeacherListByTeacherUid(teacher_uid)
 	teacher_info := m
+	college, _ := api.GetCollegeInfoByCollegeUid(teacher_info.GetCollegeUid())
 
 	c.HTML(http.StatusOK, "admin_edit_teacher.html", gin.H{
 		"loginer_name": a.Info.GetUser(),
@@ -612,7 +641,7 @@ func AdminEditTeacherHandler(c *gin.Context) {
 		"NRIC":         teacher_info.GetNRIC(),
 		"status":       teacher_info.GetStatus(),
 		"teacher_uid":  teacher_info.GetTeacherUid(),
-		"college_name": teacher_info.GetCollegeUid(),
+		"college_name": college.GetName(),
 		"create_time":  teacher_info.GetCreateTime(),
 	})
 }
@@ -742,9 +771,36 @@ func AdminStudentManagerPostHandler(c *gin.Context) {
 			return
 		}
 	}
-	// map to json
-	json_val, _ := json.Marshal(m)
-	c.JSON(http.StatusOK, string(json_val))
+	var result []struct {
+		StudentName string
+		StudentSex  string
+		StudentUid  uint64
+		ClassName   string
+		MajorName   string
+		CollegeName string
+	}
+
+	for _, v := range m {
+		collegeName, _ := api.GetNamebyUid(v.GetCollegeUid(), "college", "college_uid")
+		majorName, _ := api.GetNamebyUid(v.GetMajorUid(), "major", "major_uid")
+		className, _ := api.GetNamebyUid(v.GetClassUid(), "class", "class_uid")
+		result = append(result, struct {
+			StudentName string
+			StudentSex  string
+			StudentUid  uint64
+			ClassName   string
+			MajorName   string
+			CollegeName string
+		}{
+			v.GetName(),
+			v.GetSex(),
+			v.GetStudentUid(),
+			className,
+			majorName,
+			collegeName,
+		})
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func AdminDeleteStudentHandler(c *gin.Context) {
