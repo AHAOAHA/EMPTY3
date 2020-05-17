@@ -245,8 +245,10 @@
                                 <div class="am-form-group">
                                     <label for="college_id" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="college_name" name="college_name" value=""
-                                            placeholder="输入学院名">
+                                        
+                                            <select id="college_name" name="college_name" placeholder="输入性别">
+
+                                            </select>
                                     </div>
                                 </div>
 
@@ -265,6 +267,32 @@
                                                     }
                                                 })
                                             }
+
+                                            function make_college_options() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_college_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ss = document.getElementById("college_name");
+                                                        $.each(data, function (index, val) {
+                                                            var op = document.createElement("option");
+                                                            op.setAttribute("value", val["name"]);
+                                                            op.innerHTML = val["name"];
+                                                            ss.appendChild(op);
+                                                        })
+                                                    }
+                                                })
+                                            }
+
+                                            function MakePage() {
+                                                make_college_options();
+                                            }
+
+                                            window.onload = function () {
+                                                MakePage();
+                                            }
+
                                         </script>
                                     </div>
                                 </div>

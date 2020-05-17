@@ -319,29 +319,13 @@ func AdminAddClassGetHandler(c *gin.Context) {
 
 func AdminAddClassPostHandler(c *gin.Context) {
 	var a context.AdminContext
-	cookie, err := c.Request.Cookie("user_cookie")
-	if err != nil {
-		// cookie不存在，跳转401
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		log.Error(err)
-		return
-	}
-	err = a.Detcry(cookie.Value)
-	if err != nil {
-		// cookie内容验证失败
-		log.Error(err)
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
 
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
-	if err := postFormIsValid(c); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"err_mag": err,
-		})
-		return
-	}
 	var ok bool = true
 	var college_uid, major_uid string
 	var wg sync.WaitGroup
@@ -370,17 +354,18 @@ func AdminAddClassPostHandler(c *gin.Context) {
 		log.Error("there err")
 	}
 
-	err = dao.DataBase.Execf("insert into `class`(`class_uid`, `college_uid`, `major_uid`, `name`) values ('%s', '%s', '%s', '%s')",
+	err := dao.DataBase.Execf("insert into `class`(`class_uid`, `college_uid`, `major_uid`, `name`) values ('%s', '%s', '%s', '%s')",
 		formdata.Get("class_uid"), college_uid, major_uid, formdata.Get("name"))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err.Error(),
+			"err_code": 1,
 		})
 	}
 
-	c.HTML(http.StatusOK, "success.html", gin.H{
-		"second": 3,
-		"url":    "admin_index",
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "添加成功！",
 	})
 }
 
@@ -398,26 +383,17 @@ func AdminAddCourseGetHandler(c *gin.Context) {
 
 func AdminAddCoursePostHandler(c *gin.Context) {
 	var a context.AdminContext
-	cookie, err := c.Request.Cookie("user_cookie")
-	if err != nil {
-		// cookie不存在，跳转401
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		log.Error(err)
-		return
-	}
-	err = a.Detcry(cookie.Value)
-	if err != nil {
-		// cookie内容验证失败
-		log.Error(err)
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
 
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
-	if err = postFormIsValid(c); err != nil {
+	if err := postFormIsValid(c); err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"err_mag": err,
+			"err_msg":  err.Error(),
+			"err_code": 1,
 		})
 		return
 	}
@@ -425,7 +401,8 @@ func AdminAddCoursePostHandler(c *gin.Context) {
 	m, err := dao.DataBase.Queryf("select `college_uid` from `college` where `name`='%s'", formdata.Get("college_name"))
 	if err != nil || len(m) == 0 {
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err.Error(),
+			"err_code": 2,
 		})
 	}
 	college_uid := string(m[0]["college_uid"].([]uint8))
@@ -433,12 +410,13 @@ func AdminAddCoursePostHandler(c *gin.Context) {
 		formdata.Get("course_uid"), college_uid, formdata.Get("name"), formdata.Get("credit"), formdata.Get("hour"), formdata.Get("type"))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg": err,
+			"err_msg":  err.Error(),
+			"err_code": 3,
 		})
 	}
-	c.HTML(http.StatusOK, "success.html", gin.H{
-		"second": 3,
-		"url":    "admin_index",
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "添加成功！",
 	})
 }
 

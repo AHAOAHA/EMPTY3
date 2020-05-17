@@ -232,7 +232,7 @@
 
 
                         <div class="am-u-sm-12 am-u-md-9">
-                            <form action="/add_class" method="post" class="am-form am-form-horizontal">
+                            <form id="submit_form" class="am-form am-form-horizontal">
                                 <div class="am-form-group">
                                     <label for="name" class="am-u-sm-3 am-form-label">班级名称</label>
                                     <div class="am-u-sm-9">
@@ -252,22 +252,79 @@
                                 <div class="am-form-group">
                                     <label for="user-email" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="college_name" name="college_name" value=""
-                                            placeholder="输入所属学院名">
+                                        <select id="college_name" name="college_name" placeholder="输入性别">
+
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属专业</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="major_name" name="major_name" value=""
-                                            placeholder="输入所属专业名">
+                                        <select id="major_name" name="major_name" placeholder="输入性别">
+
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="am-form-group">
                                     <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button type="submit" class="am-btn am-btn-primary">提交</button>
+                                        <button type="button" class="am-btn am-btn-primary" onclick="SubmitForm()">提交</button>
+                                        <script>
+                                            function SubmitForm() {
+                                                $.ajax({
+                                                    type: "post",
+                                                    dataType: "json",
+                                                    url: "/add_class",
+                                                    data: $('#submit_form').serialize(),
+                                                    success: function (result) {
+                                                        showResult(result);
+                                                    }
+                                                })
+                                            }
+
+                                            function make_college_options() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_college_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ss = document.getElementById("college_name");
+                                                        $.each(data, function (index, val) {
+                                                            var op = document.createElement("option");
+                                                            op.setAttribute("value", val["name"]);
+                                                            op.innerHTML = val["name"];
+                                                            ss.appendChild(op);
+                                                        })
+                                                    }
+                                                })
+                                            }
+
+                                            function make_major_options() {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "/get_all_major_name",
+                                                    dataType: "json",
+                                                    success: function (data) {
+                                                        var ss = document.getElementById("major_name");
+                                                        $.each(data, function (index, val) {
+                                                            var op = document.createElement("option");
+                                                            op.setAttribute("value", val["name"]);
+                                                            op.innerHTML = val["name"];
+                                                            ss.appendChild(op);
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                            function MakePage() {
+                                                make_college_options();
+                                                make_major_options();
+                                            }
+
+                                            window.onload = function () {
+                                                MakePage();
+                                            }
+                                        </script>
                                     </div>
                                 </div>
                             </form>
