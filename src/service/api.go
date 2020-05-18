@@ -92,3 +92,23 @@ func GetAllCourseInfoHandler(c *gin.Context) {
 func DebugHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "debug.html", nil)
 }
+
+func GetAllTeacherInfoHandler(c *gin.Context) {
+	data, _ := api.GetAllTeacherList()
+	var result []struct {
+		TeacherUid  uint64
+		TeacherName string
+	}
+
+	for _, v := range data {
+		result = append(result, struct {
+			TeacherUid  uint64
+			TeacherName string
+		}{
+			v.GetTeacherUid(),
+			v.GetName(),
+		})
+	}
+
+	c.JSON(http.StatusOK, result)
+}

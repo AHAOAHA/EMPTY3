@@ -13,6 +13,7 @@ import (
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	DataCenter "GradeManager/src/proto"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"strconv"
@@ -924,26 +925,30 @@ func AdminQueryClassCourseHandler(c *gin.Context) {
 		CollegeName string
 		Credit      float32
 		Hour        float32
-		Type        DataCenter.CourseInfo_TYPE
-		Status      DataCenter.CourseInfo_STATUS
+		TeacherName string
+		Type        string
+		Status      string
 	}
 
 	for _, v := range courses {
 		college_name, _ := api.GetNamebyUid(v.GetCollegeUid(), "college", "college_uid")
+		teacherInfo, _ := api.GetTeacherInfoByClassUidAndCourseUid(class_uid, v.GetCourseUid())
 		result = append(result, struct {
 			CourseName  string
 			CollegeName string
 			Credit      float32
 			Hour        float32
-			Type        DataCenter.CourseInfo_TYPE
-			Status      DataCenter.CourseInfo_STATUS
+			TeacherName string
+			Type        string
+			Status      string
 		}{
 			v.GetName(),
 			college_name,
 			v.GetCredit(),
 			v.GetHour(),
-			v.GetType(),
-			v.GetStatus(),
+			teacherInfo.GetName(),
+			v.GetType().String(),
+			v.GetStatus().String(),
 		})
 	}
 
@@ -979,6 +984,9 @@ func AdminAddCourseSecondHandler(c *gin.Context) {
 	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
 	courseUIDStr := c.Query("course_uid")
 	courseUID, _ := strconv.ParseUint(courseUIDStr, 10, 64)
+	teacherUIDStr := c.Query("teacher_uid")
+	teacherUID, _ := strconv.ParseUint(teacherUIDStr, 10, 64)
+
 	// 查看班级是否包含改课程
 	m, err := dao.DataBase.Queryf("select * from `student_course` where `class_uid`='%d' and `course_uid`='%d'", classUID, courseUID)
 	if err != nil || len(m) != 0 {
@@ -989,27 +997,129 @@ func AdminAddCourseSecondHandler(c *gin.Context) {
 		return
 	}
 
-	students, _ := api.GetStudentListByClassUid(classUID)
-	var ok = true
-	for _, v := range students {
-		err := dao.DataBase.Execf("insert into `student_course`(`student_uid`, `class_uid`, `course_uid`) values ('%d', '%d', '%d')", v.GetStudentUid(), classUID, courseUID)
-		if err != nil {
-			ok = false
-			continue
-		}
+	err = dao.DataBase.Execf("insert into `student_course`(`class_uid`, `course_uid`, `teacher_uid`) values ('%d', '%d', '%d')", classUID, courseUID, teacherUID)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusOK, gin.H{
+			"err_code": 1,
+			"err_msg":  err.Error(),
+		})
 	}
 
-	if ok {
+	c.JSON(http.StatusOK, gin.H{
+		"err_code": 0,
+		"err_msg":  "添加成功！",
+	})
+
+}
+
+func AdminScoreManagerGetHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "admin_student_score_manager_first.html", gin.H{
+		"loginer_name": a.Info.GetUser(),
+	})
+}
+
+func AdminGetStudentScoreByStudentUidHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.Request.ParseForm()
+
+	studentUIDStr := c.Request.PostForm.Get("student_uid")
+	studentUID, _ := strconv.ParseUint(studentUIDStr, 10, 64)
+	data, _ := api.GetStudentSubmitScoreByStudentUid(studentUID)
+	var result []struct {
+		StudentName string
+		StudentUid  uint64
+		CourseName  string
+		CourseUid   uint64
+		UsualScore  float32
+		MidScore    float32
+		EndScore    float32
+		Score       uint32
+		Credit      float32
+		ACredit     float32
+	}
+
+	for _, v := range data {
+		studentName, _ := api.GetNamebyUid(v.GetStudentUid(), "student", "student_uid")
+		courseName, _ := api.GetNamebyUid(v.GetCourseUid(), "course", "course_uid")
+		result = append(result, struct {
+			StudentName string
+			StudentUid  uint64
+			CourseName  string
+			CourseUid   uint64
+			UsualScore  float32
+			MidScore    float32
+			EndScore    float32
+			Score       uint32
+			Credit      float32
+			ACredit     float32
+		}{
+			studentName,
+			v.GetStudentUid(),
+			courseName,
+			v.GetCourseUid(),
+			v.GetUsualScore(),
+			v.GetMidtermScore(),
+			v.GetEndtermScore(),
+			v.GetScore(),
+			v.GetCredit(),
+			v.GetAcademicCredit(),
+		})
+	}
+
+	rsp, _ := json.Marshal(result)
+	c.HTML(http.StatusOK, "admin_student_score_manager.html", gin.H{
+		"loginer_name":  a.Info.GetUser(),
+		"student_score": string(rsp),
+	})
+}
+
+func AdminChangeStudentScoreHandler(c *gin.Context) {
+	var a context.AdminContext
+	if err := a.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	buf := make([]byte, 1024)
+	n, _ := c.Request.Body.Read(buf)
+
+	body_data := string(buf[0:n])
+
+	var body map[string]interface{}
+	_ = json.Unmarshal([]byte(body_data), &body)
+	log.Info(body)
+	score_data := body["Data"].([]interface{})
+	for _, v := range score_data {
+		log.Warn(v)
+		student_data := v.(map[string]interface{})
+		usual_score, _ := strconv.Atoi(student_data["UsualScore"].(string))
+		mid_score, _ := strconv.Atoi(student_data["MidScore"].(string))
+		end_score, _ := strconv.Atoi(student_data["EndScore"].(string))
+		score, _ := strconv.Atoi(student_data["Score"].(string))
+
+		err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"err_code": 1,
+				"err_msg":  err.Error(),
+			})
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"err_code": 0,
-			"err_msg":  "添加成功！",
-		})
-		return
-	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"err_code": 1002,
-			"err_msg":  "数据插入不完全!",
+			"err_msg":  "修改成功！",
 		})
 	}
-
 }

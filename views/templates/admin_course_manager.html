@@ -131,7 +131,7 @@
                                 </a>
                             </li>
                             <li class="tpl-left-nav-item">
-                                <a href="/add_sourse" class="nav-link tpl-left-nav-link-list">
+                                <a href="/add_course" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-table"></i>
                                     <span>添加课程</span>
                                     <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
@@ -291,6 +291,9 @@
                                             \<th class=\"table-type\"\>所属学院\</th\>\
                                             \<th class=\"table-date am-hide-sm-only\"\>学分\</th\>\
                                             \<th class=\"table-date am-hide-sm-only\"\>学时\</th\>\
+                                            \<th class=\"table-date am-hide-sm-only\"\>授课教师\</th\>\
+                                            \<th class=\"table-date am-hide-sm-only\"\>课程类型\</th\>\
+                                            \<th class=\"table-date am-hide-sm-only\"\>课程状态\</th\>\
                                             \</tr\>\
                                             \</thead\>\
                                             \<tbody\>";
@@ -298,23 +301,30 @@
                                             var count = 1;
 
                                             var mid = "";
+                                            if (result != null) {
 
-                                        $.each(result, function (index, obj) {
+                                                $.each(result, function (index, obj) {
 
-                                            mid += "\<tr\>\
-                                                    \<td\>\<input type=\"checkbox\"\>\</td\>\
-                                                    \<td\>"+ count++ +"\</td\>\
-                                                    \<td\>"+ obj["CourseName"] +"\</td\>\
-                                                    \<td class=\"am-hide-sm-only\"\>"+ obj["CollegeName"] +"\</td\>\
-                                                    \<td class=\"am-hide-sm-only\"\>"+ obj["Credit"] +"\</td\>\
-                                                    \<td class=\"am-hide-sm-only\"\>"+ obj["Hour"] +"\</td\>\
-                                                    \</tr\>";
-                                        })
+                                                    mid += "\<tr\>\
+                                                            \<td\>\<input type=\"checkbox\"\>\</td\>\
+                                                            \<td\>"+ count++ +"\</td\>\
+                                                            \<td\>"+ obj["CourseName"] +"\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["CollegeName"] +"\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["Credit"] +"\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["Hour"] +"\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["TeacherName"] +"\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["Type"] +"\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ obj["Status"] +"\</td\>\
+                                                            \</tr\>";
+                                                })
+                                            }
                                         
                                         var suffix = "\</tbody\>\
                                                         \</table\>\</form\>\
+                                                        \<div class=\"am-form-group\"\>\
+                                                            \<div class=\"am-u-sm-9 am-u-sm-push-3\"\>\
                                                         \<a href=\"/admin_add_course?class_uid="+ document.getElementById("input_class").value +"\"\>\<button type=\"button\" class=\"am-btn am-btn-primary\"\>添加课程\</button\>\</a\>\
-                                                        \</div\>";
+                                                        \</div\>\</div\>\</div\>";
 
                                         var tmp = perfix + mid + suffix;
                                         $('#main_div').append(tmp);

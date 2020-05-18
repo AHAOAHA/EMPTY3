@@ -131,7 +131,7 @@
                                 </a>
                             </li>
                             <li class="tpl-left-nav-item">
-                                <a href="/add_sourse" class="nav-link tpl-left-nav-link-list">
+                                <a href="/add_course" class="nav-link tpl-left-nav-link-list">
                                     <i class="am-icon-table"></i>
                                     <span>添加课程</span>
                                     <!-- <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i> -->
@@ -217,7 +217,7 @@
                         name="input_form">
                         <div class="am-form-group">
                             <label for="user-name" class="am-u-sm-3 am-form-label">课程： </label>
-                            
+
                             <div class="am-u-sm-9">
                                 <input type="hidden" id="class_uid" value={{.class_uid}}>
                                 <select id="course_uid" name="course_uid" value="">
@@ -225,6 +225,8 @@
                                 </select>
 
                                 
+
+
                                 <script type="text/javascript">
                                     function get_course_name() {
 
@@ -234,6 +236,24 @@
                                             dataType: "json",
                                             success: function (data) {
                                                 addOption(data);
+                                            }
+                                        })
+                                    }
+
+                                    function get_teacher_name() {
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/get_all_teacher_name",
+                                            dataType: "json",
+                                            success: function (data) {
+                                                var ss = document.getElementById("teacher_uid");
+                                                $.each(data, function (index, val) {
+                                                    var op = document.createElement("option");
+                                                    op.setAttribute("value", val["TeacherUid"]);
+                                                    op.innerHTML = val["TeacherName"];
+                                                    ss.appendChild(op);
+                                                })
                                             }
                                         })
                                     }
@@ -249,10 +269,21 @@
                                     }
                                     window.onload = function () {
                                         get_course_name();
+                                        get_teacher_name();
                                     }
                                 </script>
                             </div>
                         </div>
+
+                        <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">授课教师： </label>
+
+                            <div class="am-u-sm-9">
+                                <select id="teacher_uid" name="teacher_uid" value="">
+
+                                </select>
+                                </div>
+                            </div>
 
 
                         <div class="am-form-group">
@@ -264,10 +295,11 @@
                                     function AddCourse() {
                                         var class_uid = document.getElementById("class_uid").value;
                                         var course_uid = document.getElementById("course_uid").value;
+                                        var teacher_uid = document.getElementById("teacher_uid").value;
                                         $.ajax({
                                             type: "GET",
                                             dataType: "json",
-                                            url: "/admin_add_course_second?class_uid=" + class_uid + "&course_uid=" + course_uid,
+                                            url: "/admin_add_course_second?class_uid=" + class_uid + "&course_uid=" + course_uid + "&teacher_uid=" + teacher_uid,
                                             success: function (result) {
                                                 showResult(result);
                                             },
@@ -282,7 +314,7 @@
                                         alert(result["err_msg"]);
                                     }
                                 </script>
-                                
+
                             </div>
                         </div>
                     </form>

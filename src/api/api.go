@@ -960,3 +960,15 @@ func GetCourseByStudentUid(studentUID uint64) ([]DataCenter.CourseInfo, error) {
 
 	return result, nil
 }
+
+func GetTeacherInfoByClassUidAndCourseUid(classUID uint64, courseUID uint64) (DataCenter.TeacherInfo, error) {
+	var result DataCenter.TeacherInfo
+	m, err := dao.DataBase.Queryf("select `teacher_uid` from `student_course` where `class_uid`='%d' and `course_uid`='%d'", classUID, courseUID)
+	if err != nil {
+		return result, err
+	}
+
+	teacherUID, _ := strconv.ParseUint(string(m[0]["teacher_uid"].([]uint8)), 10, 64)
+	result, err = GetTeacherListByTeacherUid(teacherUID)
+	return result, err
+}

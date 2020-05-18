@@ -145,7 +145,8 @@ func StudentQueryCourseHandler(c *gin.Context) {
 	}
 
 	studentUID := s.Info.GetStudentUid()
-	courses, _ := api.GetCourseByStudentUid(studentUID)
+	studentInfo, _ := api.GetStudentByStudentUid(studentUID)
+	courses, _ := api.GetCourseByClassUid(studentInfo.GetClassUid())
 	var result []struct {
 		CourseName  string
 		CollegeName string
