@@ -221,24 +221,28 @@
                                     function addCourseOption(result) {
                                         // alert(result);
                                         var ss = document.getElementById("input_course");
-                                        $.each(JSON.parse(result), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["CourseUid"]);
-                                            op.innerHTML = val["Name"];
-                                            ss.appendChild(op);
-                                        })
+                                        if(result != null) {
+                                            $.each(result, function (index, val) {
+                                                var op = document.createElement("option");
+                                                op.setAttribute("value", val["CourseUid"]);
+                                                op.innerHTML = val["Name"];
+                                                ss.appendChild(op);
+                                            })
+                                        }
 
                                     }
 
                                     function addClassOption(result) {
                                         //alert(result);
                                         var ss = document.getElementById("input_class");
-                                        $.each(JSON.parse(result), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["ClassUid"]);
-                                            op.innerHTML = val["Name"];
-                                            ss.appendChild(op);
-                                        })
+                                        if (result != null) {
+                                            $.each(result, function (index, val) {
+                                                var op = document.createElement("option");
+                                                op.setAttribute("value", val["ClassUid"]);
+                                                op.innerHTML = val["Name"];
+                                                ss.appendChild(op);
+                                            })
+                                        }
                                     }
 
                                     window.onload = function () {
