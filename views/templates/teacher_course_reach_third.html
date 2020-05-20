@@ -1,0 +1,335 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>教师主页</title>
+    <meta name="description" content="教师主页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <link rel="stylesheet" href="../static/assets/css/amazeui.min.css" />
+    <link rel="stylesheet" href="../static/assets/css/admin.css">
+    <link rel="stylesheet" href="../static/assets/css/app.css">
+    <script src="../static/assets/js/echarts.min.js"></script>
+    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body data-type="index">
+    <header class="am-topbar am-topbar-inverse admin-header">
+        <div class="am-topbar-brand">
+            <!-- <a href="javascript:;" class="tpl-logo">
+                <img src="../static/assets/img/logo.png" alt=""> 
+            </a> -->
+        </div>
+        <div class="am-icon-list tpl-header-nav-hover-ico am-fl am-margin-right">
+
+        </div>
+
+        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+            data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+                class="am-icon-bars"></span></button>
+
+        <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+            <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list tpl-header-list">
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-bell-o"></span> 提醒 <span class="am-badge tpl-badge-success am-round">5</span></span>
+                    </a> -->
+                </li>
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-comment-o"></span> 消息 <span class="am-badge tpl-badge-danger am-round">9</span></span>
+                    </a> -->
+                </li>
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <!-- <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="am-icon-calendar"></span> 进度 <span class="am-badge tpl-badge-primary am-round">4</span></span>
+                    </a> -->
+                </li>
+                <!-- <li class="am-hide-sm-only"><a href="javascript:;" id="admin-fullscreen" class="tpl-header-list-link"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li> -->
+
+                <li class="am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:;">
+                        <span class="tpl-header-list-user-nick">{{ .loginer_name }}</span><span
+                            class="tpl-header-list-user-ico"> <img src="../static/assets/img/user01.png"></span>
+                    </a>
+                    <ul class="am-dropdown-content">
+                        <li><a href="/teacher_person_info"><span class="am-icon-bell-o"></span> 个人资料</a></li>
+                        <li><a href="/update_password?type=teacher"><span class="am-icon-cog"></span> 修改密码</a></li>
+                        <li><a href="/sign_out"><span class="am-icon-power-off"></span> 退出</a></li>
+                    </ul>
+                </li>
+                <li><a href="sign_out" class="tpl-header-list-link"><span
+                            class="am-icon-sign-out tpl-header-list-ico-out-size"></span></a></li>
+            </ul>
+        </div>
+    </header>
+
+
+    <div class="tpl-page-container tpl-page-header-fixed">
+
+
+        <div class="tpl-left-nav tpl-left-nav-hover">
+            <div class="tpl-left-nav-title">
+                教师功能列表
+            </div>
+            <div class="tpl-left-nav-list">
+                <ul class="tpl-left-nav-menu">
+                    <li class="tpl-left-nav-item">
+                        <a href="teacher_index" class="nav-link">
+                            <i class="am-icon-bar-chart"></i>
+                            <span>首页</span>
+                        </a>
+                    </li>
+                    <li class="tpl-left-nav-item">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list active">
+                            <i class="am-icon-table"></i>
+                            <span>任课信息管理</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                        </a>
+                        <ul class="tpl-left-nav-sub-menu">
+                            <li>
+                                <!-- TODO: -->
+                                <a href="teacher_course_query">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>任课信息查询</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="tpl-left-nav-item">
+                        <a href="javascript:;" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-table"></i>
+                            <span>学生成绩管理</span>
+                            <i
+                                class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right tpl-left-nav-more-ico-rotate"></i>
+
+                        </a>
+                        <ul class="tpl-left-nav-sub-menu" style="display: block;">
+                            <li>
+                                <!-- TODO: -->
+                                <a href="/teacher_query_score">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>成绩查询</span>
+                                </a>
+
+                                <a href="/teacher_input_score">
+                                    <i class="am-icon-angle-right"></i>
+                                    <span>成绩录入</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="tpl-left-nav-item">
+                        <a href="/teacher_course_reach" class="nav-link tpl-left-nav-link-list">
+                            <i class="am-icon-wpforms"></i>
+                            <span>课程达成度计算</span>
+                            <i class="am-icon-angle-right tpl-left-nav-more-ico am-fr am-margin-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <input type="hidden" id="student_score" value={{.student_score}}>
+        <input type="hidden" id="percent" value={{.percent}}>
+
+
+
+        <div class="tpl-content-wrapper">
+            <div class="tpl-content-page-title">
+                学生成绩
+            </div>
+            <ol class="am-breadcrumb">
+            </ol>
+            指标1目标达成度：<input type="number" id="flag_1_wander" step="0.01">
+            指标2目标达成度：<input type="number" id="flag_2_wander" step="0.01"><br />
+            平时成绩指标1总分：<input type="number" id="flag_1_uss" step="0.01">
+            平时成绩指标2总分：<input type="number" id="flag_2_uss" step="0.01"><br />
+            期中成绩指标1总分：<input type="number" id="flag_1_mss" step="0.01">
+            期中成绩指标2总分：<input type="number" id="flag_2_mss" step="0.01"><br />
+            期末成绩指标1总分：<input type="number" id="flag_1_ess" step="0.01">
+            期末成绩指标2总分：<input type="number" id="flag_2_ess" step="0.01">
+            <div class="am-g tpl-amazeui-form" id="main_div">
+                <div class="am-g">
+                    <form class="am-form">
+                        <table class="am-table am-table-striped am-table-hover table-main">
+                            <thead>
+                                <tr>
+                                    <th class="table-id">序号</th>
+                                    <th class="table-title">姓名</th>
+                                    <th class="table-set">学号</th>
+                                    <th class="table-set">班级</th>
+                                    <th class="table-set">课程
+                </div>
+                <th class="table-title">平时指标点1成绩</th>
+                <th class="table-title">平时指标点2成绩</th>
+                <th class="table-set">期中指标点1成绩</th>
+                <th class="table-set">期中指标点2成绩</th>
+                <th class="table-set">期末指标点1成绩</th>
+                <th class="table-set">期末指标点2成绩</th>
+                </tr>
+                </thead>
+                <tbody id="main_tbody">
+                    <script type="text/javascript">
+                        function makePages() {
+                            var student_data = document.getElementById("student_score").value;
+                            // alert(student_data);
+
+                            var json_stu_result = JSON.parse(student_data);
+
+
+                            var count = 1;
+                            var tr = "";
+                            $.each(json_stu_result, function (index, val) {
+                                tr += "\<tr\>\
+                                                        \<td\>"+ count++ + "\</td\>\
+                                                        \<td\>"+ val["StudentName"] + "\</td\>\
+                                                        \<td\>"+ val["StudentUid"] + "\</td\>\
+                                                        \<td\>"+ val["ClassName"] + "\</td\>\
+                                                        \<td\>"+ val["CourseName"] + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"us_flag_1_" + val["StudentUid"] + "\" onchange=\"updateUsualFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_us_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"ms_flag_1_" + val["StudentUid"] + "\" onchange=\"updateMidFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_ms_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
+                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"es_flag_1_" + val["StudentUid"] + "\" onchange=\"updateEndFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_es_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
+                                        \</tr\>";
+                            })
+                            $('#main_tbody').append(tr);
+                        }
+
+                        window.onload = function () {
+                            makePages();
+                        }
+
+                        function GetUsualScore(studentUid) {
+                            var score_data = document.getElementById("student_score").value;
+                            var ret = 0;
+                            $.each(JSON.parse(score_data), function (index, val) {
+                                if (val["StudentUid"] == studentUid) {
+
+                                    ret = val["UsualScore"];
+                                }
+                            })
+                            return ret;
+                        }
+                        function GetMidScore(studentUid) {
+                            var score_data = document.getElementById("student_score").value;
+                            var ret = 0;
+                            $.each(JSON.parse(score_data), function (index, val) {
+                                if (val["StudentUid"] == studentUid) {
+                                    ret = val["MidScore"];
+                                }
+                            })
+                            return ret;
+                        }
+                        function GetEndScore(studentUid) {
+                            var score_data = document.getElementById("student_score").value;
+                            var ret = 0;
+                            $.each(JSON.parse(score_data), function (index, val) {
+                                if (val["StudentUid"] == studentUid) {
+                                    ret = val["EndScore"];
+                                }
+                            })
+                            return ret;
+                        }
+                        function updateUsualFlag2Score(studentUid) {
+                            var s1 = document.getElementById("us_flag_1_" + studentUid).value;
+                            var s2 = Number(GetUsualScore(studentUid)) - Number(s1);
+                            document.getElementById("td_us_" + studentUid).value = s2;
+                        }
+                        function updateMidFlag2Score(studentUid) {
+                            var s1 = document.getElementById("ms_flag_1_" + studentUid).value;
+                            var s2 = Number(GetMidScore(studentUid)) - Number(s1);
+                            document.getElementById("td_ms_" + studentUid).value = s2;
+                        }
+                        function updateEndFlag2Score(studentUid) {
+                            var s1 = document.getElementById("es_flag_1_" + studentUid).value;
+                            var s2 = Number(GetEndScore(studentUid)) - Number(s1);
+                            document.getElementById("td_es_" + studentUid).value = s2;
+                        }
+
+                        function GetReach() {
+                            var score_data = document.getElementById("student_score").value;
+                            var percent = document.getElementById("percent").value;
+                            var sum_ms_f1 = 0;
+                            var sum_ms_f2 = 0;
+                            var sum_us_f1 = 0;
+                            var sum_us_f2 = 0;
+                            var sum_es_f1 = 0;
+                            var sum_es_f2 = 0;
+                            $.each(JSON.parse(score_data), function (index, val) {
+                                sum_ms_f1 = Number(sum_ms_f1) + Number(document.getElementById("ms_flag_1_" + val["StudentUid"]).value);
+                                sum_us_f1 = Number(sum_us_f1) + Number(document.getElementById("us_flag_1_" + val["StudentUid"]).value);
+                                sum_es_f1 = Number(sum_es_f1) + Number(document.getElementById("es_flag_1_" + val["StudentUid"]).value);
+
+                                sum_ms_f2 = Number(sum_ms_f2) + Number(document.getElementById("td_ms_" + val["StudentUid"]).value);
+                                sum_us_f2 = Number(sum_us_f2) + Number(document.getElementById("td_us_" + val["StudentUid"]).value);
+                                sum_es_f2 = Number(sum_es_f2) + Number(document.getElementById("td_es_" + val["StudentUid"]).value);
+                            })
+
+                            var uss_f1 = Number(document.getElementById("flag_1_uss").value);
+                            var uss_f2 = Number(document.getElementById("flag_2_uss").value);
+                            var mss_f1 = Number(document.getElementById("flag_1_mss").value);
+                            var mss_f2 = Number(document.getElementById("flag_2_mss").value);
+                            var ess_f1 = Number(document.getElementById("flag_1_ess").value);
+                            var ess_f2 = Number(document.getElementById("flag_2_ess").value);
+
+                            var percent = JSON.parse(document.getElementById("percent").value);
+                            var up = Number(percent["UsualPercent"]);
+                            var mp = Number(percent["MidPercent"]);
+                            var ep = Number(percent["EndPercent"]);
+
+                            var ave_us_f1 = Number(sum_us_f1) / Number(document.getElementById("flag_1_uss").value);
+                            var ave_us_f2 = Number(sum_us_f2) / Number(document.getElementById("flag_2_uss").value);
+                            var ave_ms_f1 = Number(sum_ms_f1) / Number(document.getElementById("flag_1_mss").value);
+                            var ave_ms_f2 = Number(sum_ms_f2) / Number(document.getElementById("flag_2_mss").value);
+                            var ave_es_f1 = Number(sum_es_f1) / Number(document.getElementById("flag_1_ess").value);
+                            var ave_es_f2 = Number(sum_es_f2) / Number(document.getElementById("flag_2_ess").value);
+
+                            var result_f1 = ((ave_us_f1 / uss_f1) * (up / 100) + (ave_ms_f1 / mss_f1) * (mp / 100) + (ave_es_f1 / ess_f1) * (ep / 100)) * Number(document.getElementById("flag_1_wander").value);
+                            var result_f2 = ((ave_us_f2 / uss_f2) * (up / 100) + (ave_ms_f2 / mss_f2) * (mp / 100) + (ave_es_f2 / ess_f2) * (ep / 100)) * Number(document.getElementById("flag_2_wander").value);
+                            console.log(result_f2);
+                            document.getElementById("flag_2_fact").value = result_f2.toFixed(4);
+                            document.getElementById("flag_1_fact").value = result_f1.toFixed(4);
+
+                        }
+
+                    </script>
+
+                </tbody>
+                </table>
+                <div class="am-u-sm-9 am-u-sm-push-3">
+                    <button type="button" id="submit_button" class="am-btn am-btn-primary"
+                        onclick="GetReach()">计算达成度</button>
+                </div>
+                </form>
+
+            </div><br />
+            指标点1实际达成度：<input type="number" id="flag_1_fact" step="0.01" readonly="readonly">
+            指标点2实际达成度：<input type="number" id="flag_2_fact" step="0.01" readonly="readonly">
+        </div>
+
+
+
+
+
+
+
+        <script src="../static/assets/js/jquery.min.js"></script>
+        <script src="../static/assets/js/amazeui.min.js"></script>
+        <script src="../static/assets/js/iscroll.js"></script>
+        <script src="../static/assets/js/app.js"></script>
+</body>
+
+</html>

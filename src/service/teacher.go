@@ -409,7 +409,6 @@ func TeacherInputScoreHandler(c *gin.Context) {
 	n, _ := c.Request.Body.Read(buf)
 
 	body_data := string(buf[0:n])
-	log.Info(body_data)
 
 	var err error
 	var err_code int = 0
@@ -559,4 +558,89 @@ func SavePercent(body map[string]interface{}, save_type int) error {
 		}
 	}
 	return nil
+}
+
+func TeacherCourseReachFirstHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.HTML(http.StatusOK, "teacher_course_reach_first.html", gin.H{
+		"loginer_name": t.Info.GetName(),
+	})
+}
+
+func TeacherCourseReachSecondHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	c.Request.ParseForm()
+	courseUIDStr := c.Request.PostForm.Get("course_uid")
+	courseUID, _ := strconv.ParseUint(courseUIDStr, 10, 64)
+	classUIDStr := c.Request.PostForm.Get("class_uid")
+	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
+
+	data, _ := api.GetStudentScoreByClassUidAndCourseUid(classUID, courseUID)
+
+	var result []struct {
+		CourseUid   uint64
+		CourseName  string
+		StudentUid  uint64
+		StudentName string
+		ClassUId    uint64
+		ClassName   string
+		UsualScore  float32
+		MidScore    float32
+		EndScore    float32
+		Score       uint32
+	}
+
+	for _, v := range data {
+		if v.GetType() == DataCenter.ScoreInfo_SAVE {
+			//continue
+		}
+		courseName, _ := api.GetNamebyUid(v.GetCourseUid(), "course", "course_uid")
+		studentName, _ := api.GetNamebyUid(v.GetStudentUid(), "student", "student_uid")
+		className, _ := api.GetNamebyUid(classUID, "class", "class_uid")
+		result = append(result, struct {
+			CourseUid   uint64
+			CourseName  string
+			StudentUid  uint64
+			StudentName string
+			ClassUId    uint64
+			ClassName   string
+			UsualScore  float32
+			MidScore    float32
+			EndScore    float32
+			Score       uint32
+		}{
+			v.GetCourseUid(),
+			courseName,
+			v.GetStudentUid(),
+			studentName,
+			classUID,
+			className,
+			v.GetUsualScore(),
+			v.GetMidtermScore(),
+			v.GetEndtermScore(),
+			v.GetScore(),
+		})
+	}
+
+	percentData, _ := api.GetCourseScorePercentByCourseUid(courseUID)
+	percentResult, _ := json.Marshal(percentData)
+
+	jsonResult, _ := json.Marshal(result)
+	c.HTML(http.StatusOK, "teacher_course_reach_third.html", gin.H{
+		"loginer_name":  t.Info.GetName(),
+		"student_score": string(jsonResult),
+		"percent":       string(percentResult),
+	})
 }

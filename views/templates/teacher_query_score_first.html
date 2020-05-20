@@ -222,7 +222,7 @@
                                         // alert(result);
                                         var ss = document.getElementById("input_course");
                                         if(result != null) {
-                                            $.each(result, function (index, val) {
+                                            $.each(JSON.parse(result), function (index, val) {
                                                 var op = document.createElement("option");
                                                 op.setAttribute("value", val["CourseUid"]);
                                                 op.innerHTML = val["Name"];
@@ -236,7 +236,7 @@
                                         //alert(result);
                                         var ss = document.getElementById("input_class");
                                         if (result != null) {
-                                            $.each(result, function (index, val) {
+                                            $.each(JSON.parse(result), function (index, val) {
                                                 var op = document.createElement("option");
                                                 op.setAttribute("value", val["ClassUid"]);
                                                 op.innerHTML = val["Name"];
@@ -257,15 +257,6 @@
                                         <button type="submit" class="am-btn am-btn-primary">确定</button>
                                     </div>
                                 </div>
-
-
-                                <!-- <div class="am-form-group">
-                                    <label for="class_id" class="am-u-sm-3 am-form-label">班级代码</label>
-                                    <div class="am-u-sm-9">
-                                        <input type="number" id="class_uid" name="class_uid" value=""
-                                            placeholder="输入班级代码">
-                                    </div>
-                                </div>                        -->
                             </form>
                         </div>
                     </div>
