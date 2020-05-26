@@ -1,5 +1,33 @@
 CREATE DATABASE GrageManager;
 USE `GradeManager`;
+-- admin表创建
+CREATE TABLE `admin` (
+  `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user` varchar(32) NOT NULL DEFAULT '',
+  `password` varchar(32) NOT NULL DEFAULT '',
+  `mail` varchar(50) NOT NULL DEFAULT '',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `expr_time` int(11) DEFAULT NULL,
+  `login_ip` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `shop_admin_user_password` (`user`,`password`),
+  UNIQUE KEY `shop_admin_user_mail` (`user`,`mail`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- teacher表创建
+CREATE TABLE `teacher` (
+  `teacher_uid` bigint(20) unsigned NOT NULL,
+  `college_uid` bigint(20) unsigned DEFAULT NULL,
+  `password` varchar(48) NOT NULL,
+  `name` varchar(64) NOT NULL DEFAULT '',
+  `sex` varchar(8) NOT NULL DEFAULT '',
+  `NRIC` varchar(48) NOT NULL,
+  `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`teacher_uid`),
+  KEY `t_sc_college_uid` (`college_uid`),
+  CONSTRAINT `t_sc_college_uid` FOREIGN KEY (`college_uid`) REFERENCES `college` (`college_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- college表创建
 CREATE TABLE IF NOT EXISTS `college` (
@@ -49,22 +77,54 @@ CREATE TABLE IF NOT EXISTS `student` (
 	CONSTRAINT s_sc_class_uid FOREIGN KEY (`class_uid`) REFERENCES class(`class_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
 
+-- course 表创建
+CREATE TABLE `course` (
+  `course_uid` bigint(20) unsigned NOT NULL,
+  `college_uid` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(64) NOT NULL,
+  `credit` float NOT NULL,
+  `hour` float NOT NULL,
+  `type` float NOT NULL,
+  `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`course_uid`),
+  KEY `co_sc_college_uid` (`college_uid`),
+  CONSTRAINT `co_sc_college_uid` FOREIGN KEY (`college_uid`) REFERENCES `college` (`college_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- nitice 表创建
+CREATE TABLE `notice` (
+  `title` varchar(256) NOT NULL DEFAULT 'title',
+  `data` text NOT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `notice_uid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`notice_uid`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
 -- score 表创建
-CREATE TABLE IF NOT EXISTS `score` (
-	`score_uid` BIGINT UNSIGNED NOT NULL,
-	`student_uid` BIGINT UNSIGNED,
-	`course_uid` BIGINT UNSIGNED,
-	`midterm_score` FLOAT NOT NULL DEFAULT '0',
-	`endterm_score` FLOAT NOT NULL DEFAULT '0',
-	`usual_score` FLOAT NOT NULL DEFAULT '0',
-	`academic_credit` FLOAT NOT NULL DEFAULT '0',
-	`credit` FLOAT NOT NULL DEFAULT '0',
-	`status` INT UNSIGNED NOT NULL DEFAULT '0',
-	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(`score_uid`),
-	CONSTRAINT score_sc_student_uid FOREIGN KEY (`student_uid`) REFERENCES student(`student_uid`),
-	CONSTRAINT score_sc_course_uid FOREIGN KEY (`course_uid`) REFERENCES course(`course_uid`)
-)ENGINE=INNODB DEFAULT CHARSET=utf8;
+CREATE TABLE `score` (
+  `score_uid` bigint(20) unsigned NOT NULL,
+  `student_uid` bigint(20) unsigned DEFAULT NULL,
+  `course_uid` bigint(20) unsigned DEFAULT NULL,
+  `midterm_score` float NOT NULL DEFAULT '0',
+  `endterm_score` float NOT NULL DEFAULT '0',
+  `usual_score` float NOT NULL DEFAULT '0',
+  `academic_credit` float NOT NULL DEFAULT '0',
+  `credit` float NOT NULL DEFAULT '0',
+  `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `score` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` int(10) unsigned NOT NULL DEFAULT '0',
+  `score_type` int(10) unsigned NOT NULL DEFAULT '0',
+  `end_percent` int(10) unsigned NOT NULL DEFAULT '0',
+  `mid_percent` int(10) unsigned NOT NULL DEFAULT '0',
+  `usual_percent` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`score_uid`),
+  KEY `score_sc_student_uid` (`student_uid`),
+  KEY `score_sc_course_uid` (`course_uid`),
+  CONSTRAINT `score_sc_course_uid` FOREIGN KEY (`course_uid`) REFERENCES `course` (`course_uid`),
+  CONSTRAINT `score_sc_student_uid` FOREIGN KEY (`student_uid`) REFERENCES `student` (`student_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `student_course` (
 	`student_score_uid` BIGINT UNSIGNED NOT NULL,
