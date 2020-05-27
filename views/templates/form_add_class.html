@@ -278,7 +278,7 @@
                                                     url: "/add_class",
                                                     data: $('#submit_form').serialize(),
                                                     success: function (result) {
-                                                        showResult(result);
+                                                        alert(result["err_msg"]);
                                                     }
                                                 })
                                             }

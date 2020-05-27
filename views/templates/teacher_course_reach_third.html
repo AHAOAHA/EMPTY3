@@ -147,7 +147,7 @@
 
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                学生成绩
+                课程达成度计算
             </div>
             <ol class="am-breadcrumb">
             </ol>
@@ -162,7 +162,7 @@
             <div class="am-g tpl-amazeui-form" id="main_div">
                 <div class="am-g">
                     <form class="am-form">
-                        <table class="am-table am-table-striped am-table-hover table-main">
+                        <table id="score_table" class="am-table am-table-striped am-table-hover table-main">
                             <thead>
                                 <tr>
                                     <th class="table-id">序号</th>
@@ -305,6 +305,11 @@
 
                         }
 
+                        function GetXlsxFunc() {
+                            var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
+                            openDownloadDialog(sheet2blob(sheet), '导出.xlsx');
+                        }
+
                     </script>
 
                 </tbody>
@@ -312,6 +317,8 @@
                 <div class="am-u-sm-9 am-u-sm-push-3">
                     <button type="button" id="submit_button" class="am-btn am-btn-primary"
                         onclick="GetReach()">计算达成度</button>
+                        <button type="button" id="submit_button" class="am-btn am-btn-primary"
+                        onclick="GetXlsxFunc()">导出</button>
                 </div>
                 </form>
 
@@ -330,6 +337,8 @@
         <script src="../static/assets/js/amazeui.min.js"></script>
         <script src="../static/assets/js/iscroll.js"></script>
         <script src="../static/assets/js/app.js"></script>
+        <script src="../static/assets/js/xlsx.core.min.js"></script>
+        <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

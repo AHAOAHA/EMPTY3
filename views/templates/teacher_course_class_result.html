@@ -153,7 +153,6 @@
                         <table class="am-table am-table-striped am-table-hover table-main">
                             <thead>
                                 <tr>
-                                    <th class="table-check"><input type="checkbox" class="tpl-table-fz-check"></th>
                                     <th class="table-id">序号</th>
                                     <th class="table-title">班级</th>
                                     <th class="table-title">课程名</th>
@@ -170,7 +169,6 @@
                                     var tr = "";
                                     $.each(json_result, function (index, val) {
                                           tr +=  "\<tr\>\
-                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
                                                         \<td\>"+ count++ + "\</td\>\
                                                         \<td\>"+ val["ClassName"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["CourseName"] + "\</td\>\

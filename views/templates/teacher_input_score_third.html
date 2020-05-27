@@ -171,10 +171,9 @@
             <div class="am-g tpl-amazeui-form" id="main_div">
                 <div class="am-g">
                     <form class="am-form">
-                        <table class="am-table am-table-striped am-table-hover table-main">
+                        <table id="score_table" class="am-table am-table-striped am-table-hover table-main">
                             <thead>
                                 <tr>
-                                    <th class="table-check"><input type="checkbox" class="tpl-table-fz-check"></th>
                                     <th class="table-id">序号</th>
                                     <th class="table-title">姓名</th>
                                     <th class="table-title">学号</th>
@@ -322,7 +321,6 @@
                                         var tr = "";
                                         $.each(json_stu_result, function (index, val) {
                                             tr += "\<tr\>\
-                                                        \<td\>\<input type=\"checkbox\"\>\</td\>\
                                                         \<td\>"+ count++ + "\</td\>\
                                                         \<td\>"+ val["Name"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["StudentUid"] + "\</td\>\
@@ -457,6 +455,11 @@
                                         makePages();
                                     }
 
+                                    function GetXlsxFunc() {
+                                        var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
+                                        openDownloadDialog(sheet2blob(sheet), '导出.xlsx');
+                                    }
+
                                 </script>
 
                             </tbody>
@@ -465,6 +468,7 @@
                             <div class="am-u-sm-9 am-u-sm-push-3">
                                 <button type="button" id="submit_button" class="am-btn am-btn-primary" onclick="SaveScore()">保存</button>
                                 <button type="button" class="am-btn am-btn-primary" onclick="SubmitScore()">提交</button>
+                                <button type="button" class="am-btn am-btn-primary" onclick="GetXlsxFunc()">导出</button>
                             </div>
                     </form>
                 </div>
@@ -479,6 +483,8 @@
             <script src="../static/assets/js/amazeui.min.js"></script>
             <script src="../static/assets/js/iscroll.js"></script>
             <script src="../static/assets/js/app.js"></script>
+            <script src="../static/assets/js/xlsx.core.min.js"></script>
+            <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

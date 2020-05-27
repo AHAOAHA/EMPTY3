@@ -74,8 +74,8 @@ func StudentIndexHandler(c *gin.Context) {
 		"teacher_count": count_teacher,
 		"college_count": count_college,
 		"major_count":   count_major,
-		"introduce":     notice.GetTitle(),
-		"school_title":  notice.GetNotice(),
+		"introduce":     notice.GetNotice(),
+		"school_title":  notice.GetTitle(),
 	})
 }
 
