@@ -246,8 +246,8 @@
                                     <label for="college_id" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
                                         
-                                            <select id="college_name" name="college_name" placeholder="输入性别">
-
+                                            <select id="college_uid" name="college_uid" placeholder="输入性别">
+                                                <option>请选择所属学院</option>
                                             </select>
                                     </div>
                                 </div>
@@ -274,11 +274,11 @@
                                                     url: "/get_all_college_name",
                                                     dataType: "json",
                                                     success: function (data) {
-                                                        var ss = document.getElementById("college_name");
+                                                        var ss = document.getElementById("college_uid");
                                                         $.each(data, function (index, val) {
                                                             var op = document.createElement("option");
-                                                            op.setAttribute("value", val["name"]);
-                                                            op.innerHTML = val["name"];
+                                                            op.setAttribute("value", val["CollegeUid"]);
+                                                            op.innerHTML = val["CollegeName"];
                                                             ss.appendChild(op);
                                                         })
                                                     }

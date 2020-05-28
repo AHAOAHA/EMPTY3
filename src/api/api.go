@@ -236,18 +236,23 @@ func GetTeacherListByCollegeName(college_name string) (map[uint64]DataCenter.Tea
 	return GetTeacherListByCollegeUid(college_uid)
 }
 
-func GetALlCollegeName() ([]string, error) {
-	cdbm, err := dao.DataBase.Queryf("select `name` from `college`")
-	if err != nil || len(cdbm) == 0 {
-		return nil, errors.New("query teacher info by college_uid err")
+func GetALlCollegeInfo() ([]DataCenter.CollegeInfo, error) {
+	cdbm, err := dao.DataBase.Queryf("select * from `college`")
+	if err != nil {
+		return nil, err
 	}
 
-	var college_name []string
+	var collegeInfo []DataCenter.CollegeInfo
 	for _, val := range cdbm {
-		college_name = append(college_name, string(val["name"].([]uint8)))
-	}
+		collegeName := string(val["name"].([]uint8))
+		collegeUID, _ := strconv.ParseUint(string(val["college_uid"].([]uint8)), 10, 64)
 
-	return college_name, nil
+		collegeInfo = append(collegeInfo, DataCenter.CollegeInfo{
+			Name:       collegeName,
+			CollegeUid: collegeUID,
+		})
+	}
+	return collegeInfo, nil
 }
 
 func GetNotice() (DataCenter.NoticeInfo, error) {
@@ -275,18 +280,26 @@ func GetCollegeUidByName(college_name string) (uint64, error) {
 	return college_uid, nil
 }
 
-func GetAllMajerName() ([]string, error) {
-	cdbm, err := dao.DataBase.Queryf("select `name` from `major`")
-	if err != nil || len(cdbm) == 0 {
-		return nil, errors.New("query major err")
+func GetAllMajerInfo() ([]DataCenter.MajorInfo, error) {
+	cdbm, err := dao.DataBase.Queryf("select * from `major`")
+	if err != nil {
+		return nil, err
 	}
 
-	var major_name []string
+	var majorInfo []DataCenter.MajorInfo
 	for _, val := range cdbm {
-		major_name = append(major_name, string(val["name"].([]uint8)))
+		majorName := string(val["name"].([]uint8))
+		majorUID, _ := strconv.ParseUint(string(val["major_uid"].([]uint8)), 10, 64)
+		collegeUID, _ := strconv.ParseUint(string(val["college_uid"].([]uint8)), 10, 64)
+
+		majorInfo = append(majorInfo, DataCenter.MajorInfo{
+			Name:       majorName,
+			MajorUid:   majorUID,
+			CollegeUid: collegeUID,
+		})
 	}
 
-	return major_name, nil
+	return majorInfo, nil
 }
 
 func GetMajorUidByName(major_name string) (uint64, error) {
@@ -298,20 +311,6 @@ func GetMajorUidByName(major_name string) (uint64, error) {
 	major_uid, _ := strconv.ParseUint(string(cdbm[0]["major_uid"].([]uint8)), 10, 64)
 
 	return major_uid, nil
-}
-
-func GetAllClassName() ([]string, error) {
-	cdbm, err := dao.DataBase.Queryf("select `name` from `class`")
-	if err != nil || len(cdbm) == 0 {
-		return nil, errors.New("query class err")
-	}
-
-	var major_name []string
-	for _, val := range cdbm {
-		major_name = append(major_name, string(val["name"].([]uint8)))
-	}
-
-	return major_name, nil
 }
 
 func GetStudentByStudentUid(student_uid uint64) (DataCenter.StudentInfo, error) {

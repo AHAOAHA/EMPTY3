@@ -240,7 +240,11 @@
                                 <div class="am-form-group">
                                     <label for="sex" class="am-u-sm-3 am-form-label">性别</label>
                                     <div class="am-u-sm-9">
-                                        <input type="text" id="sex" name="sex" value="" placeholder="输入性别">
+                                        <select name="sex" placeholder="输入性别">
+                                            <option value="男">请选择性别</option>
+                                            <option value="男">男</option>
+                                            <option value="女">女</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -255,8 +259,8 @@
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <select id="college_name" name="college_name" value="">
-
+                                        <select id="college_uid" name="college_uid" value="">
+                                            <option value="">请选择所属学院</option>
                                         </select>
                                     </div>
                                 </div>
@@ -318,11 +322,11 @@
 
                                             function addOption(data) {
                                                 console.log(data);
-                                                var ss = document.getElementById("college_name");
+                                                var ss = document.getElementById("college_uid");
                                                 $.each(data, function (index, val) {
                                                     var op = document.createElement("option");
-                                                    op.setAttribute("value", val["name"]);
-                                                    op.innerHTML = val["name"];
+                                                    op.setAttribute("value", val["CollegeUid"]);
+                                                    op.innerHTML = val["CollegeName"];
                                                     ss.appendChild(op);
                                                 })
                                             }
@@ -334,6 +338,7 @@
                                             window.onload = function () {
                                                 MakePage();
                                             }
+
                                         </script>
                                     </div>
                                 </div>

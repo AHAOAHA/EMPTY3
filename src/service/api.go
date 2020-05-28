@@ -10,46 +10,99 @@ package service
 
 import (
 	"GradeManager/src/api"
-	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllCollegeNameHandler(c *gin.Context) {
-	data, _ := api.GetALlCollegeName()
-	var m []gin.H
+	data, _ := api.GetALlCollegeInfo()
+	var result []struct {
+		CollegeName string
+		CollegeUid  uint64
+	}
 	for _, v := range data {
-		m = append(m, gin.H{
-			"name": v,
+		result = append(result, struct {
+			CollegeName string
+			CollegeUid  uint64
+		}{
+			v.GetName(),
+			v.GetCollegeUid(),
 		})
 	}
-	c.JSON(http.StatusOK, m)
+	c.JSON(http.StatusOK, result)
 }
 
 func GetAllMajorNameHandler(c *gin.Context) {
-	data, _ := api.GetAllMajerName()
-	var m []gin.H
+	var filterSwitch bool = true
+	filterCollegeUIDStr := c.Query("college_uid")
+	filterCollegeUID, err := strconv.ParseUint(filterCollegeUIDStr, 10, 64)
+	if err != nil {
+		filterSwitch = false
+	}
+
+	data, _ := api.GetAllMajerInfo()
+	var result []struct {
+		MajorName  string
+		MajorUid   uint64
+		CollegeUid uint64
+	}
 	for _, v := range data {
-		m = append(m, gin.H{
-			"name": v,
+		if filterSwitch {
+			if v.GetCollegeUid() != filterCollegeUID {
+				continue
+			}
+		}
+		result = append(result, struct {
+			MajorName  string
+			MajorUid   uint64
+			CollegeUid uint64
+		}{
+			v.GetName(),
+			v.GetMajorUid(),
+			v.GetCollegeUid(),
 		})
 	}
 
-	c.JSON(http.StatusOK, m)
+	c.JSON(http.StatusOK, result)
 }
 
 func GetAllClassNameHandler(c *gin.Context) {
-	data, _ := api.GetAllClassName()
-	var m []gin.H
+	var filterSwitch bool = true
+	filterMajorUIDStr := c.Query("major_uid")
+	filterMajorUID, err := strconv.ParseUint(filterMajorUIDStr, 10, 64)
+	if err != nil {
+		filterSwitch = false
+	}
+
+	data, _ := api.GetAllClassInfo()
+	var result []struct {
+		ClassName  string
+		ClassUid   uint64
+		MajorUid   uint64
+		CollegeUid uint64
+	}
 	for _, v := range data {
-		m = append(m, gin.H{
-			"name": v,
+		if filterSwitch {
+			if v.GetMajorUid() != filterMajorUID {
+				continue
+			}
+		}
+		result = append(result, struct {
+			ClassName  string
+			ClassUid   uint64
+			MajorUid   uint64
+			CollegeUid uint64
+		}{
+			v.GetName(),
+			v.GetClassUid(),
+			v.GetMajorUid(),
+			v.GetCollegeUid(),
 		})
 	}
 
-	val, _ := json.Marshal(m)
-	c.JSON(http.StatusOK, string(val))
+	c.JSON(http.StatusOK, result)
 }
 
 func GetAllClassHandler(c *gin.Context) {

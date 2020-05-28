@@ -244,6 +244,7 @@
                                     <label for="sex" class="am-u-sm-3 am-form-label">性别</label>
                                     <div class="am-u-sm-9">
                                         <select name="sex" placeholder="输入性别">
+                                            <option value="男">请选择性别</option>
                                             <option value="男">男</option>
                                             <option value="女">女</option>
                                         </select>
@@ -254,8 +255,8 @@
                                 <div class="am-form-group">
                                     <label for="user-email" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <select id="college_name" name="college_name" placeholder="输入性别">
-
+                                        <select id="college_uid" name="college_uid" onchange="make_major_options()">
+                                            <option value="">请选择所属学院</option>
                                         </select>
                                     </div>
                                 </div>
@@ -263,8 +264,8 @@
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属专业</label>
                                     <div class="am-u-sm-9">
-                                        <select id="major_name" name="major_name" placeholder="输入性别">
-
+                                        <select id="major_uid" name="major_uid" onchange="make_class_options()">
+                                            <option value="">请选择所属专业</option>
                                         </select>
                                     </div>
                                 </div>
@@ -272,8 +273,8 @@
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属班级</label>
                                     <div class="am-u-sm-9">
-                                        <select id="class_name" name="class_name" placeholder="输入性别">
-
+                                        <select id="class_uid" name="class_uid" placeholder="输入性别">
+                                            <option value="">请选择所属班级</option>
                                         </select>
                                     </div>
                                 </div>
@@ -317,61 +318,12 @@
                                                 alert(result["err_msg"]);
                                             }
 
-                                            function make_college_options() {
-                                                $.ajax({
-                                                    type: "GET",
-                                                    url: "/get_all_college_name",
-                                                    dataType: "json",
-                                                    success: function (data) {
-                                                        var ss = document.getElementById("college_name");
-                                                        $.each(data, function (index, val) {
-                                                            var op = document.createElement("option");
-                                                            op.setAttribute("value", val["name"]);
-                                                            op.innerHTML = val["name"];
-                                                            ss.appendChild(op);
-                                                        })
-                                                    }
-                                                })
-                                            }
-
-                                            function make_major_options() {
-                                                $.ajax({
-                                                    type: "GET",
-                                                    url: "/get_all_major_name",
-                                                    dataType: "json",
-                                                    success: function (data) {
-                                                        var ss = document.getElementById("major_name");
-                                                        $.each(data, function (index, val) {
-                                                            var op = document.createElement("option");
-                                                            op.setAttribute("value", val["name"]);
-                                                            op.innerHTML = val["name"];
-                                                            ss.appendChild(op);
-                                                        })
-                                                    }
-                                                })
-                                            }
                                             
-                                            function make_class_options() {
-                                                $.ajax({
-                                                    type: "GET",
-                                                    url: "/get_all_class_name",
-                                                    dataType: "json",
-                                                    success: function (data) {
-                                                        var ss = document.getElementById("class_name");
-                                                        $.each(data, function (index, val) {
-                                                            var op = document.createElement("option");
-                                                            op.setAttribute("value", val["ClassName"]);
-                                                            op.innerHTML = val["ClassName"];
-                                                            ss.appendChild(op);
-                                                        })
-                                                    }
-                                                })
-                                            }
 
                                             function MakePage() {
                                                 make_college_options();
-                                                make_major_options();
-                                                make_class_options();
+                                                //make_major_options();
+                                                //make_class_options();
                                             }
 
                                             window.onload = function () {
@@ -418,6 +370,7 @@
     <script src="../static/assets/js/jquery.min.js"></script>
     <script src="../static/assets/js/amazeui.min.js"></script>
     <script src="../static/assets/js/app.js"></script>
+    <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

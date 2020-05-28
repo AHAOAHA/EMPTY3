@@ -204,7 +204,7 @@
 
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                学生信息
+                课程信息
             </div>
             <ol class="am-breadcrumb">
                 <!-- <li><a href="#" class="am-icon-home">首页</a></li>
@@ -252,8 +252,8 @@
                                 <div class="am-form-group">
                                     <label for="user-email" class="am-u-sm-3 am-form-label">所属学院</label>
                                     <div class="am-u-sm-9">
-                                        <select id="college_name" name="college_name" placeholder="输入性别">
-
+                                        <select id="college_uid" name="college_uid" onchange="make_major_options()">
+                                            <option>请选择所属学院</option>
                                         </select>
                                     </div>
                                 </div>
@@ -261,8 +261,8 @@
                                 <div class="am-form-group">
                                     <label for="user-phone" class="am-u-sm-3 am-form-label">所属专业</label>
                                     <div class="am-u-sm-9">
-                                        <select id="major_name" name="major_name" placeholder="输入性别">
-
+                                        <select id="major_uid" name="major_uid" placeholder="输入性别">
+                                            <option>请选择所属专业</option>
                                         </select>
                                     </div>
                                 </div>
@@ -310,43 +310,10 @@
                                                 })
                                         }
 
-                                        function make_college_options() {
-                                                $.ajax({
-                                                    type: "GET",
-                                                    url: "/get_all_college_name",
-                                                    dataType: "json",
-                                                    success: function (data) {
-                                                        var ss = document.getElementById("college_name");
-                                                        $.each(data, function (index, val) {
-                                                            var op = document.createElement("option");
-                                                            op.setAttribute("value", val["name"]);
-                                                            op.innerHTML = val["name"];
-                                                            ss.appendChild(op);
-                                                        })
-                                                    }
-                                                })
-                                            }
-
-                                            function make_major_options() {
-                                                $.ajax({
-                                                    type: "GET",
-                                                    url: "/get_all_major_name",
-                                                    dataType: "json",
-                                                    success: function (data) {
-                                                        var ss = document.getElementById("major_name");
-                                                        $.each(data, function (index, val) {
-                                                            var op = document.createElement("option");
-                                                            op.setAttribute("value", val["name"]);
-                                                            op.innerHTML = val["name"];
-                                                            ss.appendChild(op);
-                                                        })
-                                                    }
-                                                })
-                                            }
+                                        
 
                                             function MakePage() {
                                                 make_college_options();
-                                                make_major_options();
                                             }
 
                                             window.onload = function () {
@@ -378,6 +345,7 @@
     <script src="../static/assets/js/jquery.min.js"></script>
     <script src="../static/assets/js/amazeui.min.js"></script>
     <script src="../static/assets/js/app.js"></script>
+    <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

@@ -52,3 +52,66 @@ function sheet2blob(sheet, sheetName) {
     }
     return blob;
 }
+
+function make_college_options() {
+    $.ajax({
+        type: "GET",
+        url: "/get_all_college_name?major_uid=" + document.getElementById("major_uid").value,
+        dataType: "json",
+        success: function (data) {
+            var ss = document.getElementById("college_uid");
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["CollegeUid"]);
+                op.innerHTML = val["CollegeName"];
+                ss.appendChild(op);
+            })
+        }
+    })
+}
+
+function make_major_options() {
+    $.ajax({
+        type: "GET",
+        url: "/get_all_major_name?college_uid=" + document.getElementById("college_uid").value,
+        dataType: "json",
+        success: function (data) {
+            $("#major_uid").empty();
+            var ss = document.getElementById("major_uid");
+            var op = document.createElement("option");
+            op.setAttribute("value", "");
+            op.innerHTML = "请选择所属专业";
+            ss.appendChild(op);
+            
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["MajorUid"]);
+                op.innerHTML = val["MajorName"];
+                ss.appendChild(op);
+            })
+        }
+    })
+}
+
+function make_class_options() {
+    $.ajax({
+        type: "GET",
+        url: "/get_all_class_name",
+        dataType: "json",
+        success: function (data) {
+            $("#class_uid").empty();
+            var ss = document.getElementById("class_uid");
+            var op = document.createElement("option");
+            op.setAttribute("value", "");
+            op.innerHTML = "请选择所属班级";
+            ss.appendChild(op);
+
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["ClassUid"]);
+                op.innerHTML = val["ClassName"];
+                ss.appendChild(op);
+            })
+        }
+    })
+}
