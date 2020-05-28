@@ -971,3 +971,57 @@ func GetTeacherInfoByClassUidAndCourseUid(classUID uint64, courseUID uint64) (Da
 	result, err = GetTeacherListByTeacherUid(teacherUID)
 	return result, err
 }
+
+func GetTeacherInfoByCollegeUid(collegeUID uint64) ([]DataCenter.TeacherInfo, error) {
+	var result []DataCenter.TeacherInfo
+	m, err := dao.DataBase.Queryf("select * from `teacher` where `college_uid`='%d'", collegeUID)
+	if err != nil {
+		return result, err
+	}
+
+	for _, v := range m {
+		var teacherUID uint64
+		var sta int
+		sta, _ = strconv.Atoi(string(v["status"].([]uint8)))
+		teacherUID, _ = strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
+		result = append(result, DataCenter.TeacherInfo{
+			TeacherUid: teacherUID,
+			CollegeUid: collegeUID,
+			Name:       string(v["name"].([]uint8)),
+			Password:   string(v["password"].([]uint8)),
+			Sex:        string(v["sex"].([]uint8)),
+			NRIC:       string(v["NRIC"].([]uint8)),
+			Status:     DataCenter.TeacherInfo_STATUS(sta),
+			CreateTime: string(v["create_time"].([]uint8)),
+		})
+	}
+
+	return result, nil
+}
+
+func GetCourseByCollegeUid(collegeUID uint64) ([]DataCenter.CourseInfo, error) {
+	var result []DataCenter.CourseInfo
+	m, err := dao.DataBase.Queryf("select * from `course` where `college_uid`='%d'", collegeUID)
+	if err != nil {
+		return result, err
+	}
+
+	for _, v := range m {
+		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		credit, _ := strconv.ParseFloat(string(v["credit"].([]uint8)), 32)
+		hour, _ := strconv.ParseFloat(string(v["hour"].([]uint8)), 32)
+		type_c, _ := strconv.Atoi(string(v["type"].([]uint8)))
+		status, _ := strconv.Atoi(string(v["status"].([]uint8)))
+		result = append(result, DataCenter.CourseInfo{
+			CourseUid:  courseUID,
+			CollegeUid: collegeUID,
+			Name:       string(v["name"].([]uint8)),
+			Credit:     float32(credit),
+			Hour:       float32(hour),
+			Type:       DataCenter.CourseInfo_TYPE(type_c),
+			Status:     DataCenter.CourseInfo_STATUS(status),
+		})
+	}
+
+	return result, nil
+}

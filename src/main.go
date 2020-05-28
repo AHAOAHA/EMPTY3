@@ -120,6 +120,8 @@ func main() {
 	r.GET("/get_all_teacher_name", service.GetAllTeacherInfoHandler)
 
 	r.GET("/update_password", service.UpdatePasswordGetHandler)
+	r.GET("/get_teacher_info", service.GetTeacherInfoHandler)
+	r.GET("/get_course_info", service.GetCourseInfoByCollegeUidHandler)
 	r.POST("/update_password", service.UpdatePasswordPostHandler)
 
 	//debug

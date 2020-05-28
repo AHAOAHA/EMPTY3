@@ -216,41 +216,36 @@
                     <form action="/admin_teacher_manager" method="post" id="form1" class="am-form am-form-horizontal"
                         name="input_form">
                         <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">班级 </label>
+                            <label for="user-name" class="am-u-sm-3 am-form-label">学院 </label>
                             <div class="am-u-sm-9">
-                                <select id="input_class" name="class_uid" value="">
-
+                                <select id="college_uid" name="college_uid" onchange="make_major_options()">
+                                    <option value="">请选择所属学院</option>
                                 </select>
-                                
-                                </datalist>
-                                <script type="text/javascript">
-                                    function get_class_name() {
-
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/get_all_class_name",
-                                            dataType: "json",
-                                            success: function (data) {
-                                                addOption(data);
-                                            }
-                                        })
-                                    }
-                                    function addOption(data) {
-                                        //console.log(data);
-                                        var ss = document.getElementById("input_class");
-                                        $.each(data, function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["ClassUid"]);
-                                            op.innerHTML = val["ClassName"];
-                                            ss.appendChild(op);
-                                        })
-                                    }
-                                    window.onload = function () {
-                                        get_class_name();
-                                    }
-                                </script>
                             </div>
                         </div>
+
+                        <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">专业 </label>
+                            <div class="am-u-sm-9">
+                                <select id="major_uid" name="major_uid" onchange="make_class_options()">
+                                    <option value="">请选择所属专业</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">班级 </label>
+                            <div class="am-u-sm-9">
+                                <select id="class_uid" name="class_uid" value="">
+                                    <option value="">请选择所属班级</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <script type="text/javascript">
+                            window.onload = function () {
+                                make_college_options();
+                            }
+                        </script>
 
 
                         <div class="am-form-group">
@@ -259,6 +254,11 @@
                                     onclick="GetTeacherInfo()" value="查询" />
                                 <script type="text/javascript">
                                     function GetTeacherInfo() {
+                                        var class_uid = document.getElementById("class_uid").value;
+                                        if (class_uid == "") {
+                                            alert("请选择要管理的班级！");
+                                            return;
+                                        }
                                         var form = document.forms.namedItem("input_form");
                                         var formData = new FormData(form);
                                         $.ajax({
@@ -285,7 +285,6 @@
                                                         \<table class=\"am-table am-table-striped am-table-hover table-main\"\>\
                                                         \<thead\>\
                                                         \<tr\>\
-                                            \<th class=\"table-check\"\>\<input type=\"checkbox\" class=\"tpl-table-fz-check\"\>\</th\>\
                                             \<th class=\"table-id\"\>序号\</th\>\
                                             \<th class=\"table-title\">课程名\</th\>\
                                             \<th class=\"table-type\"\>所属学院\</th\>\
@@ -298,7 +297,6 @@
                                             \</thead\>\
                                             \<tbody\>";
                                             
-                                            var count = 1;
 
                                             var mid = "";
                                             if (result != null) {
@@ -306,8 +304,7 @@
                                                 $.each(result, function (index, obj) {
 
                                                     mid += "\<tr\>\
-                                                            \<td\>\<input type=\"checkbox\"\>\</td\>\
-                                                            \<td\>"+ count++ +"\</td\>\
+                                                            \<td\>"+ index +"\</td\>\
                                                             \<td\>"+ obj["CourseName"] +"\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ obj["CollegeName"] +"\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ obj["Credit"] +"\</td\>\
@@ -323,7 +320,7 @@
                                                         \</table\>\</form\>\
                                                         \<div class=\"am-form-group\"\>\
                                                             \<div class=\"am-u-sm-9 am-u-sm-push-3\"\>\
-                                                        \<a href=\"/admin_add_course?class_uid="+ document.getElementById("input_class").value +"\"\>\<button type=\"button\" class=\"am-btn am-btn-primary\"\>添加课程\</button\>\</a\>\
+                                                        \<a href=\"/admin_add_course?class_uid="+ document.getElementById("class_uid").value +"\"\>\<button type=\"button\" class=\"am-btn am-btn-primary\"\>添加课程\</button\>\</a\>\
                                                         \</div\>\</div\>\</div\>";
 
                                         var tmp = perfix + mid + suffix;
@@ -343,6 +340,7 @@
         <script src="../static/assets/js/amazeui.min.js"></script>
         <script src="../static/assets/js/iscroll.js"></script>
         <script src="../static/assets/js/app.js"></script>
+        <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

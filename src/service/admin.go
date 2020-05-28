@@ -353,7 +353,7 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 
 	log.Info(c.Request.PostForm)
 
-	college_name := c.Request.PostForm.Get("college_name")
+	collegeUIDStr := c.Request.PostForm.Get("college_uid")
 	name := c.Request.PostForm.Get("name")
 	NRIC := c.Request.PostForm.Get("NRIC")
 	teacher_uid_str := c.Request.PostForm.Get("teacher_uid")
@@ -396,14 +396,16 @@ func AdminTeacherManagerHandler(c *gin.Context) {
 			return
 		}
 
-	} else if college_name != "" {
-		if college_name == "不限" {
+	} else if collegeUIDStr != "" {
+		if collegeUIDStr == "不限" {
 			m, _ = api.GetAllTeacherList()
 		} else {
-			m, _ = api.GetTeacherListByCollegeName(college_name)
+			collegeUID, _ := strconv.ParseUint(collegeUIDStr, 10, 64)
+			m, _ = api.GetTeacherListByCollegeUid(collegeUID)
 		}
 	} else {
-		// TODO:
+		log.Error("teacher manager query teacher list fail!")
+		return
 	}
 
 	// 渲染html
@@ -584,9 +586,9 @@ func AdminStudentManagerPostHandler(c *gin.Context) {
 	c.Request.ParseForm()
 	log.Info(c.Request.PostForm)
 	student_name := c.Request.PostForm.Get("student_name")
-	major_name := c.Request.PostForm.Get("major_name")
-	class_name := c.Request.PostForm.Get("class_name")
-	college_name := c.Request.PostForm.Get("college_name")
+	majorUIDStr := c.Request.PostForm.Get("major_uid")
+	classUIDStr := c.Request.PostForm.Get("class_uid")
+	collegeUIDStr := c.Request.PostForm.Get("college_uid")
 	NRIC := c.Request.PostForm.Get("NRIC")
 	student_uid_str := c.Request.PostForm.Get("student_uid")
 
@@ -597,7 +599,10 @@ func AdminStudentManagerPostHandler(c *gin.Context) {
 		student_uid, _ := strconv.ParseUint(student_uid_str, 10, 64)
 		val, err := api.GetStudentByStudentUid(student_uid)
 		if err != nil {
-			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"err_code": 1,
+				"err_msg":  err.Error(),
+			})
 			return
 		}
 		m[student_uid] = val
@@ -613,56 +618,51 @@ func AdminStudentManagerPostHandler(c *gin.Context) {
 			c.HTML(http.StatusInternalServerError, "502.html", nil)
 			return
 		}
-	} else if len(class_name) != 0 {
-		class_uid, err := api.GetClassUidByName(class_name)
-		if err != nil || class_uid == 0 {
-			c.HTML(http.StatusInternalServerError, "502.html", nil)
-			return
-		}
+	} else if len(classUIDStr) != 0 {
+		classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
 		// 通过class_uid 获取所有学生
-		m, err = api.GetStudentListByClassUid(class_uid)
+		m, err = api.GetStudentListByClassUid(classUID)
 		if err != nil {
-			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"err_code": 2,
+				"err_msg":  err.Error(),
+			})
 			return
 		}
-	} else if len(major_name) != 0 {
-		major_uid, err := api.GetMajorUidByName(major_name)
-		log.Info(major_uid)
-		if err != nil || major_uid == 0 {
-			c.HTML(http.StatusInternalServerError, "502.html", nil)
-			return
-		}
-		m, err = api.GetStudentListByMajorUid(major_uid)
+	} else if len(majorUIDStr) != 0 {
+		majorUID, _ := strconv.ParseUint(majorUIDStr, 10, 64)
+		m, err = api.GetStudentListByMajorUid(majorUID)
 		if err != nil {
-			c.HTML(http.StatusInternalServerError, "502.html", nil)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"err_code": 3,
+				"err_msg":  err.Error(),
+			})
 			return
 		}
-	} else if len(college_name) != 0 {
-		if college_name == "不限" {
+	} else if len(collegeUIDStr) != 0 {
+		if collegeUIDStr == "不限" {
 			m, err = api.GetAllStudentList()
 			if err != nil {
-				c.HTML(http.StatusInternalServerError, "502.html", nil)
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"err_code": 4,
+					"err_msg":  err.Error(),
+				})
 				return
 			}
 		} else {
-			college_uid, err := api.GetCollegeUidByName(college_name)
+			collegeUID, _ := strconv.ParseUint(collegeUIDStr, 10, 64)
+			m, err = api.GetStudentListByCollegeUid(collegeUID)
 			if err != nil {
-				c.HTML(http.StatusInternalServerError, "502.html", nil)
-				return
-			}
-
-			m, err = api.GetStudentListByCollegeUid(college_uid)
-			if err != nil {
-				c.HTML(http.StatusInternalServerError, "502.html", nil)
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"err_code": 5,
+					"err_msg":  err.Error(),
+				})
 				return
 			}
 		}
 	} else {
-		m, err = api.GetAllStudentList()
-		if err != nil {
-			c.HTML(http.StatusInternalServerError, "502.html", nil)
-			return
-		}
+		log.Error("student manager query student list fail!")
+		return
 	}
 	var result []struct {
 		StudentName string

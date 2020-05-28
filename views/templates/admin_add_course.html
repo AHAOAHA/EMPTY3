@@ -216,75 +216,50 @@
                     <form action="/admin_teacher_manager" method="post" id="form1" class="am-form am-form-horizontal"
                         name="input_form">
                         <div class="am-form-group">
-                            <label for="user-name" class="am-u-sm-3 am-form-label">课程： </label>
-
+                            <label for="user-name" class="am-u-sm-3 am-form-label">学院： </label>
                             <div class="am-u-sm-9">
-                                <input type="hidden" id="class_uid" value={{.class_uid}}>
-                                <select id="course_uid" name="course_uid" value="">
-
+                                <select id="college_uid" name="college_uid" onchange="make_major_and_teacher_and_course_options()">
+                                    <option value="">请选择所属学院</option>
                                 </select>
-
-                                
-
-
-                                <script type="text/javascript">
-                                    function get_course_name() {
-
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/get_all_course_name",
-                                            dataType: "json",
-                                            success: function (data) {
-                                                addOption(data);
-                                            }
-                                        })
-                                    }
-
-                                    function get_teacher_name() {
-
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/get_all_teacher_name",
-                                            dataType: "json",
-                                            success: function (data) {
-                                                var ss = document.getElementById("teacher_uid");
-                                                $.each(data, function (index, val) {
-                                                    var op = document.createElement("option");
-                                                    op.setAttribute("value", val["TeacherUid"]);
-                                                    op.innerHTML = val["TeacherName"];
-                                                    ss.appendChild(op);
-                                                })
-                                            }
-                                        })
-                                    }
-                                    function addOption(data) {
-                                        console.log(data);
-                                        var ss = document.getElementById("course_uid");
-                                        $.each(data, function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["CourseUid"]);
-                                            op.innerHTML = val["CourseName"];
-                                            ss.appendChild(op);
-                                        })
-                                    }
-                                    window.onload = function () {
-                                        get_course_name();
-                                        get_teacher_name();
-                                    }
-                                </script>
                             </div>
                         </div>
+
+                        <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">专业： </label>
+                            <div class="am-u-sm-9">
+                                <select id="major_uid" name="major_uid" onchange="make_course_options()">
+                                    <option value="">请选择所属专业</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">课程： </label>
+                            <div class="am-u-sm-9">
+                                <input type="hidden" id="class_uid">
+                                <select id="course_uid" name="course_uid" value="">
+                                    <option value="">请选择课程</option>
+                                </select>                           
+                            </div>
+                        </div>
+                    
 
                         <div class="am-form-group">
                             <label for="user-name" class="am-u-sm-3 am-form-label">授课教师： </label>
 
                             <div class="am-u-sm-9">
                                 <select id="teacher_uid" name="teacher_uid" value="">
-
+                                    <option value="">请选择授课教师</option>
                                 </select>
                                 </div>
                             </div>
 
+
+                            <script type="text/javascript">
+                               window.onload = function () {
+                                make_college_options();
+                            }
+                            </script>
 
                         <div class="am-form-group">
                             <div class="am-u-sm-9 am-u-sm-push-3">
@@ -327,6 +302,7 @@
         <script src="../static/assets/js/amazeui.min.js"></script>
         <script src="../static/assets/js/iscroll.js"></script>
         <script src="../static/assets/js/app.js"></script>
+        <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

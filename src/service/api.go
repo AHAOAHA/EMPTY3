@@ -165,3 +165,54 @@ func GetAllTeacherInfoHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, result)
 }
+
+func GetTeacherInfoHandler(c *gin.Context) {
+	collegeUIDStr := c.Query("college_uid")
+	collegeUID, _ := strconv.ParseUint(collegeUIDStr, 10, 64)
+
+	data, _ := api.GetTeacherInfoByCollegeUid(collegeUID)
+	var result []struct {
+		TeacherUid  uint64
+		TeacherName string
+		CollegeUid  uint64
+	}
+
+	for _, v := range data {
+		result = append(result, struct {
+			TeacherUid  uint64
+			TeacherName string
+			CollegeUid  uint64
+		}{
+			v.GetTeacherUid(),
+			v.GetName(),
+			v.GetCollegeUid(),
+		})
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func GetCourseInfoByCollegeUidHandler(c *gin.Context) {
+	collegeUIDStr := c.Query("college_uid")
+	collegeUID, _ := strconv.ParseUint(collegeUIDStr, 10, 64)
+
+	data, _ := api.GetCourseByCollegeUid(collegeUID)
+	var result []struct {
+		CourseUid  uint64
+		CourseName string
+		CollegeUid uint64
+	}
+	for _, v := range data {
+		result = append(result, struct {
+			CourseUid  uint64
+			CourseName string
+			CollegeUid uint64
+		}{
+			v.GetCourseUid(),
+			v.GetName(),
+			v.GetCollegeUid(),
+		})
+	}
+
+	c.JSON(http.StatusOK, result)
+}

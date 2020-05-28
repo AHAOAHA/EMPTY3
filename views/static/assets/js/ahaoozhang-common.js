@@ -115,3 +115,55 @@ function make_class_options() {
         }
     })
 }
+
+function make_teacher_options() {
+    $.ajax({
+        type: "GET",
+        url: "/get_teacher_info?college_uid=" + document.getElementById("college_uid").value,
+        dataType: "json",
+        success: function (data) {
+            $("#teacher_uid").empty();
+            var ss = document.getElementById("teacher_uid");
+            var op = document.createElement("option");
+            op.setAttribute("value", "");
+            op.innerHTML = "请选择授课教师";
+            ss.appendChild(op);
+            
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["TeacherUid"]);
+                op.innerHTML = val["TeacherName"];
+                ss.appendChild(op);
+            })
+        }
+    })
+}
+
+function make_course_options() {
+    $.ajax({
+        type: "GET",
+        url: "/get_course_info?college_uid=" + document.getElementById("college_uid").value,
+        dataType: "json",
+        success: function (data) {
+            $("#course_uid").empty();
+            var ss = document.getElementById("course_uid");
+            var op = document.createElement("option");
+            op.setAttribute("value", "");
+            op.innerHTML = "请选择课程";
+            ss.appendChild(op);
+            
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["CourseUid"]);
+                op.innerHTML = val["CourseName"];
+                ss.appendChild(op);
+            })
+        }
+    })
+}
+
+function make_major_and_teacher_and_course_options() {
+    make_course_options();
+    make_teacher_options();
+    make_major_options();
+}
