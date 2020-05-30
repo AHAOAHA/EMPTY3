@@ -147,7 +147,7 @@
 
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                课程达成度计算 
+                课程达成度计算
             </div>
             <ol class="am-breadcrumb">
             </ol>
@@ -306,8 +306,20 @@
                         }
 
                         function GetXlsxFunc() {
+                            var myDate = new Date();
+                            myDate.getFullYear();
+                            myDate.getMonth();
+                            myDate.getDate();
+                            myDate.getDay();
+                            myDate.getTime();
+                            myDate.getHours();
+                            myDate.getMinutes();
+                            myDate.getSeconds();
+                            myDate.getMilliseconds();
+                            myDate.toLocaleDateString();
+                            var mytime = myDate.toLocaleTimeString();
                             var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
-                            openDownloadDialog(sheet2blob(sheet), '导出.xlsx');
+                            openDownloadDialog(sheet2blob(sheet), mytime + ".xlsx");
                         }
 
                     </script>
@@ -317,7 +329,7 @@
                 <div class="am-u-sm-9 am-u-sm-push-3">
                     <button type="button" id="submit_button" class="am-btn am-btn-primary"
                         onclick="GetReach()">计算达成度</button>
-                        <button type="button" id="submit_button" class="am-btn am-btn-primary"
+                    <button type="button" id="submit_button" class="am-btn am-btn-primary"
                         onclick="GetXlsxFunc()">导出</button>
                 </div>
                 </form>

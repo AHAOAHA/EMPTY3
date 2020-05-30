@@ -53,18 +53,7 @@
                         var sec_username_hide = document.getElementById("sec_username_hide").value;
                         var sec_password_hide = document.getElementById("sec_password_hide").value;
                         document.getElementById("submit_sec_password_hide").value = md5(sec_password_hide);
-                        $.ajax({
-                                type: "post",
-                                dataType: "html",
-                                url: "/sign_up",
-                                data: $('#admin_login_form').serialize(),
-                                success: function (result) {
-                                        document.write(result);
-                                },
-                                error: function (result) {
-                                        alert("登录信息验证失败！");
-                                }
-                        })
+
                 }
                 function teacher_login() {
                         // 密码单向加密
@@ -75,18 +64,7 @@
                         // console.log(document.getElementById("tea_password_hide").value);
 
                         //alert(document.getElementById("submit_tea_password_hide").value);
-                        $.ajax({
-                                type: "post",
-                                dataType: "html",
-                                url: "/sign_up",
-                                data: $('#teacher_login_form').serialize(),
-                                success: function (result) {
-                                        document.write(result);
-                                },
-                                error: function (result) {
-                                        alert("登录信息验证失败！");
-                                }
-                        })
+
                 }
 
                 function student_login() {
@@ -94,25 +72,25 @@
                         var stu_password_hide = document.getElementById("stu_password_hide").value;
                         document.getElementById("submit_stu_password_hide").value = md5(stu_password_hide);
                         // alert(document.getElementById("submit_stu_password_hide").value);
-                        $.ajax({
-                                type: "post",
-                                dataType: "html",
-                                url: "/sign_up",
-                                data: $('#student_login_form').serialize(),
-                                success: function (result) {
-                                        document.write(result);
-                                },
-                                error: function (result) {
-                                        alert("登录信息验证失败！");
-                                }
-                        })
+
                 }
+
+                window.onload = function () {
+                        var msg = document.getElementById("msg").value;
+                        if (msg != "") {
+                                alert(msg);
+                                return
+                        }
+                }
+
         </script>
         <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon" />
 </head>
 
 <body>
+
+        <input type="hidden" value="{{.msg}}" id="msg">
         <div id="tab">
                 <ul class="tab_menu">
                         <li class="selected">学生登录</li>
@@ -123,7 +101,7 @@
                         <!-- 学生登录开始 -->
                         <div>
                                 <div class="stu_error_box"></div>
-                                <form id="student_login_form" class="stu_login_error">
+                                <form id="student_login_form" method="post" action="sign_up" class="stu_login_error">
                                         <div id="username">
                                                 <label>学&nbsp;&nbsp;&nbsp;号：</label>
                                                 <input type="text" id="stu_username_hide" name="username" value="" />
@@ -138,7 +116,7 @@
                                                 <input type="hidden" name="type" value="student">
                                         </div>
                                         <div id="login">
-                                                <button type="button" onclick="student_login()">登录</button>
+                                                <button type="submit" onclick="student_login()">登录</button>
                                         </div>
                                 </form>
                         </div>
@@ -146,7 +124,7 @@
                         <!-- 老师登录开始-->
                         <div class="hide">
                                 <div class="tea_error_box"></div>
-                                <form id="teacher_login_form" class="tea_login_error">
+                                <form id="teacher_login_form"  method="post" action="sign_up" class="tea_login_error">
                                         <div id="username">
                                                 <label>教工号：</label>
                                                 <input type="text" id="tea_username_hide" name="username" value="" />
@@ -161,7 +139,7 @@
                                                 <input type="hidden" name="type" value="teacher">
                                         </div>
                                         <div id="login">
-                                                <button type="button" onclick="teacher_login()">登录</button>
+                                                <button type="submit" onclick="teacher_login()">登录</button>
                                         </div>
                                 </form>
                         </div>
@@ -169,7 +147,7 @@
                         <!-- 教务登录开始-->
                         <div class="hide">
                                 <div class="sec_error_box"></div>
-                                <form id="admin_login_form" class="sec_login_error">
+                                <form id="admin_login_form" method="post" action="sign_up"  class="sec_login_error">
                                         <div id="username">
                                                 <label>教务号：</label>
                                                 <input type="text" id="sec_username_hide" name="username" />
@@ -181,7 +159,7 @@
                                         <input type="hidden" id="submit_sec_password_hide" name="password"></input>
 
                                         <div id="login">
-                                                <button type="button" onclick="admin_login()">登录</button>
+                                                <button type="submit" onclick="admin_login()">登录</button>
                                         </div>
                                         <div id="type">
                                                 <input type="hidden" name="type" value="admin">
