@@ -155,6 +155,7 @@
                                 <tr>
                                     <th class="table-id">序号</th>
                                     <th class="table-title">班级</th>
+                                    <th class="table-title">班级代码</th>
                                     <th class="table-title">课程名</th>
                                     <th class="table-set">操作</th>
                                 </tr>
@@ -171,11 +172,12 @@
                                           tr +=  "\<tr\>\
                                                         \<td\>"+ count++ + "\</td\>\
                                                         \<td\>"+ val["ClassName"] + "\</td\>\
+                                                        \<td\>"+ val["ClassUid"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["CourseName"] + "\</td\>\
                                                         \<td\>\
                                                 \<div class=\"am-btn-toolbar\"\>\
                                                     \<div class=\"am-btn-group am-btn-group-xs\"\>\
-                                                        \<a href=\"admin_edit_student?student_uid="+ "TODO" + "\"\>提交成绩\</a\>\
+                                                        \<a href=\"teacher_input_score_from_query?class_uid="+ val["ClassUid"]+ "&course_uid="+ val["CourseUid"] + "\"\>提交成绩\</a\>\
                                                     \</div\>\
                                                 \</div\>\
                                             \</td\>\

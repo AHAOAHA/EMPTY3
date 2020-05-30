@@ -99,16 +99,15 @@ func TeacherGetTeacherCoursesHandler(c *gin.Context) {
 	var t context.TeacherContext
 	// check cookie
 	if err := t.CheckCookies(c, "user_cookie"); err != nil {
-		c.HTML(http.StatusBadRequest, "401.html", nil)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err_code": 1,
+			"err_msg":  "登录状态错误！",
+		})
 		return
 	}
 
-	coursesInfo, err := api.GetTeacherCourseByTeacherUid(t.Info.GetTeacherUid())
-	if err != nil {
-		// err
-	}
+	coursesInfo, _ := api.GetTeacherCourseByTeacherUid(t.Info.GetTeacherUid())
 
-	log.Infof("%+v", coursesInfo)
 	result := []struct {
 		CourseUid  uint64
 		CourseName string
@@ -136,12 +135,7 @@ func TeacherGetTeacherCoursesHandler(c *gin.Context) {
 		})
 	}
 
-	rsp, err := json.Marshal(result)
-	if err != nil {
-		log.Error(err)
-	}
-	log.Infof("%v", string(rsp))
-	c.JSON(http.StatusOK, string(rsp))
+	c.JSON(http.StatusOK, result)
 }
 
 // json format, class name, course name, and operator info.
@@ -158,15 +152,21 @@ func TeacherGetCourseClassHandler(c *gin.Context) {
 	result, _ := api.GetTeacherCourseClass(t.Info.GetTeacherUid(), course_uid)
 	data := []struct {
 		ClassName  string
+		ClassUid   uint64
 		CourseName string
+		CourseUid  uint64
 	}{}
 	for _, v := range result {
 		data = append(data, struct {
 			ClassName  string
+			ClassUid   uint64
 			CourseName string
+			CourseUid  uint64
 		}{
 			v.GetName(),
+			v.GetClassUid(),
 			api.GetCourseNameByCourseUid(course_uid),
+			course_uid,
 		})
 	}
 	rsp, _ := json.Marshal(data)
@@ -222,14 +222,39 @@ func TeacherGetClassHandler(c *gin.Context) {
 	var t context.TeacherContext
 	// check cookie
 	if err := t.CheckCookies(c, "user_cookie"); err != nil {
-		c.HTML(http.StatusBadRequest, "401.html", nil)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err_code": 1,
+			"err_msg":  "登录状态错误！",
+		})
 		return
 	}
 
-	teacher_uid := t.Info.GetTeacherUid()
-	data, _ := api.GetTeacherClassByTeacherUid(teacher_uid)
-	rsp, _ := json.Marshal(data)
-	c.JSON(http.StatusOK, string(rsp))
+	courseUIDStr := c.Query("course_uid")
+	courseUID, err := strconv.ParseUint(courseUIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err_code": 1,
+			"err_msg":  "请求参数错误！",
+		})
+		return
+	}
+
+	teacherUID := t.Info.GetTeacherUid()
+	data, _ := api.GetTeacherClassByTeacherUidAndCourseUid(teacherUID, courseUID)
+	var result []struct {
+		ClassName string
+		ClassUid  uint64
+	}
+	for _, v := range data {
+		result = append(result, struct {
+			ClassName string
+			ClassUid  uint64
+		}{
+			v.GetName(),
+			v.GetClassUid(),
+		})
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func TeacherInputScoreFirstPostHandler(c *gin.Context) {
@@ -333,6 +358,58 @@ func TeacherInputScoreThirdHandler(c *gin.Context) {
 		"course_data":    string(course_rsp),
 		"students_score": string(student_score_rsp),
 	})
+}
+
+func TeacherInputScoreFromQueryHandler(c *gin.Context) {
+	var t context.TeacherContext
+	// check cookie
+	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		c.HTML(http.StatusBadRequest, "401.html", nil)
+		return
+	}
+
+	courseUIDStr := c.Query("course_uid")
+	classUIDStr := c.Query("class_uid")
+	courseUID, _ := strconv.ParseUint(courseUIDStr, 10, 64)
+	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
+
+	// 获取学生列表
+	stuData, _ := api.GetStudentListByClassUid(classUID)
+	studentRsp, _ := json.Marshal(stuData)
+	courseName, _ := api.GetNamebyUid(courseUID, "course", "course_uid")
+
+	// 获取成绩的占比情况
+	coursePercent, _ := api.GetCoursePercent(courseUID)
+
+	// 获取学生的成绩列表
+	studentScore, _ := api.GetStudentScoreByClassUidAndCourseUid(classUID, courseUID)
+	studentScoreRsp, _ := json.Marshal(studentScore)
+	courseData := struct {
+		CourseName   string
+		CourseUid    uint64
+		UsualPercent uint32
+		MidPercent   uint32
+		EndPercent   uint32
+		Type         DataCenter.CourseScorePercentInfo_PERCENT_TYPE
+	}{
+		courseName,
+		courseUID,
+		coursePercent.GetUsualPercent(),
+		coursePercent.GetMidPercent(),
+		coursePercent.GetEndPercent(),
+		coursePercent.GetType(),
+	}
+
+	courseRsp, _ := json.Marshal(courseData)
+
+	// 组织返回值
+	c.HTML(http.StatusOK, "teacher_input_score_third.html", gin.H{
+		"loginer_name":   t.Info.GetName(),
+		"student_data":   string(studentRsp),
+		"course_data":    string(courseRsp),
+		"students_score": string(studentScoreRsp),
+	})
+
 }
 
 func TeacherQueryScoreFirstHandler(c *gin.Context) {

@@ -82,7 +82,7 @@ function make_major_options() {
             op.setAttribute("value", "");
             op.innerHTML = "请选择所属专业";
             ss.appendChild(op);
-            
+
             $.each(data, function (index, val) {
                 var op = document.createElement("option");
                 op.setAttribute("value", val["MajorUid"]);
@@ -128,7 +128,7 @@ function make_teacher_options() {
             op.setAttribute("value", "");
             op.innerHTML = "请选择授课教师";
             ss.appendChild(op);
-            
+
             $.each(data, function (index, val) {
                 var op = document.createElement("option");
                 op.setAttribute("value", val["TeacherUid"]);
@@ -151,7 +151,7 @@ function make_course_options() {
             op.setAttribute("value", "");
             op.innerHTML = "请选择课程";
             ss.appendChild(op);
-            
+
             $.each(data, function (index, val) {
                 var op = document.createElement("option");
                 op.setAttribute("value", val["CourseUid"]);
@@ -166,4 +166,56 @@ function make_major_and_teacher_and_course_options() {
     make_course_options();
     make_teacher_options();
     make_major_options();
+}
+
+function make_teacher_course_options() {
+    // 获取教师所授课程
+    $.ajax({
+        type: "GET",
+        url: "/get_teacher_courses",
+        dataType: "json",
+        success: function (data) {
+            $("#input_course").empty();
+            var ss = document.getElementById("input_course");
+            var op = document.createElement("option");
+            op.setAttribute("value", "");
+            op.innerHTML = "请选择课程";
+            ss.append(op);
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["CourseUid"]);
+                op.innerHTML = val["CourseName"];
+                ss.appendChild(op);
+            })
+        },
+        error: function (data) {
+            alert(data["err_msg"]);
+        }
+    })
+}
+
+function make_teacher_course_class_options() {
+    $.ajax({
+        type: "GET",
+        url: "/get_teacher_class?course_uid=" + document.getElementById("input_course").value,
+        dataType: "json",
+        success: function (data) {
+            $("#input_class").empty();
+            var ss = document.getElementById("input_class");
+            var op = document.createElement("option");
+            op.setAttribute("value", "");
+            op.innerHTML = "请选择班级";
+            ss.appendChild(op);
+            $.each(data, function (index, val) {
+                var op = document.createElement("option");
+                op.setAttribute("value", val["ClassUid"]);
+                op.innerHTML = val["ClassName"];
+                ss.appendChild(op);
+            })
+
+        },
+        error: function (data) {
+            alert(data["err_msg"]);
+        }
+    })
 }

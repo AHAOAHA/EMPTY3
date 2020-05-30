@@ -670,6 +670,40 @@ func GetTeacherClassByTeacherUid(teacher_uid uint64) ([]DataCenter.ClassInfo, er
 	return classInfo, nil
 }
 
+func GetTeacherClassByTeacherUidAndCourseUid(teacherUID uint64, courseUID uint64) ([]DataCenter.ClassInfo, error) {
+	m, err := dao.DataBase.Queryf("select `class_uid` from `student_course` where `teacher_uid`='%d' and `course_uid`='%d'", teacherUID, courseUID)
+	if err != nil {
+		return nil, err
+	}
+
+	var classes []string
+	for _, v := range m {
+		classes = append(classes, string(v["class_uid"].([]uint8)))
+	}
+
+	var classInfo []DataCenter.ClassInfo
+	for _, v := range classes {
+		sm, err := dao.DataBase.Queryf("select * from `class` where `class_uid`='%s'", v)
+		if err != nil || len(sm) != 1 {
+			continue
+		}
+
+		college_uid, _ := strconv.ParseUint(string(sm[0]["college_uid"].([]uint8)), 10, 64)
+		major_uid, _ := strconv.ParseUint(string(sm[0]["major_uid"].([]uint8)), 10, 64)
+		class_uid, _ := strconv.ParseUint(string(sm[0]["class_uid"].([]uint8)), 10, 64)
+		class_name := string(sm[0]["name"].([]uint8))
+		classInfo = append(classInfo, DataCenter.ClassInfo{
+			CollegeUid: college_uid,
+			ClassUid:   class_uid,
+			Name:       class_name,
+			MajorUid:   major_uid,
+			CreateTime: string(sm[0]["create_time"].([]uint8)),
+		})
+	}
+
+	return classInfo, nil
+}
+
 func IsCourseBelongClass(course_uid uint64, class_uid uint64) bool {
 	m, err := dao.DataBase.Queryf("select `student_uid` from `student_course` where `course_uid`='%d' and `class_uid`='%d'", course_uid, class_uid)
 	if err != nil || len(m) == 0 {

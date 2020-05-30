@@ -179,8 +179,8 @@
                                 <div class="am-form-group">
                                     <label for="name" class="am-u-sm-3 am-form-label">课程</label>
                                     <div class="am-u-sm-9">
-                                        <select id="input_course" name="course_uid" value="">
-
+                                        <select id="input_course" name="course_uid" value="" onchange="make_teacher_course_class_options()">
+                                            <option>请选择课程</option>
                                         </select>
                                     </div>
                                 </div>
@@ -189,61 +189,16 @@
                                     <label for="name" class="am-u-sm-3 am-form-label">班级</label>
                                     <div class="am-u-sm-9">
                                         <select id="input_class" name="class_uid" value="">
-
+                                            <option>请选择班级</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <script type="text/javascript">
-                                    function GetTeacherCourses() {
-                                        // 获取教师所授课程
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/get_teacher_course",
-                                            dataType: "json",
-                                            success: function (data) {
-                                                addCourseOption(data);
-                                            }
-                                        })
-                                    }
-
-                                    function GetTeacherClasses() {
-                                        $.ajax({
-                                            type: "GET",
-                                            url: "/get_teacher_class",
-                                            dataType: "json",
-                                            success: function (data) {
-                                                addClassOption(data);
-                                            }
-                                        })
-                                    }
-
-                                    function addCourseOption(result) {
-                                        // alert(result);
-                                        var ss = document.getElementById("input_course");
-                                        $.each(JSON.parse(result), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["CourseUid"]);
-                                            op.innerHTML = val["Name"];
-                                            ss.appendChild(op);
-                                        })
-
-                                    }
-
-                                    function addClassOption(result) {
-                                        //alert(result);
-                                        var ss = document.getElementById("input_class");
-                                        $.each(JSON.parse(result), function (index, val) {
-                                            var op = document.createElement("option");
-                                            op.setAttribute("value", val["ClassUid"]);
-                                            op.innerHTML = val["Name"];
-                                            ss.appendChild(op);
-                                        })
-                                    }
+                                    
 
                                     window.onload = function () {
-                                        GetTeacherCourses();
-                                        GetTeacherClasses();
+                                        make_teacher_course_options();
                                     }
 
 
@@ -277,6 +232,7 @@
             <script src="../static/assets/js/amazeui.min.js"></script>
             <script src="../static/assets/js/iscroll.js"></script>
             <script src="../static/assets/js/app.js"></script>
+            <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

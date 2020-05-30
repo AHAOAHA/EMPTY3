@@ -97,6 +97,7 @@ func main() {
 	r.GET("/get_teacher_course", service.TeacherGetCourseHandler)
 	r.GET("/get_teacher_class", service.TeacherGetClassHandler)
 	r.GET("/teacher_course_reach", service.TeacherCourseReachFirstHandler)
+	r.GET("/teacher_input_score_from_query", service.TeacherInputScoreFromQueryHandler)
 	r.POST("/update_teacher_info", service.UpdateTeacherPersonInfoHandler)
 	// r.POST("/teacher_input_score_first", service.TeacherInputScoreFirstPostHandler)
 	r.POST("/teacher_input_score_third", service.TeacherInputScoreThirdHandler)
