@@ -151,206 +151,242 @@
             </div>
             <ol class="am-breadcrumb">
             </ol>
-            指标1目标达成度：<input type="number" id="flag_1_wander" step="0.01">
-            指标2目标达成度：<input type="number" id="flag_2_wander" step="0.01"><br />
-            平时成绩指标1总分：<input type="number" id="flag_1_uss" step="0.01">
-            平时成绩指标2总分：<input type="number" id="flag_2_uss" step="0.01"><br />
-            期中成绩指标1总分：<input type="number" id="flag_1_mss" step="0.01">
-            期中成绩指标2总分：<input type="number" id="flag_2_mss" step="0.01"><br />
-            期末成绩指标1总分：<input type="number" id="flag_1_ess" step="0.01">
-            期末成绩指标2总分：<input type="number" id="flag_2_ess" step="0.01">
             <div class="am-g tpl-amazeui-form" id="main_div">
                 <div class="am-g">
                     <form class="am-form">
-                        <table id="score_table" class="am-table am-table-striped am-table-hover table-main">
+                        <table id="score_table" style="float:right" class="am-table am-table-striped am-table-hover table-main">
                             <thead>
                                 <tr>
                                     <th class="table-id">序号</th>
                                     <th class="table-title">姓名</th>
                                     <th class="table-set">学号</th>
                                     <th class="table-set">班级</th>
-                                    <th class="table-set">课程
-                </div>
-                <th class="table-title">平时指标点1成绩</th>
-                <th class="table-title">平时指标点2成绩</th>
-                <th class="table-set">期中指标点1成绩</th>
-                <th class="table-set">期中指标点2成绩</th>
-                <th class="table-set">期末指标点1成绩</th>
-                <th class="table-set">期末指标点2成绩</th>
-                </tr>
-                </thead>
-                <tbody id="main_tbody">
-                    <script type="text/javascript">
-                        function makePages() {
-                            var student_data = document.getElementById("student_score").value;
-                            // alert(student_data);
+                                    <th class="table-set">课程</th>
+                                    <th class="table-title">平时指标点1成绩</th>
+                                    <th class="table-title">平时指标点2成绩</th>
+                                    <th class="table-set">期中指标点1成绩</th>
+                                    <th class="table-set">期中指标点2成绩</th>
+                                    <th class="table-set">期末指标点1成绩</th>
+                                    <th class="table-set">期末指标点2成绩</th>
+                                </tr>
+                            </thead>
+                            <tbody id="main_tbody">
+                                <script type="text/javascript">
+                                    function makePages() {
+                                        var student_data = document.getElementById("student_score").value;
+                                        // alert(student_data);
 
-                            var json_stu_result = JSON.parse(student_data);
-
-
-                            var count = 1;
-                            var tr = "";
-                            $.each(json_stu_result, function (index, val) {
-                                tr += "\<tr\>\
-                                                        \<td\>"+ count++ + "\</td\>\
-                                                        \<td\>"+ val["StudentName"] + "\</td\>\
-                                                        \<td\>"+ val["StudentUid"] + "\</td\>\
-                                                        \<td\>"+ val["ClassName"] + "\</td\>\
-                                                        \<td\>"+ val["CourseName"] + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"us_flag_1_" + val["StudentUid"] + "\" onchange=\"updateUsualFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_us_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"ms_flag_1_" + val["StudentUid"] + "\" onchange=\"updateMidFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_ms_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                                        \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"es_flag_1_" + val["StudentUid"] + "\" onchange=\"updateEndFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_es_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                        \</tr\>";
-                            })
-                            $('#main_tbody').append(tr);
-                        }
-
-                        window.onload = function () {
-                            makePages();
-                        }
-
-                        function GetUsualScore(studentUid) {
-                            var score_data = document.getElementById("student_score").value;
-                            var ret = 0;
-                            $.each(JSON.parse(score_data), function (index, val) {
-                                if (val["StudentUid"] == studentUid) {
-
-                                    ret = val["UsualScore"];
-                                }
-                            })
-                            return ret;
-                        }
-                        function GetMidScore(studentUid) {
-                            var score_data = document.getElementById("student_score").value;
-                            var ret = 0;
-                            $.each(JSON.parse(score_data), function (index, val) {
-                                if (val["StudentUid"] == studentUid) {
-                                    ret = val["MidScore"];
-                                }
-                            })
-                            return ret;
-                        }
-                        function GetEndScore(studentUid) {
-                            var score_data = document.getElementById("student_score").value;
-                            var ret = 0;
-                            $.each(JSON.parse(score_data), function (index, val) {
-                                if (val["StudentUid"] == studentUid) {
-                                    ret = val["EndScore"];
-                                }
-                            })
-                            return ret;
-                        }
-                        function updateUsualFlag2Score(studentUid) {
-                            var s1 = document.getElementById("us_flag_1_" + studentUid).value;
-                            var s2 = Number(GetUsualScore(studentUid)) - Number(s1);
-                            document.getElementById("td_us_" + studentUid).value = s2;
-                        }
-                        function updateMidFlag2Score(studentUid) {
-                            var s1 = document.getElementById("ms_flag_1_" + studentUid).value;
-                            var s2 = Number(GetMidScore(studentUid)) - Number(s1);
-                            document.getElementById("td_ms_" + studentUid).value = s2;
-                        }
-                        function updateEndFlag2Score(studentUid) {
-                            var s1 = document.getElementById("es_flag_1_" + studentUid).value;
-                            var s2 = Number(GetEndScore(studentUid)) - Number(s1);
-                            document.getElementById("td_es_" + studentUid).value = s2;
-                        }
-
-                        function GetReach() {
-                            var score_data = document.getElementById("student_score").value;
-                            var percent = document.getElementById("percent").value;
-                            var sum_ms_f1 = 0;
-                            var sum_ms_f2 = 0;
-                            var sum_us_f1 = 0;
-                            var sum_us_f2 = 0;
-                            var sum_es_f1 = 0;
-                            var sum_es_f2 = 0;
-                            $.each(JSON.parse(score_data), function (index, val) {
-                                sum_ms_f1 = Number(sum_ms_f1) + Number(document.getElementById("ms_flag_1_" + val["StudentUid"]).value);
-                                sum_us_f1 = Number(sum_us_f1) + Number(document.getElementById("us_flag_1_" + val["StudentUid"]).value);
-                                sum_es_f1 = Number(sum_es_f1) + Number(document.getElementById("es_flag_1_" + val["StudentUid"]).value);
-
-                                sum_ms_f2 = Number(sum_ms_f2) + Number(document.getElementById("td_ms_" + val["StudentUid"]).value);
-                                sum_us_f2 = Number(sum_us_f2) + Number(document.getElementById("td_us_" + val["StudentUid"]).value);
-                                sum_es_f2 = Number(sum_es_f2) + Number(document.getElementById("td_es_" + val["StudentUid"]).value);
-                            })
-
-                            var uss_f1 = Number(document.getElementById("flag_1_uss").value);
-                            var uss_f2 = Number(document.getElementById("flag_2_uss").value);
-                            var mss_f1 = Number(document.getElementById("flag_1_mss").value);
-                            var mss_f2 = Number(document.getElementById("flag_2_mss").value);
-                            var ess_f1 = Number(document.getElementById("flag_1_ess").value);
-                            var ess_f2 = Number(document.getElementById("flag_2_ess").value);
-
-                            var percent = JSON.parse(document.getElementById("percent").value);
-                            var up = Number(percent["UsualPercent"]);
-                            var mp = Number(percent["MidPercent"]);
-                            var ep = Number(percent["EndPercent"]);
-
-                            var ave_us_f1 = Number(sum_us_f1) / Number(document.getElementById("flag_1_uss").value);
-                            var ave_us_f2 = Number(sum_us_f2) / Number(document.getElementById("flag_2_uss").value);
-                            var ave_ms_f1 = Number(sum_ms_f1) / Number(document.getElementById("flag_1_mss").value);
-                            var ave_ms_f2 = Number(sum_ms_f2) / Number(document.getElementById("flag_2_mss").value);
-                            var ave_es_f1 = Number(sum_es_f1) / Number(document.getElementById("flag_1_ess").value);
-                            var ave_es_f2 = Number(sum_es_f2) / Number(document.getElementById("flag_2_ess").value);
-
-                            var result_f1 = ((ave_us_f1 / uss_f1) * (up / 100) + (ave_ms_f1 / mss_f1) * (mp / 100) + (ave_es_f1 / ess_f1) * (ep / 100)) * Number(document.getElementById("flag_1_wander").value);
-                            var result_f2 = ((ave_us_f2 / uss_f2) * (up / 100) + (ave_ms_f2 / mss_f2) * (mp / 100) + (ave_es_f2 / ess_f2) * (ep / 100)) * Number(document.getElementById("flag_2_wander").value);
-                            console.log(result_f2);
-                            document.getElementById("flag_2_fact").value = result_f2.toFixed(4);
-                            document.getElementById("flag_1_fact").value = result_f1.toFixed(4);
-
-                        }
-
-                        function GetXlsxFunc() {
-                            var myDate = new Date();
-                            myDate.getFullYear();
-                            myDate.getMonth();
-                            myDate.getDate();
-                            myDate.getDay();
-                            myDate.getTime();
-                            myDate.getHours();
-                            myDate.getMinutes();
-                            myDate.getSeconds();
-                            myDate.getMilliseconds();
-                            myDate.toLocaleDateString();
-                            var mytime = myDate.toLocaleTimeString();
-                            var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
-                            openDownloadDialog(sheet2blob(sheet), mytime + ".xlsx");
-                        }
-
-                    </script>
-
-                </tbody>
-                </table>
-                <div class="am-u-sm-9 am-u-sm-push-3">
-                    <button type="button" id="submit_button" class="am-btn am-btn-primary"
-                        onclick="GetReach()">计算达成度</button>
-                    <button type="button" id="submit_button" class="am-btn am-btn-primary"
-                        onclick="GetXlsxFunc()">导出</button>
-                </div>
-                </form>
-
-            </div><br />
-            指标点1实际达成度：<input type="number" id="flag_1_fact" step="0.01" readonly="readonly">
-            指标点2实际达成度：<input type="number" id="flag_2_fact" step="0.01" readonly="readonly">
-        </div>
+                                        var json_stu_result = JSON.parse(student_data);
 
 
+                                        var count = 1;
+                                        var tr = "";
+                                        if (json_stu_result != null) {
+                                            $.each(json_stu_result, function (index, val) {
+                                                tr += "\<tr\>\
+                                                            \<td\>"+ count++ + "\</td\>\
+                                                            \<td\>"+ val["StudentName"] + "\</td\>\
+                                                            \<td\>"+ val["StudentUid"] + "\</td\>\
+                                                            \<td\>"+ val["ClassName"] + "\</td\>\
+                                                            \<td\>"+ val["CourseName"] + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"us_flag_1_" + val["StudentUid"] + "\" onchange=\"updateUsualFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_us_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"ms_flag_1_" + val["StudentUid"] + "\" onchange=\"updateMidFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                                \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_ms_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"es_flag_1_" + val["StudentUid"] + "\" onchange=\"updateEndFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                                \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_es_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
+                                            \</tr\>";
+                                            })
+                                            $('#main_tbody').append(tr);
+                                        }
+                                        var footer = "\<tr\>\
+                                                        \<td colspan=\"11\" style=\"text-align:center;vertical-align:middle;\"\>\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td colspan=\"11\" style=\"text-align:center;vertical-align:middle;\"\>成绩属性设置\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td\ colspan=\"3\">指标1目标达成度：\</td\>\
+                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_wander\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"1\">指标2目标达成度：\</td\>\
+                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_wander\" step=\"0.01\"\>\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td\ colspan=\"3\">平时成绩指标1总分：\</td\>\
+                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_uss\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"1\">平时成绩指标2总分：\</td\>\
+                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_uss\" step=\"0.01\"\>\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td\ colspan=\"3\">期中成绩指标1总分：\</td\>\
+                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_mss\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"1\">期中成绩指标2总分：\</td\>\
+                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_mss\" step=\"0.01\"\>\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td\ colspan=\"3\">期末成绩指标1总分：\</td\>\
+                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_ess\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"1\">期末成绩指标2总分：\</td\>\
+                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_ess\" step=\"0.01\"\>\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td\ colspan=\"3\">指标1实际达成度\</td\>\
+                                                        \<td colspan=\"8\"\>\<input type=\"number\" id=\"flag_1_fact\" step=\"0.01\" readonly=\"readonly\" placeholder=\"指标点1实际达成度结果\"\>\</td\>\
+                                                      \</tr\>\
+                                                      \<tr\>\
+                                                        \<td colspan=\"3\"\>指标2实际达成度\</td\>\
+                                                        \<td colspan=\"8\"\>\<input type=\"number\" id=\"flag_2_fact\" step=\"0.01\" readonly=\"readonly\" placeholder=\"指标点2实际达成度结果\"\>\</td\>\
+                                                      \<tr\>";
+
+                                        $("#main_tbody").append(footer);
+                                    }
+
+                                    
+
+                                    window.onload = function () {
+                                        makePages();
+                                    }
+
+                                    function GetUsualScore(studentUid) {
+                                        var score_data = document.getElementById("student_score").value;
+                                        var ret = 0;
+                                        $.each(JSON.parse(score_data), function (index, val) {
+                                            if (val["StudentUid"] == studentUid) {
+
+                                                ret = val["UsualScore"];
+                                            }
+                                        })
+                                        return ret;
+                                    }
+                                    function GetMidScore(studentUid) {
+                                        var score_data = document.getElementById("student_score").value;
+                                        var ret = 0;
+                                        $.each(JSON.parse(score_data), function (index, val) {
+                                            if (val["StudentUid"] == studentUid) {
+                                                ret = val["MidScore"];
+                                            }
+                                        })
+                                        return ret;
+                                    }
+                                    function GetEndScore(studentUid) {
+                                        var score_data = document.getElementById("student_score").value;
+                                        var ret = 0;
+                                        $.each(JSON.parse(score_data), function (index, val) {
+                                            if (val["StudentUid"] == studentUid) {
+                                                ret = val["EndScore"];
+                                            }
+                                        })
+                                        return ret;
+                                    }
+                                    function updateUsualFlag2Score(studentUid) {
+                                        var s1 = document.getElementById("us_flag_1_" + studentUid).value;
+                                        var s2 = Number(GetUsualScore(studentUid)) - Number(s1);
+                                        document.getElementById("td_us_" + studentUid).value = s2;
+                                    }
+                                    function updateMidFlag2Score(studentUid) {
+                                        var s1 = document.getElementById("ms_flag_1_" + studentUid).value;
+                                        var s2 = Number(GetMidScore(studentUid)) - Number(s1);
+                                        document.getElementById("td_ms_" + studentUid).value = s2;
+                                    }
+                                    function updateEndFlag2Score(studentUid) {
+                                        var s1 = document.getElementById("es_flag_1_" + studentUid).value;
+                                        var s2 = Number(GetEndScore(studentUid)) - Number(s1);
+                                        document.getElementById("td_es_" + studentUid).value = s2;
+                                    }
+
+                                    function GetReach() {
+                                        var score_data = document.getElementById("student_score").value;
+                                        var percent = document.getElementById("percent").value;
+                                        var sum_ms_f1 = 0;
+                                        var sum_ms_f2 = 0;
+                                        var sum_us_f1 = 0;
+                                        var sum_us_f2 = 0;
+                                        var sum_es_f1 = 0;
+                                        var sum_es_f2 = 0;
+                                        $.each(JSON.parse(score_data), function (index, val) {
+                                            sum_ms_f1 = Number(sum_ms_f1) + Number(document.getElementById("ms_flag_1_" + val["StudentUid"]).value);
+                                            sum_us_f1 = Number(sum_us_f1) + Number(document.getElementById("us_flag_1_" + val["StudentUid"]).value);
+                                            sum_es_f1 = Number(sum_es_f1) + Number(document.getElementById("es_flag_1_" + val["StudentUid"]).value);
+
+                                            sum_ms_f2 = Number(sum_ms_f2) + Number(document.getElementById("td_ms_" + val["StudentUid"]).value);
+                                            sum_us_f2 = Number(sum_us_f2) + Number(document.getElementById("td_us_" + val["StudentUid"]).value);
+                                            sum_es_f2 = Number(sum_es_f2) + Number(document.getElementById("td_es_" + val["StudentUid"]).value);
+                                        })
+
+                                        var uss_f1 = Number(document.getElementById("flag_1_uss").value);
+                                        var uss_f2 = Number(document.getElementById("flag_2_uss").value);
+                                        var mss_f1 = Number(document.getElementById("flag_1_mss").value);
+                                        var mss_f2 = Number(document.getElementById("flag_2_mss").value);
+                                        var ess_f1 = Number(document.getElementById("flag_1_ess").value);
+                                        var ess_f2 = Number(document.getElementById("flag_2_ess").value);
+
+                                        var percent = JSON.parse(document.getElementById("percent").value);
+                                        var up = Number(percent["UsualPercent"]);
+                                        var mp = Number(percent["MidPercent"]);
+                                        var ep = Number(percent["EndPercent"]);
+
+                                        var ave_us_f1 = Number(sum_us_f1) / Number(document.getElementById("flag_1_uss").value);
+                                        var ave_us_f2 = Number(sum_us_f2) / Number(document.getElementById("flag_2_uss").value);
+                                        var ave_ms_f1 = Number(sum_ms_f1) / Number(document.getElementById("flag_1_mss").value);
+                                        var ave_ms_f2 = Number(sum_ms_f2) / Number(document.getElementById("flag_2_mss").value);
+                                        var ave_es_f1 = Number(sum_es_f1) / Number(document.getElementById("flag_1_ess").value);
+                                        var ave_es_f2 = Number(sum_es_f2) / Number(document.getElementById("flag_2_ess").value);
+
+                                        var result_f1 = ((ave_us_f1 / uss_f1) * (up / 100) + (ave_ms_f1 / mss_f1) * (mp / 100) + (ave_es_f1 / ess_f1) * (ep / 100)) * Number(document.getElementById("flag_1_wander").value);
+                                        var result_f2 = ((ave_us_f2 / uss_f2) * (up / 100) + (ave_ms_f2 / mss_f2) * (mp / 100) + (ave_es_f2 / ess_f2) * (ep / 100)) * Number(document.getElementById("flag_2_wander").value);
+                                        console.log(result_f2);
+                                        document.getElementById("flag_2_fact").value = result_f2.toFixed(4);
+                                        document.getElementById("flag_1_fact").value = result_f1.toFixed(4);
+
+                                    }
+
+                                    function GetXlsxFunc() {
+                                        var myDate = new Date();
+                                        myDate.getFullYear();
+                                        myDate.getMonth();
+                                        myDate.getDate();
+                                        myDate.getDay();
+                                        myDate.getTime();
+                                        myDate.getHours();
+                                        myDate.getMinutes();
+                                        myDate.getSeconds();
+                                        myDate.getMilliseconds();
+                                        myDate.toLocaleDateString();
+                                        var mytime = myDate.toLocaleTimeString();
+                                        var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
+                                        openDownloadDialog(sheet2blob(sheet), mytime + ".xlsx");
+                                    }
+
+                                </script>
+
+                            </tbody>
+                        </table>
+                        <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button type="button" id="submit_button" class="am-btn am-btn-primary"
+                                onclick="GetReach()">计算达成度</button>
+                            <button type="button" id="submit_button" class="am-btn am-btn-primary"
+                                onclick="GetXlsxFunc()">导出</button>
+                        </div>
+                    </form>
+
+                </div><br />
+                <!-- 指标点1实际达成度：<input type="number" id="flag_1_fact" step="0.01"
+                    readonly="readonly">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                指标点2实际达成度：<input type="number" id="flag_2_fact" step="0.01" readonly="readonly"> -->
+            </div>
 
 
 
 
 
-        <script src="../static/assets/js/jquery.min.js"></script>
-        <script src="../static/assets/js/amazeui.min.js"></script>
-        <script src="../static/assets/js/iscroll.js"></script>
-        <script src="../static/assets/js/app.js"></script>
-        <script src="../static/assets/js/xlsx.core.min.js"></script>
-        <script src="../static/assets/js/ahaoozhang-common.js"></script>
+
+
+            <script src="../static/assets/js/jquery.min.js"></script>
+            <script src="../static/assets/js/amazeui.min.js"></script>
+            <script src="../static/assets/js/iscroll.js"></script>
+            <script src="../static/assets/js/app.js"></script>
+            <script src="../static/assets/js/xlsx.core.min.js"></script>
+            <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>
