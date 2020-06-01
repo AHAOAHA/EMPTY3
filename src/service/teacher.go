@@ -331,7 +331,16 @@ func TeacherInputScoreThirdHandler(c *gin.Context) {
 	course_percent, _ := api.GetCoursePercent(course_uid)
 
 	// 获取学生的成绩列表
-	student_score, _ := api.GetStudentScoreByClassUidAndCourseUid(class_uid, course_uid)
+	var student_score []DataCenter.ScoreInfo
+	for _, v := range stu_data {
+		score, err := api.GetScoreByStudentUidAndCourseUid(v.GetStudentUid(), course_uid)
+		if err != nil {
+			student_score = append(student_score, DataCenter.ScoreInfo{})
+			continue
+		}
+
+		student_score = append(student_score, score)
+	}
 	student_score_rsp, _ := json.Marshal(student_score)
 	course_data := struct {
 		CourseName   string
@@ -435,12 +444,31 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 		AcaDemicCredit float32
 		Credit         float32
 		Score          uint32
-		Status         DataCenter.ScoreInfo_STATUS
+		Status         string
 	}
 
 	for _, v := range student_list {
 		score, err := api.GetScoreByStudentUidAndCourseUid(v.GetStudentUid(), course_uid)
 		if err != nil {
+			result_data = append(result_data, struct {
+				Name           string
+				MidScore       float32
+				EndScore       float32
+				UsualScore     float32
+				AcaDemicCredit float32
+				Credit         float32
+				Score          uint32
+				Status         string
+			}{
+				v.GetName(),
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				score.GetStatus().String(),
+			})
 			continue
 		}
 		result_data = append(result_data, struct {
@@ -451,7 +479,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			AcaDemicCredit float32
 			Credit         float32
 			Score          uint32
-			Status         DataCenter.ScoreInfo_STATUS
+			Status         string
 		}{
 			v.GetName(),
 			score.GetMidtermScore(),
@@ -460,7 +488,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			score.GetAcademicCredit(),
 			score.GetCredit(),
 			score.GetScore(),
-			score.GetStatus(),
+			score.GetStatus().String(),
 		})
 	}
 
