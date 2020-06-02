@@ -655,7 +655,7 @@ func SavePercent(body map[string]interface{}, save_type int) error {
 		if string(m[0]["type"].([]uint8)) == "1" {
 			return errors.New("type is 1")
 		} else {
-			err := dao.DataBase.Execf("update `course_score_percent` set `usual_percent`='%s', `mid_percent`='%s', `end_percent`='%s', `type`='%d' where `course_uid`='%s'", usual_percent, mid_percent, end_percent, course_uid_str, save_type)
+			err := dao.DataBase.Execf("update `course_score_percent` set `usual_percent`='%s', `mid_percent`='%s', `end_percent`='%s', `type`='%d' where `course_uid`='%s'", usual_percent, mid_percent, end_percent, save_type, course_uid_str)
 			if err != nil {
 				return err
 			}

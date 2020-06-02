@@ -219,3 +219,7 @@ function make_teacher_course_class_options() {
         }
     })
 }
+
+function ReachCreateTableUseInExcel(FlTabId) {
+    var NewTab = document.createElement("table");
+}

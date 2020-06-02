@@ -154,7 +154,8 @@
             <div class="am-g tpl-amazeui-form" id="main_div">
                 <div class="am-g">
                     <form class="am-form">
-                        <table id="score_table" style="float:right" class="am-table am-table-striped am-table-hover table-main">
+                        <table id="score_table" style="float:right"
+                            class="am-table am-table-striped am-table-hover table-main">
                             <thead>
                                 <tr>
                                     <th class="table-id">序号</th>
@@ -189,9 +190,9 @@
                                                             \<td\>"+ val["StudentUid"] + "\</td\>\
                                                             \<td\>"+ val["ClassName"] + "\</td\>\
                                                             \<td\>"+ val["CourseName"] + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"us_flag_1_" + val["StudentUid"] + "\" onchange=\"updateUsualFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"us_flag_1_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_us_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"ms_flag_1_" + val["StudentUid"] + "\" onchange=\"updateMidFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"ms_flag_1_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
                                                                 \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_ms_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"es_flag_1_" + val["StudentUid"] + "\" onchange=\"updateEndFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
                                                                 \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_es_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
@@ -213,15 +214,15 @@
                                                       \</tr\>\
                                                       \<tr\>\
                                                         \<td\ colspan=\"3\">平时成绩指标1总分：\</td\>\
-                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_uss\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_uss\" step=\"0.01\" onchange=\"UsualPartUpdate()\"\>\</td\>\
                                                         \<td\ colspan=\"1\">平时成绩指标2总分：\</td\>\
-                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_uss\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_uss\" step=\"0.01\" onchange=\"UsualPartUpdate()\"\>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
                                                         \<td\ colspan=\"3\">期中成绩指标1总分：\</td\>\
-                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_mss\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_mss\" step=\"0.01\" onchange=\"MidPartUpdate()\"\>\</td\>\
                                                         \<td\ colspan=\"1\">期中成绩指标2总分：\</td\>\
-                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_mss\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_mss\" step=\"0.01\" onchange=\"MidPartUpdate()\"\>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
                                                         \<td\ colspan=\"3\">期末成绩指标1总分：\</td\>\
@@ -241,7 +242,7 @@
                                         $("#main_tbody").append(footer);
                                     }
 
-                                    
+
 
                                     window.onload = function () {
                                         makePages();
@@ -340,22 +341,81 @@
 
                                     }
 
-                                    function GetXlsxFunc() {
-                                        var myDate = new Date();
-                                        myDate.getFullYear();
-                                        myDate.getMonth();
-                                        myDate.getDate();
-                                        myDate.getDay();
-                                        myDate.getTime();
-                                        myDate.getHours();
-                                        myDate.getMinutes();
-                                        myDate.getSeconds();
-                                        myDate.getMilliseconds();
-                                        myDate.toLocaleDateString();
-                                        var mytime = myDate.toLocaleTimeString();
-                                        var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
-                                        openDownloadDialog(sheet2blob(sheet), mytime + ".xlsx");
+
+
+                                    function UsualPartUpdate() {
+                                        var student_data = document.getElementById("student_score").value;
+                                        var studentSc = JSON.parse(student_data);
+                                        var SumUsuPartFir = document.getElementById("flag_1_uss").value;
+                                        if (SumUsuPartFir == "") {
+                                            var SumUsuPartSec = document.getElementById("flag_2_uss").value;
+                                            if (SumUsuPartSec == "") {
+                                                alert("异常错误！");
+                                                return false;
+                                            }
+
+                                            SumUsuPartFir = 100 - Number(SumUsuPartSec);
+                                        } else {
+                                            SumUsuPartSec = 100 - Number(SumUsuPartFir);
+                                        }
+
+                                        if (studentSc != null) {
+                                            $.each(studentSc, function (index, val) {
+                                                document.getElementById("us_flag_1_" + val["StudentUid"]).value = (Number(SumUsuPartFir) / 100) * Number(val["UsualScore"]);
+                                                document.getElementById("td_us_" + val["StudentUid"]).value = (Number(SumUsuPartFir) / 100) * Number(val["UsualScore"]);
+                                            })
+                                        }
                                     }
+
+                                    function MidPartUpdate() {
+                                        var student_data = document.getElementById("student_score").value;
+                                        var studentSc = JSON.parse(student_data);
+                                        var SumMidPartFir = document.getElementById("flag_1_mss").value;
+                                        if (SumMidPartFir == "") {
+                                            var SumMidPartSec = document.getElementById("flag_2_mss").value;
+                                            if (SumMidPartSec == "") {
+                                                alert("异常错误！");
+                                                return false;
+                                            }
+
+                                            SumMidPartFir = 100 - Number(SumMidPartSec);
+                                        } else {
+                                            SumMidPartSec = 100 - Number(SumMidPartFir);
+                                        }
+
+                                        if (studentSc != null) {
+                                            $.each(studentSc, function (index, val) {
+                                                document.getElementById("ms_flag_1_" + val["StudentUid"]).value = (Number(SumMidPartFir) / 100) * Number(val["UsualScore"]);
+                                                document.getElementById("td_ms_" + val["StudentUid"]).value = (Number(SumMidPartFir) / 100) * Number(val["UsualScore"]);
+                                            })
+                                        }
+                                    }
+
+                                    function ReachCreateTableUseInExcel() {
+                                        
+
+                                        return NewTab;
+                                    }
+
+                                    function GetXlsxFunc() {
+                                        //创建新表格
+                                        var timestamp = Date.parse(new Date());
+                                        var NewTab = document.createElement("table");
+                                        NewTab = document.getElementById("score_table");
+                                        $.each(NewTab, function (index) { // tr
+                                            $(this).children('td').each(function (j) {
+                                                if ($(this).find("input").length > 0) {
+                                                    let thisInputVal = $(this).find("input").val();
+                                                    $(this).html(thisInputVal);
+                                                }
+                                            });
+                                        });
+                                        var sheet = XLSX.utils.table_to_sheet(NewTab);
+                                        openDownloadDialog(sheet2blob(sheet), timestamp + ".xlsx");
+
+                                    }
+
+
 
                                 </script>
 

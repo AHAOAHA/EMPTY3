@@ -143,7 +143,7 @@
         <input type="hidden" id="student_data" value={{.student_data}}>
         <input type="hidden" id="course_data" value={{.course_data}}>
         <input type="hidden" id="students_score" value={{.students_score}}>
-        
+
 
 
 
@@ -159,10 +159,10 @@
                         onchange="changePercentUpdateScore()">
                     期末成绩占比（单位/%）：<input type="number" id="end_percent" name="end_percent" value=""
                         onchange="changePercentUpdateScore()">
-                        成绩类型：<select id="score_type" name="score_type" onchange="changeScoreType()">
-                            <option value="0">分数制</option>
-                            <option value="1">分级制</option>
-                        </select>
+                    成绩类型：<select id="score_type" name="score_type" onchange="changeScoreType()">
+                        <option value="0">分数制</option>
+                        <option value="1">分级制</option>
+                    </select>
                 </div>
             </form>
 
@@ -190,7 +190,7 @@
                                         var score_type = document.getElementById("score_type").value;
                                         var stu_info = JSON.parse(document.getElementById("student_data").value);
                                         $.each(stu_info, function (index, val) {
-                                            
+
                                             var us = Number(document.getElementById("usual_score_" + val["StudentUid"]).value);
                                             var ms = Number(document.getElementById("mid_score_" + val["StudentUid"]).value);
                                             var es = Number(document.getElementById("end_score_" + val["StudentUid"]).value);
@@ -198,9 +198,9 @@
                                             var upn = Number(document.getElementById("usual_percent").value);
                                             var mpn = Number(document.getElementById("mid_percent").value);
                                             var epn = Number(document.getElementById("end_percent").value);
-                                            
-                                            
-                                            score =  ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+
+
+                                            score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
                                             if (score_type == 0) {
                                                 document.getElementById("score_" + val["StudentUid"]).value = score;
                                             } else {
@@ -221,9 +221,9 @@
                                     function changePercentUpdateScore() {
                                         var score_type = document.getElementById("score_type").value;
                                         var stu_info = JSON.parse(document.getElementById("student_data").value);
-                                        
+
                                         $.each(stu_info, function (index, val) {
-                                            
+
                                             var us = Number(document.getElementById("usual_score_" + val["StudentUid"]).value);
                                             var ms = Number(document.getElementById("mid_score_" + val["StudentUid"]).value);
                                             var es = Number(document.getElementById("end_score_" + val["StudentUid"]).value);
@@ -231,10 +231,10 @@
                                             var upn = Number(document.getElementById("usual_percent").value);
                                             var mpn = Number(document.getElementById("mid_percent").value);
                                             var epn = Number(document.getElementById("end_percent").value);
-                                            
-                                            
 
-                                            score =  ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+
+
+                                            score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
                                             if (score_type == 0) {
                                                 document.getElementById("score_" + val["StudentUid"]).value = score;
                                             } else {
@@ -277,22 +277,22 @@
                                         var ms = Number(mid_score);
                                         var es = Number(end_score);
 
-                                        score =  ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
-                                            if (score_type == 0) {
-                                                document.getElementById("score_" + StudentUid).value = score;
+                                        score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
+                                        if (score_type == 0) {
+                                            document.getElementById("score_" + StudentUid).value = score;
+                                        } else {
+                                            if (score < 60) {
+                                                document.getElementById("score_" + StudentUid).value = "不及格";
+                                            } else if (score >= 60 && score < 70) {
+                                                document.getElementById("score_" + StudentUid).value = "及格";
+                                            } else if (score >= 70 && score < 80) {
+                                                document.getElementById("score_" + StudentUid).value = "中";
+                                            } else if (score >= 80 && score < 90) {
+                                                document.getElementById("score_" + StudentUid).value = "良好";
                                             } else {
-                                                if (score < 60) {
-                                                    document.getElementById("score_" + StudentUid).value = "不及格";
-                                                } else if (score >= 60 && score < 70) {
-                                                    document.getElementById("score_" + StudentUid).value = "及格";
-                                                } else if (score >= 70 && score < 80) {
-                                                    document.getElementById("score_" + StudentUid).value = "中";
-                                                } else if (score >= 80 && score < 90) {
-                                                    document.getElementById("score_" + StudentUid).value = "良好";
-                                                } else {
-                                                    document.getElementById("score_" + StudentUid).value = "优秀";
-                                                }
+                                                document.getElementById("score_" + StudentUid).value = "优秀";
                                             }
+                                        }
 
                                     }
                                     function makePages() {
@@ -303,7 +303,7 @@
                                         var json_cre_result = JSON.parse(course_data);
                                         var json_score_result = JSON.parse(score_data);
                                         var score_type = 0;
-                                        
+
                                         if (json_score_result[0]["ScoreType"] == 1) {
                                             score_type = 1;
                                         }
@@ -312,7 +312,7 @@
                                             $("#usual_percent").prop("readOnly", "true");
                                             $("#mid_percent").prop("readOnly", "true");
                                             $("#end_percent").prop("readOnly", "true");
-                                            
+
                                         }
                                         document.getElementById("usual_percent").value = json_cre_result["UsualPercent"];
                                         document.getElementById("mid_percent").value = json_cre_result["MidPercent"];
@@ -348,12 +348,25 @@
                                         })
                                         // alert(document.getElementById("students_score").value)
                                         // alert(score_type);
-                                        if(score_type == 0) {
+                                        if (score_type == 0) {
                                             document.getElementById("score_type").value = 0;
                                         } else {
                                             document.getElementById("score_type").value = 1;
                                         }
                                         changePercentUpdateScore();
+
+                                        // 当成绩占比类型不可更改时，成绩不可以再进行修改
+                                        if (json_cre_result["Type"] == "1") {
+                                            NewTab = document.getElementById("score_table");
+                                            $.each(NewTab, function (index) { // tr
+                                                $(this).children('td').each(function (j) {
+                                                    if ($(this).find("input").length > 0) {
+                                                        let thisInputVal = $(this).find("input").val();
+                                                        $(this).html(thisInputVal);
+                                                    }
+                                                });
+                                            });
+                                        }
                                     }
 
                                     function MakeJsonReq() {
@@ -409,7 +422,7 @@
                                         $.ajax({
                                             type: "POST",
                                             url: "/teacher_input_score",
-                                            contentType:'application/json',
+                                            contentType: 'application/json',
                                             data: post_data,
                                             dataType: "json",
                                             success: function (rsp) {
@@ -431,18 +444,17 @@
                                         $.ajax({
                                             type: "POST",
                                             url: "/teacher_input_score",
-                                            contentType:'application/json',
+                                            contentType: 'application/json',
                                             data: post_data,
                                             dataType: "json",
                                             success: function (rsp) {
                                                 is_ok(rsp);
                                             }
                                         })
-                                        // 页面刷新只读 TODO:
                                     }
 
                                     function is_ok(json_rsp) {
-                                        
+
                                         if (json_rsp["err_code"] == 0) {
                                             alert("操作成功！");
                                             return;
@@ -456,20 +468,19 @@
                                     }
 
                                     function GetXlsxFunc() {
-                                        var myDate = new Date();
-                                        myDate.getFullYear();
-                                        myDate.getMonth();    
-                                        myDate.getDate();       
-                                        myDate.getDay();        
-                                        myDate.getTime();            
-                                        myDate.getHours();       
-                                        myDate.getMinutes();    
-                                        myDate.getSeconds();     
-                                        myDate.getMilliseconds();         
-                                        myDate.toLocaleDateString(); 
-                                        var mytime=myDate.toLocaleTimeString();
-                                        var sheet = XLSX.utils.table_to_sheet(document.getElementById("score_table"));
-                                        openDownloadDialog(sheet2blob(sheet), mytime + ".xlsx");
+                                        var timestamp = Date.parse(new Date());
+                                        var NewTab = document.createElement("table");
+                                        NewTab = document.getElementById("score_table");
+                                        $.each(NewTab, function (index) { // tr
+                                            $(this).children('td').each(function (j) {
+                                                if ($(this).find("input").length > 0) {
+                                                    let thisInputVal = $(this).find("input").val();
+                                                    $(this).html(thisInputVal);
+                                                }
+                                            });
+                                        });
+                                        var sheet = XLSX.utils.table_to_sheet(NewTab);
+                                        openDownloadDialog(sheet2blob(sheet), timestamp + ".xlsx");
                                     }
 
                                 </script>
@@ -478,7 +489,8 @@
                         </table>
                         <div class="am-form-group">
                             <div class="am-u-sm-9 am-u-sm-push-3">
-                                <button type="button" id="submit_button" class="am-btn am-btn-primary" onclick="SaveScore()">保存</button>
+                                <button type="button" id="submit_button" class="am-btn am-btn-primary"
+                                    onclick="SaveScore()">保存</button>
                                 <button type="button" class="am-btn am-btn-primary" onclick="SubmitScore()">提交</button>
                                 <button type="button" class="am-btn am-btn-primary" onclick="GetXlsxFunc()">导出</button>
                             </div>
