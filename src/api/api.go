@@ -764,6 +764,7 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 	academic_credit, _ := strconv.ParseFloat(string(val["academic_credit"].([]uint8)), 32)
 	credit, _ := strconv.ParseFloat(string(val["credit"].([]uint8)), 32)
 	status, _ := strconv.Atoi(string(val["status"].([]uint8)))
+	typeS, _ := strconv.Atoi(string(val["type"].([]uint8)))
 
 	ret = DataCenter.ScoreInfo{
 		ScoreUid:       score_uid,
@@ -774,6 +775,7 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 		UsualScore:     float32(usual_score),
 		AcademicCredit: float32(academic_credit),
 		Credit:         float32(credit),
+		Type:           DataCenter.ScoreInfo_TYPE(typeS),
 		Status:         DataCenter.ScoreInfo_STATUS(status),
 		CreateTime:     string(val["create_time"].([]uint8)),
 	}

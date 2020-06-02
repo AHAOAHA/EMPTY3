@@ -467,7 +467,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 				0,
 				0,
 				0,
-				score.GetStatus().String(),
+				score.GetType().String(),
 			})
 			continue
 		}
@@ -488,7 +488,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			score.GetAcademicCredit(),
 			score.GetCredit(),
 			score.GetScore(),
-			score.GetStatus().String(),
+			score.GetType().String(),
 		})
 	}
 
@@ -526,20 +526,24 @@ func TeacherInputScoreHandler(c *gin.Context) {
 		// 保存比例
 		err = SavePercent(body_m, 0)
 		if err != nil {
+			log.Error(err)
 			err_code = 1001
 		}
 		err = SaveStudentScore(body_m, 0)
 		if err != nil {
+			log.Error(err)
 			err_code = 1001
 		}
 	} else if cmd == "submit" {
 		// 提交
 		err = SavePercent(body_m, 1)
 		if err != nil {
+			log.Error(err)
 			err_code = 1002
 		}
 		err = SaveStudentScore(body_m, 1)
 		if err != nil {
+			log.Error(err)
 			err_code = 1002
 		}
 	} else {
@@ -564,7 +568,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			mid_score, _ := strconv.Atoi(student_data["MidScore"].(string))
 			end_score, _ := strconv.Atoi(student_data["EndScore"].(string))
 			score, _ := strconv.Atoi(student_data["Score"].(string))
-			log.Info(usual_score, mid_score, end_score, score)
+			// log.Info(usual_score, mid_score, end_score, score)
 
 			// 逐条保存
 			// 查看数据是否存在
