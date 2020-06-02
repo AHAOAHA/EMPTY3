@@ -357,7 +357,7 @@
 
                                         // 当成绩占比类型不可更改时，成绩不可以再进行修改
                                         if (json_cre_result["Type"] == "1") {
-                                            NewTab = document.getElementById("score_table");
+                                            var NewTab = document.getElementById("score_table");
                                             $.each(NewTab, function (index) { // tr
                                                 $(this).children('td').each(function (j) {
                                                     if ($(this).find("input").length > 0) {
@@ -451,6 +451,16 @@
                                                 is_ok(rsp);
                                             }
                                         })
+
+                                        var NewTab = document.getElementById("score_table");
+                                        $.each(NewTab, function (index) { // tr
+                                            $(this).children('td').each(function (j) {
+                                                if ($(this).find("input").length > 0) {
+                                                    let thisInputVal = $(this).find("input").val();
+                                                    $(this).html(thisInputVal);
+                                                }
+                                            });
+                                        });
                                     }
 
                                     function is_ok(json_rsp) {
