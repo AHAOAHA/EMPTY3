@@ -9,10 +9,12 @@
 package main
 
 import (
+	"GradeManager/src/common"
 	_ "GradeManager/src/config"
 	"GradeManager/src/service"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/contrib/sessions"
 
@@ -131,5 +133,6 @@ func main() {
 	r.NoRoute(func(c *gin.Context) {
 		c.HTML(http.StatusNotFound, "404.html", nil)
 	})
+	common.SendTextToWechat("服务重启", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
 	r.Run(":8080")
 }

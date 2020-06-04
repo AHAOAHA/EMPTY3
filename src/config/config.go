@@ -27,7 +27,12 @@ type GradeManagerDBInfo struct {
 	DataBaseName string
 }
 
+type AlarmInfo struct {
+	Url string
+}
+
 type MyConfig struct {
+	Alarm          AlarmInfo
 	GradeManagerDB GradeManagerDBInfo
 }
 
@@ -46,4 +51,12 @@ func (db *GradeManagerDBInfo) IsValid() bool {
 		return true
 	}
 	return false
+}
+
+func (alarm *AlarmInfo) IsValid() bool {
+	if alarm.Url == "" {
+		return false
+	}
+
+	return true
 }

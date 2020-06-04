@@ -9,8 +9,10 @@
 package dao
 
 import (
+	"GradeManager/src/common"
 	"GradeManager/src/config"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -90,6 +92,15 @@ func (f *MyDB) OpenDB() error {
 func (f *MyDB) Query(format string, args ...interface{}) ([]map[string]interface{}, error) {
 	defer func() {
 		if err := recover(); err != nil {
+			msgSt := struct {
+				t   time.Time
+				sql string
+			}{
+				time.Now(),
+				format,
+			}
+			msgJs, _ := json.Marshal(msgSt)
+			common.SendTextToWechat("数据库查询引发panic", string(msgJs))
 			log.Error("DB Query panic, recovered!")
 		}
 	}()
@@ -141,12 +152,22 @@ func (db *MyDB) Queryf(format string, args ...interface{}) ([]map[string]interfa
 }
 
 func (db *MyDB) Execf(format string, args ...interface{}) error {
+	sql := fmt.Sprintf(format, args...)
 	defer func() {
 		if err := recover(); err != nil {
+			msgSt := struct {
+				t   time.Time
+				sql string
+			}{
+				time.Now(),
+				sql,
+			}
+			msgJs, _ := json.Marshal(msgSt)
+			common.SendTextToWechat("数据库执行引发panic", string(msgJs))
 			log.Error("db Exec Panic, recovered!")
 		}
 	}()
-	sql := fmt.Sprintf(format, args...)
+
 	log.Info(sql)
 	_, err := db.db.Exec(sql)
 	if err != nil {
