@@ -513,7 +513,7 @@ func AdminDeleteTeacherHandler(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "admin_index")
+	c.Redirect(http.StatusFound, "admin_index")
 }
 
 func AdminEditTeacherHandler(c *gin.Context) {
@@ -710,7 +710,7 @@ func AdminDeleteStudentHandler(c *gin.Context) {
 		log.Error(err)
 		return
 	}
-	c.Redirect(http.StatusMovedPermanently, "admin_index")
+	c.Redirect(http.StatusFound, "admin_index")
 }
 
 func AdminEditStudentHandler(c *gin.Context) {

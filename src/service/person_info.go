@@ -53,7 +53,7 @@ func UpdateAdminPersonInfoHandler(c *gin.Context) {
 		return
 	}
 	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
-	c.Redirect(http.StatusMovedPermanently, "/login")
+	c.Redirect(http.StatusFound, "/login")
 }
 
 func TeacherInfoGetHandler(c *gin.Context) {
@@ -94,7 +94,7 @@ func UpdateTeacherPersonInfoHandler(c *gin.Context) {
 	}
 
 	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
-	c.Redirect(http.StatusMovedPermanently, "/login")
+	c.Redirect(http.StatusFound, "/login")
 }
 
 func StudentInfoGetHandler(c *gin.Context) {
@@ -137,5 +137,5 @@ func UpdateStudentPersonInfoHandler(c *gin.Context) {
 	}
 
 	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
-	c.Redirect(http.StatusMovedPermanently, "/login")
+	c.Redirect(http.StatusFound, "/login")
 }

@@ -92,5 +92,5 @@ func UpdatePasswordPostHandler(c *gin.Context) {
 	}
 
 	c.SetCookie("user_cookie", "out", 10, "/", "", false, true)
-	c.Redirect(http.StatusMovedPermanently, "/login")
+	c.Redirect(http.StatusFound, "/login")
 }
