@@ -31,9 +31,25 @@ type AlarmInfo struct {
 	Url string
 }
 
+type LocationToAddrInfo struct {
+	Key  string
+	SK   string
+	Url  string
+	Path string
+}
+
+type IPToAddrInfo struct {
+	Key  string
+	SK   string
+	Url  string
+	Path string
+}
+
 type MyConfig struct {
 	Alarm          AlarmInfo
 	GradeManagerDB GradeManagerDBInfo
+	LocationToAddr LocationToAddrInfo
+	IPToAddr       IPToAddrInfo
 }
 
 var Config MyConfig
@@ -58,5 +74,15 @@ func (alarm *AlarmInfo) IsValid() bool {
 		return false
 	}
 
+	return true
+}
+
+func (ita *LocationToAddrInfo) IsValid() bool {
+	// TODO
+	return true
+}
+
+func (ita *IPToAddrInfo) IsValid() bool {
+	// TODO
 	return true
 }

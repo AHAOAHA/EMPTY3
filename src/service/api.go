@@ -10,10 +10,17 @@ package service
 
 import (
 	"GradeManager/src/api"
+	"GradeManager/src/config"
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func GetAllCollegeNameHandler(c *gin.Context) {
@@ -212,6 +219,105 @@ func GetCourseInfoByCollegeUidHandler(c *gin.Context) {
 			v.GetName(),
 			v.GetCollegeUid(),
 		})
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func IpToAddrHandler(c *gin.Context) {
+	ip := c.Query("ip")
+	param := config.Config.IPToAddr.Path + "?ip=" + ip + "&key=" + config.Config.IPToAddr.Key
+	md5Ctx := md5.New()
+	md5Ctx.Write([]byte(param + config.Config.IPToAddr.SK))
+	sig := hex.EncodeToString(md5Ctx.Sum(nil))
+	param = param + "&sig=" + sig
+	log.Info(param)
+	GenUrl := config.Config.IPToAddr.Url + param
+	u, _ := url.Parse(GenUrl)
+	q := u.Query()
+	u.RawQuery = q.Encode() //urlencode
+	rsp, err := http.Get(u.String())
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	body, _ := ioutil.ReadAll(rsp.Body)
+
+	var result struct {
+		Status  int32  `json:"status"`
+		Message string `json:"message"`
+		Result  struct {
+			IP       string `json:"ip"`
+			Location struct {
+				Lng float32 `json:"lng"`
+				Lat float32 `json:"lat"`
+			} `json:"location"`
+			AdInfo struct {
+				Nation   string `json:"nation"`
+				Province string `json:"province"`
+				City     string `json:"city"`
+				AdCode   int32  `json:"adcode"`
+			} `json:"ad_info"`
+		} `json:"result"`
+	}
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Error(err)
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func LocationToAddrHandler(c *gin.Context) {
+	location := c.Query("location")
+	param := config.Config.LocationToAddr.Path + "?key=" + config.Config.LocationToAddr.Key + "&location=" + location
+	md5Ctx := md5.New()
+	md5Ctx.Write([]byte(param + config.Config.LocationToAddr.SK))
+	sig := hex.EncodeToString(md5Ctx.Sum(nil))
+	param = param + "&sig=" + sig
+	log.Info(param)
+	GenUrl := config.Config.LocationToAddr.Url + param
+	u, _ := url.Parse(GenUrl)
+	q := u.Query()
+	u.RawQuery = q.Encode() //urlencode
+	rsp, err := http.Get(u.String())
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	body, _ := ioutil.ReadAll(rsp.Body)
+	var result struct {
+		Status    int32  `json:"status"`
+		Message   string `json:"message"`
+		RequestID string `json:"request_id"`
+		Result    struct {
+			Location struct {
+				Lat float32 `json:"lat"`
+				Lng float32 `json:"lng"`
+			} `json:"location"`
+			AddressComponent struct {
+				Nation   string `json:"nation"`
+				AdLevel1 string `json:"ad_level_1"`
+				AdLevel2 string `json:"ad_level_2"`
+				AdLevel3 string `json:"ad_level_3"`
+				Street   string `json:"street"`
+				Locality string `json:"locality"`
+			} `json:"address_component"`
+			AdInfo struct {
+				NationCode string `json:"nation_Code"`
+				CityCode   string `json:"city_Code"`
+				Location   struct {
+					Lat float32 `json:"lat"`
+					Lng float32 `json:"lng"`
+				} `json:"location"`
+			} `json:"ad_info"`
+			Address string `json:"address"`
+		} `json:"result"`
+	}
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Error(err)
 	}
 
 	c.JSON(http.StatusOK, result)

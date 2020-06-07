@@ -42,7 +42,7 @@ func main() {
 
 	// rounte
 	r.Any("/", func(g *gin.Context) {
-		g.Redirect(http.StatusMovedPermanently, "/login")
+		g.Redirect(http.StatusFound, "/login")
 	})
 
 	// login
@@ -121,6 +121,8 @@ func main() {
 	r.GET("/get_all_class_name", service.GetAllClassHandler)
 	r.GET("/get_all_course_name", service.GetAllCourseInfoHandler)
 	r.GET("/get_all_teacher_name", service.GetAllTeacherInfoHandler)
+	r.GET("location-to-addr", service.LocationToAddrHandler)
+	r.GET("ip-to-addr", service.IpToAddrHandler)
 
 	r.GET("/update_password", service.UpdatePasswordGetHandler)
 	r.GET("/get_teacher_info", service.GetTeacherInfoHandler)
