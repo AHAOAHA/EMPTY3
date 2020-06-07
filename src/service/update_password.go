@@ -64,13 +64,23 @@ func UpdatePasswordPostHandler(c *gin.Context) {
 		break
 	default:
 		log.Error("update password login type err")
-		c.HTML(http.StatusBadRequest, "401.html", nil)
+		c.HTML(http.StatusOK, "update_password.html", gin.H{
+			"type":         login_type,
+			"loginer_name": loginer.GetLoginerName(),
+			"err_code":     1,
+			"msg":          "请求类型错误！",
+		})
 		return
 	}
 
 	if err := loginer.CheckCookies(c, "user_cookie"); err != nil {
 		log.Error(err)
-		c.HTML(http.StatusBadRequest, "401.html", nil)
+		c.HTML(http.StatusOK, "update_password.html", gin.H{
+			"type":         login_type,
+			"loginer_name": loginer.GetLoginerName(),
+			"err_code":     1,
+			"msg":          "登录验证失败！",
+		})
 		return
 	}
 
@@ -78,16 +88,23 @@ func UpdatePasswordPostHandler(c *gin.Context) {
 	new_password := c.Request.PostForm.Get("new_password")
 
 	if old_password != loginer.GetPassword() {
-		c.HTML(http.StatusOK, "update_password_fail.html", gin.H{
-			"second": "3",
-			"url":    "/update_password?type=" + login_type,
+		c.HTML(http.StatusOK, "update_password.html", gin.H{
+			"type":         login_type,
+			"loginer_name": loginer.GetLoginerName(),
+			"err_code":     1,
+			"msg":          "原始密码验证失败！",
 		})
 		return
 	}
 
 	err := loginer.UpdatePassword(new_password)
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "401.html", nil)
+		c.HTML(http.StatusOK, "update_password.html", gin.H{
+			"type":         login_type,
+			"loginer_name": loginer.GetLoginerName(),
+			"err_code":     1,
+			"msg":          err.Error(),
+		})
 		return
 	}
 

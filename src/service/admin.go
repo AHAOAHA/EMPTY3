@@ -227,7 +227,7 @@ func AdminAddMajorPostHandler(c *gin.Context) {
 	err := dao.DataBase.Execf("insert into `major`(`major_uid`, `college_uid`, `name`)values('%s', '%s', '%s')", formdata.Get("major_uid"), formdata.Get("college_uid"), formdata.Get("name"))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg":  err.Error(),
+			"err_msg":  "添加失败！",
 			"err_code": 3,
 		})
 		return
@@ -858,10 +858,11 @@ func AdminAddCourseHandler(c *gin.Context) {
 
 	classUIDStr := c.Query("class_uid")
 	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
-
+	className, _ := api.GetNamebyUid(classUID, "class", "class_uid")
 	c.HTML(http.StatusOK, "admin_add_course.html", gin.H{
 		"loginer_name": a.GetLoginerName(),
 		"class_uid":    classUID,
+		"class_name":   className,
 	})
 }
 

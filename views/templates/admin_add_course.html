@@ -234,6 +234,16 @@
                         </div>
 
                         <div class="am-form-group">
+                            <label for="user-name" class="am-u-sm-3 am-form-label">班级： </label>
+                            <div class="am-u-sm-9">
+                                <select id="class_uid" readonly="readonly">
+                                    <option value="{{.class_uid}}">{{.class_name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="am-form-group">
                             <label for="user-name" class="am-u-sm-3 am-form-label">课程： </label>
                             <div class="am-u-sm-9">
                                 <input type="hidden" id="class_uid">
