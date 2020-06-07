@@ -118,7 +118,7 @@ func main() {
 	// r.GET("/query", service.QueryGetHandler)
 	r.GET("/get_all_college_name", service.GetAllCollegeNameHandler)
 	r.GET("/get_all_major_name", service.GetAllMajorNameHandler)
-	r.GET("/get_all_class_name", service.GetAllClassHandler)
+	r.GET("/get_all_class_name", service.GetAllClassNameHandler)
 	r.GET("/get_all_course_name", service.GetAllCourseInfoHandler)
 	r.GET("/get_all_teacher_name", service.GetAllTeacherInfoHandler)
 	r.GET("location-to-addr", service.LocationToAddrHandler)

@@ -96,7 +96,7 @@ function make_major_options() {
 function make_class_options() {
     $.ajax({
         type: "GET",
-        url: "/get_all_class_name",
+        url: "/get_all_class_name?major_uid=" + document.getElementById("major_uid").value,
         dataType: "json",
         success: function (data) {
             $("#class_uid").empty();
