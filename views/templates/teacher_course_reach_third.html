@@ -163,10 +163,6 @@
                                     <th class="table-set">学号</th>
                                     <th class="table-set">班级</th>
                                     <th class="table-set">课程</th>
-                                    <th class="table-title">平时指标点1成绩</th>
-                                    <th class="table-title">平时指标点2成绩</th>
-                                    <th class="table-set">期中指标点1成绩</th>
-                                    <th class="table-set">期中指标点2成绩</th>
                                     <th class="table-set">期末指标点1成绩</th>
                                     <th class="table-set">期末指标点2成绩</th>
                                 </tr>
@@ -190,10 +186,6 @@
                                                             \<td\>"+ val["StudentUid"] + "\</td\>\
                                                             \<td\>"+ val["ClassName"] + "\</td\>\
                                                             \<td\>"+ val["CourseName"] + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"us_flag_1_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_us_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"ms_flag_1_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
-                                                                \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_ms_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"es_flag_1_" + val["StudentUid"] + "\" onchange=\"updateEndFlag2Score\(" + val["StudentUid"] + "\)\">" + "\</td\>\
                                                                 \<td class=\"am-hide-sm-only\"\>"+ "<input type=\"number\" id=\"td_es_" + val["StudentUid"] + "\" readonly=\"readonly\">" + "\</td\>\
                                             \</tr\>";
@@ -201,42 +193,42 @@
                                             $('#main_tbody').append(tr);
                                         }
                                         var footer = "\<tr\>\
-                                                        \<td colspan=\"11\" style=\"text-align:center;vertical-align:middle;\"\>\</td\>\
+                                                        \<td colspan=\"7\" style=\"text-align:center;vertical-align:middle;\"\>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td colspan=\"11\" style=\"text-align:center;vertical-align:middle;\"\>成绩属性设置\</td\>\
+                                                        \<td colspan=\"7\" style=\"text-align:center;vertical-align:middle;\"\>成绩属性设置\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td\ colspan=\"3\">指标1目标达成度：\</td\>\
-                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_wander\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"2\">指标1目标达成度：\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_1_wander\" step=\"0.01\"\>\</td\>\
                                                         \<td\ colspan=\"1\">指标2目标达成度：\</td\>\
-                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_wander\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_2_wander\" step=\"0.01\"\>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td\ colspan=\"3\">平时成绩指标1总分：\</td\>\
-                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_uss\" step=\"0.01\" onchange=\"UsualPartUpdate()\"\>\</td\>\
+                                                        \<td\ colspan=\"2\">平时成绩指标1总分：\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_1_uss\" step=\"0.01\" \>\</td\>\
                                                         \<td\ colspan=\"1\">平时成绩指标2总分：\</td\>\
-                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_uss\" step=\"0.01\" onchange=\"UsualPartUpdate()\"\>\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_2_uss\" step=\"0.01\" \>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td\ colspan=\"3\">期中成绩指标1总分：\</td\>\
-                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_mss\" step=\"0.01\" onchange=\"MidPartUpdate()\"\>\</td\>\
+                                                        \<td\ colspan=\"2\">期中成绩指标1总分：\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_1_mss\" step=\"0.01\" \>\</td\>\
                                                         \<td\ colspan=\"1\">期中成绩指标2总分：\</td\>\
-                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_mss\" step=\"0.01\" onchange=\"MidPartUpdate()\"\>\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_2_mss\" step=\"0.01\" \>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td\ colspan=\"3\">期末成绩指标1总分：\</td\>\
-                                                        \<td\ colspan=\"3\"\>\<input type=\"number\" id=\"flag_1_ess\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"2\">期末成绩指标1总分：\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_1_ess\" step=\"0.01\"\>\</td\>\
                                                         \<td\ colspan=\"1\">期末成绩指标2总分：\</td\>\
-                                                        \<td\ colspan=\"4\"\>\<input type=\"number\" id=\"flag_2_ess\" step=\"0.01\"\>\</td\>\
+                                                        \<td\ colspan=\"2\"\>\<input type=\"number\" id=\"flag_2_ess\" step=\"0.01\"\>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td\ colspan=\"3\">指标1实际达成度\</td\>\
-                                                        \<td colspan=\"8\"\>\<input type=\"number\" id=\"flag_1_fact\" step=\"0.01\" readonly=\"readonly\" placeholder=\"指标点1实际达成度结果\"\>\</td\>\
+                                                        \<td\ colspan=\"2\">指标1实际达成度\</td\>\
+                                                        \<td colspan=\"5\"\>\<input type=\"number\" id=\"flag_1_fact\" step=\"0.01\" readonly=\"readonly\" placeholder=\"指标点1实际达成度结果\"\>\</td\>\
                                                       \</tr\>\
                                                       \<tr\>\
-                                                        \<td colspan=\"3\"\>指标2实际达成度\</td\>\
-                                                        \<td colspan=\"8\"\>\<input type=\"number\" id=\"flag_2_fact\" step=\"0.01\" readonly=\"readonly\" placeholder=\"指标点2实际达成度结果\"\>\</td\>\
+                                                        \<td colspan=\"2\"\>指标2实际达成度\</td\>\
+                                                        \<td colspan=\"5\"\>\<input type=\"number\" id=\"flag_2_fact\" step=\"0.01\" readonly=\"readonly\" placeholder=\"指标点2实际达成度结果\"\>\</td\>\
                                                       \<tr\>";
 
                                         $("#main_tbody").append(footer);
@@ -298,6 +290,8 @@
                                     function GetReach() {
                                         var score_data = document.getElementById("student_score").value;
                                         var percent = document.getElementById("percent").value;
+                                        var sum_us = 0;
+                                        var sum_ms = 0;
                                         var sum_ms_f1 = 0;
                                         var sum_ms_f2 = 0;
                                         var sum_us_f1 = 0;
@@ -305,13 +299,10 @@
                                         var sum_es_f1 = 0;
                                         var sum_es_f2 = 0;
                                         $.each(JSON.parse(score_data), function (index, val) {
-                                            sum_ms_f1 = Number(sum_ms_f1) + Number(document.getElementById("ms_flag_1_" + val["StudentUid"]).value);
-                                            sum_us_f1 = Number(sum_us_f1) + Number(document.getElementById("us_flag_1_" + val["StudentUid"]).value);
                                             sum_es_f1 = Number(sum_es_f1) + Number(document.getElementById("es_flag_1_" + val["StudentUid"]).value);
-
-                                            sum_ms_f2 = Number(sum_ms_f2) + Number(document.getElementById("td_ms_" + val["StudentUid"]).value);
-                                            sum_us_f2 = Number(sum_us_f2) + Number(document.getElementById("td_us_" + val["StudentUid"]).value);
                                             sum_es_f2 = Number(sum_es_f2) + Number(document.getElementById("td_es_" + val["StudentUid"]).value);
+                                            sum_us = Number(sum_us) + Number(val["UsualScore"]);
+                                            sum_ms = Number(sum_ms) + Number(val["MidScore"]);
                                         })
 
                                         var uss_f1 = Number(document.getElementById("flag_1_uss").value);
@@ -320,6 +311,12 @@
                                         var mss_f2 = Number(document.getElementById("flag_2_mss").value);
                                         var ess_f1 = Number(document.getElementById("flag_1_ess").value);
                                         var ess_f2 = Number(document.getElementById("flag_2_ess").value);
+
+                                        sum_us_f1 = Number(sum_us) * (Number(uss_f1) / Number(100));
+                                        sum_us_f1 = Number(sum_us) * (Number(uss_f2) / Number(100));
+
+                                        sum_ms_f1 = Number(sum_ms) * (Number(mss_f1) / Number(100));
+                                        sum_ms_f2 = Number(sum_ms) * (Number(mss_f2) / Number(100));
 
                                         var percent = JSON.parse(document.getElementById("percent").value);
                                         var up = Number(percent["UsualPercent"]);
