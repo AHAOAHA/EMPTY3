@@ -1,0 +1,22 @@
+# db info
+[GradeManagerDB]
+Host="xxxxxx"
+Port=xxxxxx
+User="xxxxxx"
+Password="xxxxxx"
+DataBaseName="xxxxxx"
+
+[Alarm]
+Url="https://sc.ftqq.com/xxxxxx.send"
+
+[IpToAddr]
+Key="xxxxxx"
+SK="xxxxxx"
+Url="xxxxxx"
+Path="xxxxxx"
+
+[LocationToAddr]
+Key="xxxxxx"
+SK="xxxxxx"
+Url="xxxxxx"
+Path="xxxxxx"
