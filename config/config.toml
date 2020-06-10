@@ -1,7 +1,7 @@
 # db info
 [GradeManagerDB]
 Host="xxxxxx"
-Port=xxxxxx
+Port=3306
 User="xxxxxx"
 Password="xxxxxx"
 DataBaseName="xxxxxx"

@@ -26,7 +26,7 @@
 # db info
 [GradeManagerDB]
 Host="xxx.xxx.xxx.xxx" # 数据库IP
-Port=xxxx              # 数据库端口号
+Port=3306              # 数据库端口号
 User="xxxxxx"          # 数据库用户名
 Password="xxxxxx"      # 数据库密码
 DataBaseName="xxxxxx"  # 数据库DataBase名
@@ -47,5 +47,5 @@ Path="xxxxxx"
 Key="xxxxxx"
 SK="xxxxxx"
 Url="xxxxxx"
-Path="/ws/geocoder/v1"
+Path="xxxxxx"
 ```
