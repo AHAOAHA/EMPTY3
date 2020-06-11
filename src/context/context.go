@@ -212,7 +212,7 @@ func (t *TeacherContext) Entcry() string {
 		log.Error(err)
 		return ""
 	}
-	return base64.RawStdEncoding.EncodeToString(data)
+	return base64.RawURLEncoding.EncodeToString(data)
 }
 
 func (t *TeacherContext) Detcry(cookie string) error {

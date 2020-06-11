@@ -27,6 +27,7 @@ func TeacherIndexHandler(c *gin.Context) {
 	var t context.TeacherContext
 	// check cookie
 	if err := t.CheckCookies(c, "user_cookie"); err != nil {
+		log.Error(err)
 		c.HTML(http.StatusBadRequest, "401.html", nil)
 		return
 	}
