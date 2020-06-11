@@ -511,7 +511,7 @@ func TeacherInputScoreHandler(c *gin.Context) {
 		return
 	}
 
-	buf := make([]byte, 1024)
+	buf := make([]byte, 102400)
 	n, _ := c.Request.Body.Read(buf)
 
 	body_data := string(buf[0:n])
@@ -556,6 +556,30 @@ func TeacherInputScoreHandler(c *gin.Context) {
 
 }
 
+func GetRealCreditAndAcaCredit(courseUID uint64, score int, scoreType int) (float32, float32) {
+	courseInfo, err := api.GetCourseByCourseUid(courseUID)
+	if err != nil {
+		log.Error(err)
+		return 0, 0
+	}
+	log.Info(score)
+	if scoreType == 0 {
+		// 分数制
+		if score < 60 && courseInfo.GetCredit() > 1 {
+			return 1.0, 1.0
+		}
+		return float32((float32(score) / 100) * courseInfo.GetCredit()), float32(((float32(score) / 100) * courseInfo.GetCredit()) * 0.6)
+
+	} else {
+		// 分级制
+		if score >= 60 {
+			return courseInfo.GetCredit(), courseInfo.GetCredit() * 0.6
+		}
+	}
+
+	return 0, 0
+}
+
 func SaveStudentScore(body map[string]interface{}, save_type int) error {
 	score_type := body["ScoreType"]
 	score_data := body["Data"].([]interface{})
@@ -563,14 +587,17 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 		// 分数制
 		log.Info(score_data)
 		for _, v := range score_data {
-			log.Warn(v)
+			log.Info(v)
 			student_data := v.(map[string]interface{})
-			usual_score, _ := strconv.Atoi(student_data["UsualScore"].(string))
-			mid_score, _ := strconv.Atoi(student_data["MidScore"].(string))
-			end_score, _ := strconv.Atoi(student_data["EndScore"].(string))
-			score, _ := strconv.Atoi(student_data["Score"].(string))
-			// log.Info(usual_score, mid_score, end_score, score)
+			usual_score, _ := strconv.ParseFloat(student_data["UsualScore"].(string), 32)
+			mid_score, _ := strconv.ParseFloat(student_data["MidScore"].(string), 32)
+			end_score, _ := strconv.ParseFloat(student_data["EndScore"].(string), 32)
+			scoreF, _ := strconv.ParseFloat(student_data["Score"].(string), 32)
+			score := int(scoreF)
 
+			// 计算学分绩点
+			courseUID, _ := strconv.ParseUint(student_data["CourseUid"].(string), 10, 64)
+			credit, acaCredit := GetRealCreditAndAcaCredit(courseUID, score, 0)
 			// 逐条保存
 			// 查看数据是否存在
 			var is_exist bool = true
@@ -582,15 +609,15 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			if is_exist == true {
 				if string(m[0]["type"].([]uint8)) == "0" {
 					// 可以修改
-					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d', `score_type`='0' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%f', `midterm_score`='%f', `endterm_score`='%f', `score`='%d', `type`='%d', `score_type`='0', `credit`='%f', `academic_credit`='%f' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, credit, acaCredit, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
 					if err != nil {
 						return err
 					}
 				} else {
-					return errors.New("type is 1")
+					return errors.New("type is submit")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d', '0')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '0', '%f', '%f')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit)
 				if err != nil {
 					return err
 				}
@@ -601,15 +628,19 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 		for _, v := range score_data {
 			log.Warn(v)
 			student_data := v.(map[string]interface{})
-			usual_score, _ := strconv.Atoi(student_data["UsualScore"].(string))
-			mid_score, _ := strconv.Atoi(student_data["MidScore"].(string))
-			end_score, _ := strconv.Atoi(student_data["EndScore"].(string))
+			usual_score, _ := strconv.ParseFloat(student_data["UsualScore"].(string), 32)
+			mid_score, _ := strconv.ParseFloat(student_data["MidScore"].(string), 32)
+			end_score, _ := strconv.ParseFloat(student_data["EndScore"].(string), 32)
 			percent := body["Percent"].(map[string]interface{})
 			usual_percent, _ := strconv.Atoi(percent["UsualPercent"].(string))
 			mid_percent, _ := strconv.Atoi(percent["MidPercent"].(string))
 			end_percent, _ := strconv.Atoi(percent["EndPercent"].(string))
-			score := (usual_score*(usual_percent/100) + mid_score*(mid_percent/100) + end_score*(end_percent/100))
+			score := int(int(usual_score)*(usual_percent/100) + int(mid_score)*(mid_percent/100) + int(end_score)*(end_percent/100))
 			// 逐条保存
+
+			// 计算学分绩点
+			courseUID, _ := strconv.ParseUint(student_data["CourseUid"].(string), 10, 64)
+			credit, acaCredit := GetRealCreditAndAcaCredit(courseUID, score, 1)
 
 			var is_exist bool = true
 			m, err := dao.DataBase.Queryf("select * from `score` where `student_uid`='%s' and `course_uid`='%s'", student_data["StudentUid"].(string), student_data["CourseUid"].(string))
@@ -620,7 +651,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			if is_exist == true {
 				if string(m[0]["type"].([]uint8)) == "0" {
 					// 可以修改
-					err := dao.DataBase.Execf("update `score` set `usual_score`='%d', `midterm_score`='%d', `endterm_score`='%d', `score`='%d', `type`='%d', `score_type`='1' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%f', `midterm_score`='%f', `endterm_score`='%f', `score`='%d', `type`='%d', `score_type`='1', `credit`='%f', `academic_credit`='%f' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, credit, acaCredit, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
 					if err != nil {
 						return err
 					}
@@ -628,7 +659,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 					return errors.New("type is 1")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`) values ('%s', '%s', '%d', '%d', '%d', '%d', '%d', '1')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '1', '%f', '%f')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit)
 				if err != nil {
 					return err
 				}

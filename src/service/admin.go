@@ -189,7 +189,7 @@ func AdminAddCollegePostHandler(c *gin.Context) {
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
-			"err_msg":  err.Error(),
+			"err_msg":  "添加失败！",
 			"err_code": 2,
 		})
 		return

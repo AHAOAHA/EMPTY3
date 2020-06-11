@@ -149,7 +149,7 @@
 
         <div class="tpl-content-wrapper">
             <div class="tpl-content-page-title">
-                学生信息
+                学生成绩信息
             </div>
             <form action="/teacher_input_score_third" method="post">
                 <div class="am-form-group">
@@ -279,7 +279,7 @@
 
                                         score = ((us * (upn / 100)) + (ms * (mpn / 100)) + (es * (epn / 100)));
                                         if (score_type == 0) {
-                                            document.getElementById("score_" + StudentUid).value = score;
+                                            document.getElementById("score_" + StudentUid).value = score.toFixed(2);
                                         } else {
                                             if (score < 60) {
                                                 document.getElementById("score_" + StudentUid).value = "不及格";
@@ -319,8 +319,9 @@
                                         document.getElementById("end_percent").value = json_cre_result["EndPercent"];
                                         var count = 1;
                                         var tr = "";
-                                        $.each(json_stu_result, function (index, val) {
-                                            tr += "\<tr\>\
+                                        if (json_stu_result != null) {
+                                            $.each(json_stu_result, function (index, val) {
+                                                tr += "\<tr\>\
                                                         \<td\>"+ count++ + "\</td\>\
                                                         \<td\>"+ val["Name"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["StudentUid"] + "\</td\>\
@@ -338,14 +339,34 @@
                                                 \<input\ type=\"text\" id=\"score_" + val["StudentUid"] + "\" value=\"0\" onchange=\"updateScore(" + val["StudentUid"] + ")\" readonly=\"true\">\
                                             \</td\>\
                                         \</tr\>";
-                                        })
+                                            })
+                                        }
                                         $('#main_tbody').append(tr);
-                                        $.each(json_score_result, function (index, val) {
-                                            document.getElementById("usual_score_" + val["StudentUid"]).value = val["UsualScore"];
-                                            document.getElementById("mid_score_" + val["StudentUid"]).value = val["MidtermScore"];
-                                            document.getElementById("end_score_" + val["StudentUid"]).value = val["EndtermScore"];
-                                            document.getElementById("score_" + val["StudentUid"]).value = val["Score"];
-                                        })
+                                        if (json_score_result != null) {
+                                            $.each(json_score_result, function (index, val) {
+                                                console.log(json_score_result);
+                                                var us = 0;
+                                                var ms = 0;
+                                                var es = 0;
+                                                var s = 0;
+                                                if (val["UsualScore"] != null) {
+                                                    us = val["UsualScore"];
+                                                }
+                                                if (val["MidtermScore"] != null) {
+                                                    ms = val["MidtermScore"];
+                                                }
+                                                if (val["EndtermScore"] != null) {
+                                                    es = val["EndtermScore"];
+                                                }
+                                                if (val["Score"] != null) {
+                                                    s = val["Score"];
+                                                }
+                                                document.getElementById("usual_score_" + val["StudentUid"]).value = us;
+                                                document.getElementById("mid_score_" + val["StudentUid"]).value = ms;
+                                                document.getElementById("end_score_" + val["StudentUid"]).value = es;
+                                                document.getElementById("score_" + val["StudentUid"]).value = s;
+                                            })
+                                        }
                                         // alert(document.getElementById("students_score").value)
                                         // alert(score_type);
                                         if (score_type == 0) {
@@ -375,25 +396,27 @@
                                         var json_stu_result = JSON.parse(student_data);
                                         var json_cre_result = JSON.parse(course_data);
                                         var req_json = [];
-                                        $.each(json_stu_result, function (index, val) {
-                                            var usu_s = document.getElementById("usual_score_" + val["StudentUid"]).value;
-                                            var mid_s = document.getElementById("mid_score_" + val["StudentUid"]).value;
-                                            var end_s = document.getElementById("end_score_" + val["StudentUid"]).value;
-                                            var usu_p = document.getElementById("usual_percent").value;
-                                            var mid_p = document.getElementById("mid_percent").value;
-                                            var end_p = document.getElementById("end_percent").value;
-                                            var score = Number(usu_s) * (Number(usu_p) / 100) + Number(mid_s) * (Number(mid_p) / 100) + Number(end_s) * (Number(end_p) / 100);
-                                            var data = {
-                                                "CourseUid": json_cre_result["CourseUid"].toString(10),
-                                                "StudentUid": val["StudentUid"].toString(10),
-                                                "UsualScore": document.getElementById("usual_score_" + val["StudentUid"]).value,
-                                                "MidScore": document.getElementById("mid_score_" + val["StudentUid"]).value,
-                                                "EndScore": document.getElementById("end_score_" + val["StudentUid"]).value,
-                                                "Score": score.toString(),
-                                            }
+                                        if (json_stu_result != null) {
+                                            $.each(json_stu_result, function (index, val) {
+                                                var usu_s = document.getElementById("usual_score_" + val["StudentUid"]).value;
+                                                var mid_s = document.getElementById("mid_score_" + val["StudentUid"]).value;
+                                                var end_s = document.getElementById("end_score_" + val["StudentUid"]).value;
+                                                var usu_p = document.getElementById("usual_percent").value;
+                                                var mid_p = document.getElementById("mid_percent").value;
+                                                var end_p = document.getElementById("end_percent").value;
+                                                var score = Number(usu_s) * (Number(usu_p) / 100) + Number(mid_s) * (Number(mid_p) / 100) + Number(end_s) * (Number(end_p) / 100);
+                                                var data = {
+                                                    "CourseUid": json_cre_result["CourseUid"].toString(10),
+                                                    "StudentUid": val["StudentUid"].toString(10),
+                                                    "UsualScore": document.getElementById("usual_score_" + val["StudentUid"]).value,
+                                                    "MidScore": document.getElementById("mid_score_" + val["StudentUid"]).value,
+                                                    "EndScore": document.getElementById("end_score_" + val["StudentUid"]).value,
+                                                    "Score": score.toString(),
+                                                }
 
-                                            req_json.push(data);
-                                        })
+                                                req_json.push(data);
+                                            })
+                                        }
 
                                         return req_json;
                                     }
@@ -449,18 +472,17 @@
                                             dataType: "json",
                                             success: function (rsp) {
                                                 is_ok(rsp);
+                                                var NewTab = document.getElementById("score_table");
+                                                $.each(NewTab, function (index) { // tr
+                                                    $(this).children('td').each(function (j) {
+                                                        if ($(this).find("input").length > 0) {
+                                                            let thisInputVal = $(this).find("input").val();
+                                                            $(this).html(thisInputVal);
+                                                        }
+                                                    });
+                                                });
                                             }
                                         })
-
-                                        var NewTab = document.getElementById("score_table");
-                                        $.each(NewTab, function (index) { // tr
-                                            $(this).children('td').each(function (j) {
-                                                if ($(this).find("input").length > 0) {
-                                                    let thisInputVal = $(this).find("input").val();
-                                                    $(this).html(thisInputVal);
-                                                }
-                                            });
-                                        });
                                     }
 
                                     function is_ok(json_rsp) {

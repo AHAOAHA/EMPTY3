@@ -959,6 +959,29 @@ func GetAllCourseInfo() ([]DataCenter.CourseInfo, error) {
 	return result, nil
 }
 
+func GetCourseByCourseUid(courseUID uint64) (DataCenter.CourseInfo, error) {
+	var result DataCenter.CourseInfo
+	m, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%d'", courseUID)
+	if err != nil {
+		return result, err
+	}
+	v := m[0]
+	collegeUID, _ := strconv.ParseUint(string(v["college_uid"].([]uint8)), 10, 64)
+	credit, _ := strconv.ParseFloat(string(v["credit"].([]uint8)), 32)
+	status, _ := strconv.Atoi(string(v["status"].([]uint8)))
+	typeC, _ := strconv.Atoi(string(v["type"].([]uint8)))
+	result = DataCenter.CourseInfo{
+		CourseUid:  courseUID,
+		CollegeUid: collegeUID,
+		Name:       string(v["name"].([]uint8)),
+		Credit:     float32(credit),
+		Status:     DataCenter.CourseInfo_STATUS(status),
+		Type:       DataCenter.CourseInfo_TYPE(typeC),
+	}
+
+	return result, nil
+}
+
 func GetCourseByStudentUid(studentUID uint64) ([]DataCenter.CourseInfo, error) {
 	var result []DataCenter.CourseInfo
 	m, err := dao.DataBase.Queryf("select * from `student_course` where `student_uid`='%d'", studentUID)
