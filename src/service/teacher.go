@@ -446,6 +446,8 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 		Credit         float32
 		Score          uint32
 		Status         string
+		TeamYear       int32
+		TeamTh         int32
 	}
 
 	for _, v := range student_list {
@@ -460,6 +462,8 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 				Credit         float32
 				Score          uint32
 				Status         string
+				TeamYear       int32
+				TeamTh         int32
 			}{
 				v.GetName(),
 				0,
@@ -469,6 +473,8 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 				0,
 				0,
 				score.GetType().String(),
+				score.GetTeamYear(),
+				score.GetTeamTh(),
 			})
 			continue
 		}
@@ -481,6 +487,8 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			Credit         float32
 			Score          uint32
 			Status         string
+			TeamYear       int32
+			TeamTh         int32
 		}{
 			v.GetName(),
 			score.GetMidtermScore(),
@@ -490,6 +498,8 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			score.GetCredit(),
 			score.GetScore(),
 			score.GetType().String(),
+			score.GetTeamYear(),
+			score.GetTeamTh(),
 		})
 	}
 
@@ -511,7 +521,7 @@ func TeacherInputScoreHandler(c *gin.Context) {
 		return
 	}
 
-	buf := make([]byte, 102400)
+	buf := make([]byte, 1024000)
 	n, _ := c.Request.Body.Read(buf)
 
 	body_data := string(buf[0:n])
@@ -537,7 +547,7 @@ func TeacherInputScoreHandler(c *gin.Context) {
 		}
 	} else if cmd == "submit" {
 		// 提交
-		err = SavePercent(body_m, 1)
+		err = SavePercent(body_m, 0)
 		if err != nil {
 			log.Error(err)
 			err_code = 1002
@@ -547,6 +557,7 @@ func TeacherInputScoreHandler(c *gin.Context) {
 			log.Error(err)
 			err_code = 1002
 		}
+
 	} else {
 		// 错误
 	}
@@ -583,6 +594,13 @@ func GetRealCreditAndAcaCredit(courseUID uint64, score int, scoreType int) (floa
 func SaveStudentScore(body map[string]interface{}, save_type int) error {
 	score_type := body["ScoreType"]
 	score_data := body["Data"].([]interface{})
+
+	teamYearStr := body["TeamYear"].(string)
+	teamThStr := body["TeamTh"].(string)
+
+	var courseUIDStr string
+	var classUID uint64
+
 	if score_type == "0" {
 		// 分数制
 		log.Info(score_data)
@@ -598,6 +616,14 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			// 计算学分绩点
 			courseUID, _ := strconv.ParseUint(student_data["CourseUid"].(string), 10, 64)
 			credit, acaCredit := GetRealCreditAndAcaCredit(courseUID, score, 0)
+
+			// 保存备份信息
+			courseUIDStr = student_data["CourseUid"].(string)
+			studentUIDStr := student_data["StudentUid"].(string)
+			studentUID, _ := strconv.ParseUint(studentUIDStr, 10, 64)
+			stuInfo, _ := api.GetStudentByStudentUid(studentUID)
+			classUID = stuInfo.GetClassUid()
+
 			// 逐条保存
 			// 查看数据是否存在
 			var is_exist bool = true
@@ -609,7 +635,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			if is_exist == true {
 				if string(m[0]["type"].([]uint8)) == "0" {
 					// 可以修改
-					err := dao.DataBase.Execf("update `score` set `usual_score`='%f', `midterm_score`='%f', `endterm_score`='%f', `score`='%d', `type`='%d', `score_type`='0', `credit`='%f', `academic_credit`='%f' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, credit, acaCredit, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%f', `midterm_score`='%f', `endterm_score`='%f', `score`='%d', `type`='%d', `score_type`='0', `credit`='%f', `academic_credit`='%f', `team_year`='%s', `team_th`='%s' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, credit, acaCredit, teamYearStr, teamThStr, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
 					if err != nil {
 						return err
 					}
@@ -617,7 +643,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 					return errors.New("type is submit")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '0', '%f', '%f')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`, `team_year`, `team_th`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '0', '%f', '%f', `%s`, `%s`)", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit, teamYearStr, teamThStr)
 				if err != nil {
 					return err
 				}
@@ -651,15 +677,15 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			if is_exist == true {
 				if string(m[0]["type"].([]uint8)) == "0" {
 					// 可以修改
-					err := dao.DataBase.Execf("update `score` set `usual_score`='%f', `midterm_score`='%f', `endterm_score`='%f', `score`='%d', `type`='%d', `score_type`='1', `credit`='%f', `academic_credit`='%f' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, credit, acaCredit, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
+					err := dao.DataBase.Execf("update `score` set `usual_score`='%f', `midterm_score`='%f', `endterm_score`='%f', `score`='%d', `type`='%d', `score_type`='1', `credit`='%f', `academic_credit`='%f', `team_year`='%s', `team_th`='%s' where `student_uid`='%s' and `course_uid`='%s'", usual_score, mid_score, end_score, score, save_type, credit, acaCredit, teamYearStr, teamThStr, student_data["StudentUid"].(string), student_data["CourseUid"].(string))
 					if err != nil {
 						return err
 					}
 				} else {
-					return errors.New("type is 1")
+					return errors.New("type is Sumbit")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '1', '%f', '%f')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`, `team_year`, `team_th`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '1', '%f', '%f', '%s', '%s')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit, teamYearStr, teamThStr)
 				if err != nil {
 					return err
 				}
@@ -667,6 +693,12 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 		}
 	} else {
 		// err
+	}
+
+	// 更新课程状态
+	err := dao.DataBase.Execf("update `student_course` set `status`='%d' where `class_uid`='%d' and `course_uid`='%s'", DataCenter.StudentCourseInfo_DONE, classUID, courseUIDStr)
+	if err != nil {
+		log.Error(err.Error())
 	}
 	return nil
 }
@@ -685,7 +717,7 @@ func SavePercent(body map[string]interface{}, save_type int) error {
 
 	if is_exist == true {
 		if string(m[0]["type"].([]uint8)) == "1" {
-			return errors.New("type is 1")
+			return errors.New("type is submit")
 		} else {
 			err := dao.DataBase.Execf("update `course_score_percent` set `usual_percent`='%s', `mid_percent`='%s', `end_percent`='%s', `type`='%d' where `course_uid`='%s'", usual_percent, mid_percent, end_percent, save_type, course_uid_str)
 			if err != nil {

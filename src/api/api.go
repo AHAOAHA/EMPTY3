@@ -553,43 +553,49 @@ func GetCollegeInfoByCollegeUid(collegeUID uint64) (DataCenter.CollegeInfo, erro
 }
 
 func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, error) {
-	m, err := dao.DataBase.Queryf("select DISTINCT `course_uid` from `student_course` where `teacher_uid`='%d'", teacher_uid)
+	m, err := dao.DataBase.Queryf("select * from `student_course` where `teacher_uid`='%d'", teacher_uid)
 	if err != nil {
 		return nil, err
 	}
 
 	// db query result type string.
-	var courses []string
+	var studentCourse []DataCenter.StudentCourseInfo
 	for _, v := range m {
-		courses = append(courses, string(v["course_uid"].([]uint8)))
+		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		teacherUID, _ := strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
+		classUID, _ := strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		status, _ := strconv.Atoi(string(v["class_uid"].([]uint8)))
+		studentCourse = append(studentCourse, DataCenter.StudentCourseInfo{
+			CourseUid:  courseUID,
+			TeacherUid: teacherUID,
+			ClassUid:   classUID,
+			Status:     DataCenter.StudentCourseInfo_STATUS(status),
+		})
 	}
 
 	// Query course info by course uid.
 	var coursesInfo []DataCenter.CourseInfo
-	for _, v := range courses {
-		sm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%s'", v)
+	for _, v := range studentCourse {
+		sm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%d'", v.GetCourseUid())
 		if err != nil || len(sm) != 1 {
 			continue
 		}
 
-		course_uid, _ := strconv.ParseUint(v, 10, 64)
 		college_uid, _ := strconv.ParseUint(string(sm[0]["college_uid"].([]uint8)), 10, 64)
 		course_name := string(sm[0]["name"].([]uint8))
 		credit, _ := strconv.ParseFloat(string(sm[0]["credit"].([]uint8)), 32)
 		hour, _ := strconv.ParseFloat(string(sm[0]["hour"].([]uint8)), 32)
 		course_type, _ := strconv.Atoi(string(sm[0]["type"].([]uint8)))
-		status, _ := strconv.Atoi(string(sm[0]["status"].([]uint8)))
 		coursesInfo = append(coursesInfo, DataCenter.CourseInfo{
-			CourseUid:  course_uid,
+			CourseUid:  v.GetCourseUid(),
 			CollegeUid: college_uid,
 			Name:       course_name,
 			Credit:     float32(credit),
 			Hour:       float32(hour),
 			Type:       DataCenter.CourseInfo_TYPE(course_type),
-			Status:     DataCenter.CourseInfo_STATUS(status),
+			Status:     DataCenter.CourseInfo_STATUS(v.GetStatus()),
 			CreateTime: string(sm[0]["create_time"].([]uint8)),
 		})
-		// log.Infof("%v", coursesInfo)
 	}
 
 	return coursesInfo, nil
@@ -761,10 +767,13 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 	usual_score, _ := strconv.ParseFloat(string(val["usual_score"].([]uint8)), 32)
 	mid_score, _ := strconv.ParseFloat(string(val["midterm_score"].([]uint8)), 32)
 	end_score, _ := strconv.ParseFloat(string(val["endterm_score"].([]uint8)), 32)
+	score, _ := strconv.ParseUint(string(val["score"].([]uint8)), 10, 32)
 	academic_credit, _ := strconv.ParseFloat(string(val["academic_credit"].([]uint8)), 32)
 	credit, _ := strconv.ParseFloat(string(val["credit"].([]uint8)), 32)
 	status, _ := strconv.Atoi(string(val["status"].([]uint8)))
 	typeS, _ := strconv.Atoi(string(val["type"].([]uint8)))
+	teamYear, _ := strconv.Atoi(string(val["team_year"].([]uint8)))
+	teamTh, _ := strconv.Atoi(string(val["team_th"].([]uint8)))
 
 	ret = DataCenter.ScoreInfo{
 		ScoreUid:       score_uid,
@@ -778,6 +787,9 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 		Type:           DataCenter.ScoreInfo_TYPE(typeS),
 		Status:         DataCenter.ScoreInfo_STATUS(status),
 		CreateTime:     string(val["create_time"].([]uint8)),
+		TeamYear:       int32(teamYear),
+		TeamTh:         int32(teamTh),
+		Score:          uint32(score),
 	}
 
 	return ret, nil
@@ -862,6 +874,8 @@ func GetStudentSubmitScoreByStudentUid(student_uid uint64) ([]DataCenter.ScoreIn
 		ac, _ := strconv.ParseFloat(string(v["academic_credit"].([]uint8)), 32)
 		c, _ := strconv.ParseFloat(string(v["credit"].([]uint8)), 32)
 		st, _ := strconv.Atoi(string(v["score_type"].([]uint8)))
+		ty, _ := strconv.Atoi(string(v["team_year"].([]uint8)))
+		tt, _ := strconv.Atoi(string(v["team_th"].([]uint8)))
 		result = append(result, DataCenter.ScoreInfo{
 			StudentUid:     student_uid,
 			CourseUid:      course_uid,
@@ -872,6 +886,8 @@ func GetStudentSubmitScoreByStudentUid(student_uid uint64) ([]DataCenter.ScoreIn
 			AcademicCredit: float32(ac),
 			Credit:         float32(c),
 			ScoreType:      DataCenter.ScoreInfo_SCORE_TYPE(st),
+			TeamYear:       int32(ty),
+			TeamTh:         int32(tt),
 		})
 	}
 	return result, nil
@@ -883,14 +899,22 @@ func GetCourseByClassUid(class_uid uint64) ([]DataCenter.CourseInfo, error) {
 	if err != nil {
 		return result, err
 	}
-	var courses []uint64
+	var studentCourse []DataCenter.StudentCourseInfo
 	for _, v := range m {
-		course_uid, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
-		courses = append(courses, course_uid)
+		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
+		teacherUID, _ := strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
+		classUID, _ := strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
+		status, _ := strconv.Atoi(string(v["class_uid"].([]uint8)))
+		studentCourse = append(studentCourse, DataCenter.StudentCourseInfo{
+			CourseUid:  courseUID,
+			TeacherUid: teacherUID,
+			ClassUid:   classUID,
+			Status:     DataCenter.StudentCourseInfo_STATUS(status),
+		})
 	}
 
-	for _, v := range courses {
-		cm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%d'", v)
+	for _, v := range studentCourse {
+		cm, err := dao.DataBase.Queryf("select * from `course` where `course_uid`='%d'", v.GetCourseUid())
 		if err != nil {
 			continue
 		}
@@ -898,15 +922,15 @@ func GetCourseByClassUid(class_uid uint64) ([]DataCenter.CourseInfo, error) {
 		credit, _ := strconv.ParseFloat(string(cm[0]["credit"].([]uint8)), 32)
 		hour, _ := strconv.ParseFloat(string(cm[0]["hour"].([]uint8)), 32)
 		type_c, _ := strconv.Atoi(string(cm[0]["type"].([]uint8)))
-		status, _ := strconv.Atoi(string(cm[0]["status"].([]uint8)))
+
 		result = append(result, DataCenter.CourseInfo{
-			CourseUid:  v,
+			CourseUid:  v.GetCourseUid(),
 			CollegeUid: college_uid,
 			Name:       string(cm[0]["name"].([]uint8)),
 			Credit:     float32(credit),
 			Hour:       float32(hour),
 			Type:       DataCenter.CourseInfo_TYPE(type_c),
-			Status:     DataCenter.CourseInfo_STATUS(status),
+			Status:     DataCenter.CourseInfo_STATUS(v.GetStatus()),
 		})
 	}
 

@@ -25,8 +25,7 @@ CREATE TABLE `teacher` (
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`teacher_uid`),
-  KEY `t_sc_college_uid` (`college_uid`),
-  CONSTRAINT `t_sc_college_uid` FOREIGN KEY (`college_uid`) REFERENCES `college` (`college_uid`)
+  KEY `t_sc_college_uid` (`college_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- college表创建
@@ -43,8 +42,7 @@ CREATE TABLE IF NOT EXISTS `major` (
 	`college_uid` BIGINT UNSIGNED,
 	`name` VARCHAR(64) NOT NULL,
 	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(`major_uid`),
-	CONSTRAINT sc_college_uid FOREIGN KEY (`college_uid`) REFERENCES college(`college_uid`)
+	PRIMARY KEY(`major_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 -- class表创建
@@ -54,9 +52,7 @@ CREATE TABLE IF NOT EXISTS `class` (
 	`major_uid` BIGINT UNSIGNED,
 	`name` VARCHAR(64) NOT NULL,
 	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(`class_uid`),
-	CONSTRAINT c_sc_college_uid FOREIGN KEY (`college_uid`) REFERENCES college(`college_uid`),
-	CONSTRAINT c_sc_major_uid FOREIGN KEY (`major_uid`) REFERENCES major(`major_uid`)
+	PRIMARY KEY(`class_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 -- student表创建
@@ -71,10 +67,7 @@ CREATE TABLE IF NOT EXISTS `student` (
 	`NRIC` VARCHAR(48) NOT NULL,
 	`status` INT UNSIGNED NOT NULL DEFAULT '0',
 	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(`student_uid`),
-	CONSTRAINT s_sc_college_uid FOREIGN KEY (`college_uid`) REFERENCES college(`college_uid`),
-	CONSTRAINT s_sc_major_uid FOREIGN KEY (`major_uid`) REFERENCES major(`major_uid`),
-	CONSTRAINT s_sc_class_uid FOREIGN KEY (`class_uid`) REFERENCES class(`class_uid`)
+	PRIMARY KEY(`student_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 -- course 表创建
@@ -87,9 +80,7 @@ CREATE TABLE `course` (
   `type` float NOT NULL,
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`course_uid`),
-  KEY `co_sc_college_uid` (`college_uid`),
-  CONSTRAINT `co_sc_college_uid` FOREIGN KEY (`college_uid`) REFERENCES `college` (`college_uid`)
+  PRIMARY KEY (`course_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- nitice 表创建
@@ -119,21 +110,22 @@ CREATE TABLE `score` (
   `end_percent` int(10) unsigned NOT NULL DEFAULT '0',
   `mid_percent` int(10) unsigned NOT NULL DEFAULT '0',
   `usual_percent` int(11) NOT NULL DEFAULT '0',
+  `team_year` int(10) NOT NULL DEFAULT '2020',
+  `team_th` int(10) NOT NULL DEFAULT '1',
   PRIMARY KEY (`score_uid`),
   KEY `score_sc_student_uid` (`student_uid`),
-  KEY `score_sc_course_uid` (`course_uid`),
-  CONSTRAINT `score_sc_course_uid` FOREIGN KEY (`course_uid`) REFERENCES `course` (`course_uid`),
-  CONSTRAINT `score_sc_student_uid` FOREIGN KEY (`student_uid`) REFERENCES `student` (`student_uid`)
+  KEY `score_sc_course_uid` (`course_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `student_course` (
 	`student_score_uid` BIGINT UNSIGNED NOT NULL,
 	`student_uid` BIGINT UNSIGNED,
-	`course_uid` BIGINT UNSIGNED,
+	`course_uid` BIGINT UNSIGNED NOT NULL,
+  `class_uid` BIGINT UNSIGNED NOT NULL,
+  `teacher_uid` BIGINT UNSIGNED NOT NULL,
+  `status` INT(10) UNSIGNED NOT NULL DEFAULT '1',
 	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(`student_score_uid`),
-	CONSTRAINT ss_sc_student_uid FOREIGN KEY (`student_uid`) REFERENCES student(`student_uid`),
-	CONSTRAINT ss_sc_course_uid FOREIGN KEY (`course_uid`) REFERENCES course(`course_uid`)
+	PRIMARY KEY(`student_score_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE  TABLE `course_score_percent` (
@@ -144,6 +136,5 @@ CREATE  TABLE `course_score_percent` (
 	`end_percent` INT UNSIGNED NOT NULL,
 	`type` INT UNSIGNED NOT NULL DEFAULT '0',
 	`create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY(`course_score_percent_uid`),
-	CONSTRAINT csp_course_uid FOREIGN KEY (`course_uid`) REFERENCES course(`course_uid`)
+	PRIMARY KEY(`course_score_percent_uid`)
 )ENGINE=INNODB DEFAULT CHARSET=utf8;

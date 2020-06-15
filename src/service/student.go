@@ -100,6 +100,8 @@ func StudentScoreQueryHandler(c *gin.Context) {
 		AcademicCredit float32
 		Credit         float32
 		ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
+		TeamYear       int32
+		TeamTh         int32
 	}
 
 	for _, v := range result {
@@ -116,6 +118,8 @@ func StudentScoreQueryHandler(c *gin.Context) {
 			AcademicCredit float32
 			Credit         float32
 			ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
+			TeamYear       int32
+			TeamTh         int32
 		}{
 			v.GetStudentUid(),
 			student_name,
@@ -127,6 +131,8 @@ func StudentScoreQueryHandler(c *gin.Context) {
 			v.GetAcademicCredit(),
 			v.GetCredit(),
 			v.GetScoreType(),
+			v.GetTeamYear(),
+			v.GetTeamTh(),
 		})
 	}
 	rsp, _ := json.Marshal(rsp_data)

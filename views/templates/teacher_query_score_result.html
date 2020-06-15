@@ -157,6 +157,8 @@
                             <thead>
                                 <tr>
                                     <th class="table-id">序号</th>
+                                    <th class="table-id">学年</th>
+                                    <th class="table-id">学期</th>
                                     <th class="table-title">姓名</th>
                                     <th class="table-title">平时成绩</th>
                                     <th class="table-set">期中成绩</th>
@@ -178,9 +180,12 @@
 
                                         var count = 1;
                                         var tr = "";
+                                        console.log(json_stu_result);
                                         $.each(json_stu_result, function (index, val) {
                                             tr += "\<tr\>\
                                                         \<td\>"+ count++ + "\</td\>\
+                                                        \<td\>"+ val["TeamYear"] + "\</td\>\
+                                                        \<td\>"+ val["TeamTh"] + "\</td\>\
                                                         \<td\>"+ val["Name"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["UsualScore"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["MidScore"] + "\</td\>\

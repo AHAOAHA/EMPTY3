@@ -79,7 +79,7 @@ message ClassInfo {
 // 课程表
 message CourseInfo {
     enum STATUS {
-        PLAN = 0;
+        UNUSE = 0;
         DOING = 1;
         DONE = 2;
     }
@@ -125,6 +125,8 @@ message ScoreInfo {
     uint32              Score = 11;
     TYPE                Type = 12;
     SCORE_TYPE          ScoreType = 13;
+    int32               TeamYear = 14;
+    int32               TeamTh = 15;
 }
 
 message StudentCourseInfo {
@@ -132,6 +134,14 @@ message StudentCourseInfo {
     uint64              StudentUid = 2;
     uint64              CourseUid = 3;
     string              CreateTime = 4;
+    enum STATUS {
+        UNUSE = 0;
+        DOING = 1;
+        DONE = 2;
+    }
+    STATUS              Status = 5;
+    uint64              ClassUid = 6;
+    uint64              TeacherUid = 7;
 }
 
 message NoticeInfo {

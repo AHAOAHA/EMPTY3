@@ -298,8 +298,8 @@ func AdminAddCoursePostHandler(c *gin.Context) {
 	c.Request.ParseForm()
 	formdata := c.Request.PostForm
 
-	err := dao.DataBase.Execf("insert into `course`(`course_uid`, `college_uid`, `name`, `credit`, `hour`, `type`) values ('%s', '%s', '%s', '%s', '%s', '%s')",
-		formdata.Get("course_uid"), formdata.Get("college_uid"), formdata.Get("name"), formdata.Get("credit"), formdata.Get("hour"), formdata.Get("type"))
+	err := dao.DataBase.Execf("insert into `course`(`course_uid`, `college_uid`, `name`, `credit`, `hour`, `type`, `status`) values ('%s', '%s', '%s', '%s', '%s', '%s', '%d')",
+		formdata.Get("course_uid"), formdata.Get("college_uid"), formdata.Get("name"), formdata.Get("credit"), formdata.Get("hour"), formdata.Get("type"), DataCenter.CourseInfo_DOING)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"err_msg":  err.Error(),
