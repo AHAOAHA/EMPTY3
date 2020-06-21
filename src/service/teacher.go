@@ -118,8 +118,17 @@ func TeacherGetTeacherCoursesHandler(c *gin.Context) {
 		Type       string
 	}{}
 
+	tempM := make(map[uint64]struct {
+		CourseUid  uint64
+		CourseName string
+		Credit     float32
+		Hour       float32
+		Status     string
+		Type       string
+	})
+
 	for _, v := range coursesInfo {
-		result = append(result, struct {
+		tempM[v.GetCourseUid()] = struct {
 			CourseUid  uint64
 			CourseName string
 			Credit     float32
@@ -133,7 +142,12 @@ func TeacherGetTeacherCoursesHandler(c *gin.Context) {
 			v.GetHour(),
 			v.GetStatus().String(),
 			v.GetType().String(),
-		})
+		}
+	}
+
+	// 处理重复数据
+	for _, v := range tempM {
+		result = append(result, v)
 	}
 
 	c.JSON(http.StatusOK, result)

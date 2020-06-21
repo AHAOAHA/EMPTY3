@@ -205,6 +205,8 @@
 
                                     function GetXlsxFunc() {
                                         var timestamp = Date.parse(new Date());
+                                        var NewTab = document.createElement("table");
+                                        NewTab = document.getElementById("score_table");
                                         var sheet = XLSX.utils.table_to_sheet(NewTab);
                                         openDownloadDialog(sheet2blob(sheet), timestamp + ".xlsx");
                                     }
