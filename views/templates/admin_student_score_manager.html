@@ -241,14 +241,13 @@
                                                         \<td\>"+ val["StudentName"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["StudentUid"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["CourseName"] + "\</td\>\
-                                                        \<td\>\<input\ type=\"number\" id=\"usual_score_" + val["StudentUid"] + "\" value=\""+val["UsualScore"]+"\"\>\</td\>\
-                                                        \<td\>\<input\ type=\"number\" id=\"mid_score_" + val["StudentUid"] + "\" value=\""+ val["MidScore"] + "\"\>\</td\>\
-                                                        \<td\>\<input\ type=\"number\" id=\"end_score_" + val["StudentUid"] + "\" value=\""+val["EndScore"]+"\" \>\</td\>\
-                                                        \<td\>\<input\ type=\"text\" id=\"score_" + val["StudentUid"] + "\" value=\""+val["Score"] +"\"\>\</td\>\
+                                                        \<td\>\<input\ type=\"number\" id=\"usual_score_" + val["StudentUid"] + "_" + val["CourseUid"] + "\" value=\""+val["UsualScore"]+"\"\>\</td\>\
+                                                        \<td\>\<input\ type=\"number\" id=\"mid_score_" + val["StudentUid"] + "_" + val["CourseUid"] + "\" value=\""+ val["MidScore"] + "\"\>\</td\>\
+                                                        \<td\>\<input\ type=\"number\" id=\"end_score_" + val["StudentUid"] + "_" + val["CourseUid"] + "\" value=\""+val["EndScore"]+"\" \>\</td\>\
+                                                        \<td\>\<input\ type=\"text\" id=\"score_" + val["StudentUid"] + "_" + val["CourseUid"] + "\" value=\""+val["Score"] +"\"\>\</td\>\
                                         \</tr\>";
                                         })
                                         $('#main_tbody').append(tr);
-
                                     }
 
                                     function MakeJsonReq() {
@@ -257,16 +256,16 @@
                                         var json_score = JSON.parse(student_score);
                                         var req_json = [];
                                         $.each(json_score, function (index, val) {
-                                            var usu_s = document.getElementById("usual_score_" + val["StudentUid"]).value;
-                                            var mid_s = document.getElementById("mid_score_" + val["StudentUid"]).value;
-                                            var end_s = document.getElementById("end_score_" + val["StudentUid"]).value;
-                                            var score = document.getElementById("score_" + val["StudentUid"]).value;
+                                            var usu_s = document.getElementById("usual_score_" + val["StudentUid"] + "_" + val["CourseUid"]).value;
+                                            var mid_s = document.getElementById("mid_score_" + val["StudentUid"] + "_" + val["CourseUid"]).value;
+                                            var end_s = document.getElementById("end_score_" + val["StudentUid"] + "_" + val["CourseUid"]).value;
+                                            var score = document.getElementById("score_" + val["StudentUid"] + "_" + val["CourseUid"]).value;
                                             var data = {
                                                 "CourseUid": val["CourseUid"].toString(10),
                                                 "StudentUid": val["StudentUid"].toString(10),
-                                                "UsualScore": document.getElementById("usual_score_" + val["StudentUid"]).value,
-                                                "MidScore": document.getElementById("mid_score_" + val["StudentUid"]).value,
-                                                "EndScore": document.getElementById("end_score_" + val["StudentUid"]).value,
+                                                "UsualScore": document.getElementById("usual_score_" + val["StudentUid"] + "_" + val["CourseUid"]).value,
+                                                "MidScore": document.getElementById("mid_score_" + val["StudentUid"] + "_" + val["CourseUid"]).value,
+                                                "EndScore": document.getElementById("end_score_" + val["StudentUid"] + "_" + val["CourseUid"]).value,
                                                 "Score": score.toString(10),
                                             }
                                             req_json.push(data);
