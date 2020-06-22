@@ -229,7 +229,36 @@ func TeacherGetCourseHandler(c *gin.Context) {
 
 	teacher_uid := t.Info.GetTeacherUid()
 	course, _ := api.GetTeacherCourseByTeacherUid(teacher_uid)
-	rsp, _ := json.Marshal(course)
+	var result []struct {
+		CollegeUid uint64
+		CourseUid  uint64
+		Name       string
+		Credit     float32
+		Hour       float32
+		Status     string
+		Type       string
+	}
+
+	for _, v := range course {
+		result = append(result, struct {
+			CollegeUid uint64
+			CourseUid  uint64
+			Name       string
+			Credit     float32
+			Hour       float32
+			Status     string
+			Type       string
+		}{
+			v.GetCollegeUid(),
+			v.GetCourseUid(),
+			v.GetName(),
+			v.GetCredit(),
+			v.GetHour(),
+			v.GetStatus().String(),
+			v.GetType().String(),
+		})
+	}
+	rsp, _ := json.Marshal(result)
 	c.JSON(http.StatusOK, string(rsp))
 }
 
@@ -462,6 +491,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 		Status         string
 		TeamYear       int32
 		TeamTh         int32
+		ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
 	}
 
 	for _, v := range student_list {
@@ -478,6 +508,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 				Status         string
 				TeamYear       int32
 				TeamTh         int32
+				ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
 			}{
 				v.GetName(),
 				0,
@@ -489,6 +520,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 				score.GetType().String(),
 				score.GetTeamYear(),
 				score.GetTeamTh(),
+				score.GetScoreType(),
 			})
 			continue
 		}
@@ -503,6 +535,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			Status         string
 			TeamYear       int32
 			TeamTh         int32
+			ScoreType      DataCenter.ScoreInfo_SCORE_TYPE
 		}{
 			v.GetName(),
 			score.GetMidtermScore(),
@@ -514,6 +547,7 @@ func TeacherQueryScoreFirstHandler(c *gin.Context) {
 			score.GetType().String(),
 			score.GetTeamYear(),
 			score.GetTeamTh(),
+			score.GetScoreType(),
 		})
 	}
 
@@ -675,7 +709,8 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 			usual_percent, _ := strconv.Atoi(percent["UsualPercent"].(string))
 			mid_percent, _ := strconv.Atoi(percent["MidPercent"].(string))
 			end_percent, _ := strconv.Atoi(percent["EndPercent"].(string))
-			score := int(int(usual_score)*(usual_percent/100) + int(mid_score)*(mid_percent/100) + int(end_score)*(end_percent/100))
+			score := int(usual_score*float64(usual_percent)/100 + mid_score*float64(mid_percent)/100 + end_score*float64(end_percent)/100)
+			log.Info("score:", score)
 			// 逐条保存
 
 			// 计算学分绩点
@@ -709,10 +744,13 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 		// err
 	}
 
-	// 更新课程状态
-	err := dao.DataBase.Execf("update `student_course` set `status`='%d' where `class_uid`='%d' and `course_uid`='%s'", DataCenter.StudentCourseInfo_DONE, classUID, courseUIDStr)
-	if err != nil {
-		log.Error(err.Error())
+	// 提交成绩时修改课程状态
+	if save_type == 1 {
+		// 更新课程状态
+		err := dao.DataBase.Execf("update `student_course` set `status`='%d' where `class_uid`='%d' and `course_uid`='%s'", DataCenter.StudentCourseInfo_DONE, classUID, courseUIDStr)
+		if err != nil {
+			log.Error(err.Error())
+		}
 	}
 	return nil
 }

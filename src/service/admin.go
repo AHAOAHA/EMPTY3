@@ -758,26 +758,17 @@ func AdminUpdateStudentPersonInfoHandler(c *gin.Context) {
 	NRIC := c.Request.PostForm.Get("NRIC")
 	status := c.Request.PostForm.Get("status")
 	student_uid_update := c.Request.PostForm.Get("student_uid")
-	college_name := c.Request.PostForm.Get("college_name")
-	major_name := c.Request.PostForm.Get("major_name")
-	class_name := c.Request.PostForm.Get("class_name")
-	college_uid, err := api.GetCollegeUidByName(college_name)
-	if err != nil {
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		return
-	}
-	major_uid, err := api.GetMajorUidByName(major_name)
-	if err != nil {
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		return
-	}
-	class_uid, err := api.GetClassUidByName(class_name)
-	if err != nil {
-		c.HTML(http.StatusBadRequest, "401.html", nil)
-		return
-	}
-	err = dao.DataBase.Execf("update `student` set `name`='%s', `sex`='%s', `NRIC`='%s', `status`='%s', `college_uid`='%d', `student_uid`='%s',`major_uid`='%d',`class_uid`='%d'  where `student_uid`='%s'",
-		name, sex, NRIC, status, college_uid, student_uid_update, major_uid, class_uid, student_uid)
+	collegeUIDStr := c.Request.PostForm.Get("college_uid")
+	collegeUID, _ := strconv.ParseUint(collegeUIDStr, 10, 64)
+
+	majorUIDStr := c.Request.PostForm.Get("major_uid")
+	majorUID, _ := strconv.ParseUint(majorUIDStr, 10, 64)
+
+	classUIDStr := c.Request.PostForm.Get("class_uid")
+	classUID, _ := strconv.ParseUint(classUIDStr, 10, 64)
+
+	err := dao.DataBase.Execf("update `student` set `name`='%s', `sex`='%s', `NRIC`='%s', `status`='%s', `college_uid`='%d', `student_uid`='%s',`major_uid`='%d',`class_uid`='%d'  where `student_uid`='%s'",
+		name, sex, NRIC, status, collegeUID, student_uid_update, majorUID, classUID, student_uid)
 	if err != nil {
 		c.HTML(http.StatusBadGateway, "502.html", nil)
 		return

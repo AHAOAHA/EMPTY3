@@ -164,28 +164,15 @@
                                         var tr = "";
                                         if (json_course_result != null ) {
                                             $.each(json_course_result, function (index, val) {
-                                                var typeC = "";
-                                                var status = "";
-                                                if (val["typeC"] == 0) {
-                                                    typeC = "必修";
-                                                } else {
-                                                    typeC = "选修";
-                                                }
-                                                if (val["status"] == 0) {
-                                                    status = "计划";
-                                                } else if (val["status"] == 1) {
-                                                    status = "进行中";
-                                                } else {
-                                                    status = "已完成";
-                                                }
+                                                
                                                 tr += "\<tr\>\
                                                             \<td\>"+ count++ + "\</td\>\
                                                             \<td\>"+ val["CourseName"] + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ val["CollegeName"] + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ val["Hour"] + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ val["Credit"] + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ typeC + "\</td\>\
-                                                            \<td class=\"am-hide-sm-only\"\>"+ status + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ val["CourseType"] + "\</td\>\
+                                                            \<td class=\"am-hide-sm-only\"\>"+ val["Status"] + "\</td\>\
                                                             ";
                                             })
                                         }

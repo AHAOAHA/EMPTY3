@@ -246,21 +246,27 @@
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">所属学院 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_college_name" name="college_name" value="{{.college_name}}" readonly="true">
+                                <select id="college_uid" name="college_uid" value="" disabled="disabled" onchange="make_major_options()">
+                                    <option>{{.college_name}}</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">所属专业 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_major_name" name="major_name" value="{{.major_name}}" readonly="true">
+                                <select id="major_uid" name="major_uid" value="" disabled="disabled" onchange="make_class_options()">
+                                    <option>{{.major_name}}</option>
+                                    </select>
                             </div>
                         </div>
                         
                         <div class="am-form-group">
                             <label for="college_id" class="am-u-sm-3 am-form-label">所属班级 </label>
                             <div class="am-u-sm-9">
-                                <input type="text" id="input_class_name" name="class_name" value="{{.class_name}}" readonly="true">
+                                <select id="class_uid" name="class_uid" value="" disabled="disabled">
+                                    <option>{{.class_name}}</option>
+                                </select>
                             </div>
                         </div>
 
@@ -283,9 +289,16 @@
                                         $("#input_NRIC").attr("readOnly", false);
                                         $("#input_status").attr("readOnly", false);
                                         $("#input_student_uid").attr("readOnly", false);
-                                        $("#input_college_name").attr("readOnly", false);
-                                        $("#input_major_name").attr("readOnly", false);
-                                        $("#input_class_name").attr("readOnly", false);
+
+                                        $("#college_uid").removeAttr("disabled");
+                                        $("#college_uid").empty();
+                                        make_college_options();
+                                        
+                                        $("#major_uid").removeAttr("disabled");
+                                        $("#major_uid").empty();
+
+                                        $("#class_uid").removeAttr("disabled");
+                                        $("#class_uid").empty();
 
 
                                         $("#submit_button").attr("type", "submit");
@@ -305,6 +318,7 @@
     <script src="../static/assets/js/amazeui.min.js"></script>
     <script src="../static/assets/js/iscroll.js"></script>
     <script src="../static/assets/js/app.js"></script>
+    <script src="../static/assets/js/ahaoozhang-common.js"></script>
 </body>
 
 </html>

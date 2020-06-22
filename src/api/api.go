@@ -564,7 +564,7 @@ func GetTeacherCourseByTeacherUid(teacher_uid uint64) ([]DataCenter.CourseInfo, 
 		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
 		teacherUID, _ := strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
 		classUID, _ := strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
-		status, _ := strconv.Atoi(string(v["class_uid"].([]uint8)))
+		status, _ := strconv.Atoi(string(v["status"].([]uint8)))
 		studentCourse = append(studentCourse, DataCenter.StudentCourseInfo{
 			CourseUid:  courseUID,
 			TeacherUid: teacherUID,
@@ -772,6 +772,7 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 	credit, _ := strconv.ParseFloat(string(val["credit"].([]uint8)), 32)
 	status, _ := strconv.Atoi(string(val["status"].([]uint8)))
 	typeS, _ := strconv.Atoi(string(val["type"].([]uint8)))
+	scoreType, _ := strconv.Atoi(string(val["score_type"].([]uint8)))
 	teamYear, _ := strconv.Atoi(string(val["team_year"].([]uint8)))
 	teamTh, _ := strconv.Atoi(string(val["team_th"].([]uint8)))
 
@@ -790,6 +791,7 @@ func GetScoreByStudentUidAndCourseUid(student_uid uint64, course_uid uint64) (Da
 		TeamYear:       int32(teamYear),
 		TeamTh:         int32(teamTh),
 		Score:          uint32(score),
+		ScoreType:      DataCenter.ScoreInfo_SCORE_TYPE(scoreType),
 	}
 
 	return ret, nil
@@ -904,7 +906,7 @@ func GetCourseByClassUid(class_uid uint64) ([]DataCenter.CourseInfo, error) {
 		courseUID, _ := strconv.ParseUint(string(v["course_uid"].([]uint8)), 10, 64)
 		teacherUID, _ := strconv.ParseUint(string(v["teacher_uid"].([]uint8)), 10, 64)
 		classUID, _ := strconv.ParseUint(string(v["class_uid"].([]uint8)), 10, 64)
-		status, _ := strconv.Atoi(string(v["class_uid"].([]uint8)))
+		status, _ := strconv.Atoi(string(v["status"].([]uint8)))
 		studentCourse = append(studentCourse, DataCenter.StudentCourseInfo{
 			CourseUid:  courseUID,
 			TeacherUid: teacherUID,

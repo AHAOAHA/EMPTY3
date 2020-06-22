@@ -137,7 +137,66 @@
             <div class="tpl-content-page-title">
                 成绩信息
             </div>
+            学年：<select id="fliter_team_year"> </select>
+            学期：<select id="fliter_team_th">
+                <option value="0">全部</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" value="" onclick="fliterScore()">查询</button>
+            <script>
+                function makeTeamYearOp() {
+                    var team_year = document.getElementById("fliter_team_year");
+                    var date = new Date();
+                    var op0 = document.createElement("option");
+                    op0.setAttribute("value", 0);
+                    op0.innerHTML = "全部";
+                    team_year.append(op0);
+                    var op1 = document.createElement("option");
+                    op1.setAttribute("value", date.getFullYear());
+                    op1.innerHTML = date.getFullYear();
+                    team_year.append(op1);
+                    var op2 = document.createElement("option");
+                    op2.setAttribute("value", date.getFullYear() - 1);
+                    op2.innerHTML = date.getFullYear() - Number(1);
+                    team_year.append(op2);
+                    var op3 = document.createElement("option");
+                    op3.setAttribute("value", date.getFullYear() - 2);
+                    op3.innerHTML = date.getFullYear() - 2;
+                    team_year.append(op3);
+                    var op4 = document.createElement("option");
+                    op4.setAttribute("value", date.getFullYear() - 3);
+                    op4.innerHTML = date.getFullYear() - 3;
+                    team_year.append(op4);
+                }
 
+                function fliterScore() {
+                    var fliterTeamYear = document.getElementById("fliter_team_year").value;
+                    var fliterTeamTh = document.getElementById("fliter_team_th").value;
+
+                    $('#score_table tr').each(function (i) {
+                        var teamYear = 0;
+                        if (i != 0) {
+                            $(this).children('td').each(function (j) {  // 遍历 tr 的各个中学期
+                                if (j == 1) {
+                                    teamYear = $(this).text();
+                                }
+                            });
+
+                            if (teamYear != fliterTeamYear && fliterTeamYear != 0) {
+                                $(this).hide();
+                            } else {
+                                $(this).show();
+                            }
+
+                            if (fliterTeamYear == 0) {
+                                $(this).show();
+                            }
+                        }
+                    });
+                }
+
+            </script>
             <ol class="am-breadcrumb">
             </ol>
             <div class="am-g tpl-amazeui-form" id="main_div">
@@ -275,33 +334,33 @@
                                         var score_data = document.getElementById("score_data").value;
                                         var json_score_result = JSON.parse(score_data);
                                         var score_type = 0;
-
-                                        if (json_score_result[0]["ScoreType"] == 1) {
-                                            score_type = 1;
-                                        }
-
-                                        var count = 1;
-                                        var tr = "";
-                                        var last_score = "";
-
-                                        $.each(json_score_result, function (index, val) {
-                                            var last_score = "";
-                                            if (val["ScoreType"] == 1) {
-                                                if (val["Score"] < 60) {
-                                                    last_score = "不及格";
-                                                } else if (val["Score"] >= 60 && val["Score"] < 70) {
-                                                    last_score = "及格";
-                                                } else if (val["Score"] >= 70 && val["Score"] < 80) {
-                                                    last_score = "中";
-                                                } else if (val["Score"] >= 80 && val["Score"] < 90) {
-                                                    last_score = "良";
-                                                } else {
-                                                    last_score = "优";
-                                                }
-                                            } else {
-                                                last_score = val["Score"];
+                                        if (json_score_result != null) {
+                                            if (json_score_result[0]["ScoreType"] == 1) {
+                                                score_type = 1;
                                             }
-                                            tr += "\<tr\>\
+
+                                            var count = 1;
+                                            var tr = "";
+                                            var last_score = "";
+
+                                            $.each(json_score_result, function (index, val) {
+                                                var last_score = "";
+                                                if (val["ScoreType"] == 1) {
+                                                    if (val["Score"] < 60) {
+                                                        last_score = "不及格";
+                                                    } else if (val["Score"] >= 60 && val["Score"] < 70) {
+                                                        last_score = "及格";
+                                                    } else if (val["Score"] >= 70 && val["Score"] < 80) {
+                                                        last_score = "中";
+                                                    } else if (val["Score"] >= 80 && val["Score"] < 90) {
+                                                        last_score = "良";
+                                                    } else {
+                                                        last_score = "优";
+                                                    }
+                                                } else {
+                                                    last_score = val["Score"];
+                                                }
+                                                tr += "\<tr\>\
                                                         \<td\>"+ count++ + "\</td\>\
                                                         \<td\>"+ val["TeamYear"] + "\</td\>\
                                                         \<td\>"+ val["TeamTh"] + "\</td\>\
@@ -315,8 +374,10 @@
                                                         \<td class=\"am-hide-sm-only\"\>"+ val["EndScore"] + "\</td\>\
                                                         \<td class=\"am-hide-sm-only\"\>"+ last_score + "\</td\>\
                                         \</tr\>";
-                                        })
+                                            })
+                                        }
                                         $('#main_tbody').append(tr);
+                                        makeTeamYearOp();
                                     }
 
                                     function MakeJsonReq() {

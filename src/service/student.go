@@ -158,8 +158,8 @@ func StudentQueryCourseHandler(c *gin.Context) {
 		CollegeName string
 		Hour        float32
 		Credit      float32
-		CourseType  DataCenter.CourseInfo_TYPE
-		Status      DataCenter.CourseInfo_STATUS
+		CourseType  string
+		Status      string
 	}
 
 	for _, v := range courses {
@@ -169,15 +169,15 @@ func StudentQueryCourseHandler(c *gin.Context) {
 			CollegeName string
 			Hour        float32
 			Credit      float32
-			CourseType  DataCenter.CourseInfo_TYPE
-			Status      DataCenter.CourseInfo_STATUS
+			CourseType  string
+			Status      string
 		}{
 			v.GetName(),
 			collegeName,
 			v.GetHour(),
 			v.GetCredit(),
-			v.GetType(),
-			v.GetStatus(),
+			v.GetType().String(),
+			v.GetStatus().String(),
 		})
 	}
 
