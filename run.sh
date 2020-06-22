@@ -16,4 +16,4 @@ if [ ! -f "./log/debug.log" ]; then
 touch ./log/debug.log
 fi
 
-nohup ./bin/GradeManager > ./log/debug.log 2>&1 &!
+nohup ./bin/GradeManager > ./log/stdout.log 2>&1 &!

@@ -11,9 +11,9 @@ package main
 import (
 	"GradeManager/src/common"
 	_ "GradeManager/src/config"
+	"GradeManager/src/logFileWriter"
 	"GradeManager/src/service"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/contrib/sessions"
@@ -28,12 +28,15 @@ func init() {
 		ForceColors:   true,
 		FullTimestamp: true,
 	})
-	log.SetOutput(os.Stdout)
+
+	fileWriter, _ := logFileWriter.CeateNewLogFileWriter()
+	log.SetOutput(fileWriter)
+
 	log.SetLevel(log.InfoLevel)
 }
 
 func main() {
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	store := sessions.NewCookieStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
