@@ -22,7 +22,7 @@ type LogFileWriter struct {
 }
 
 func CeateNewLogFileWriter() (*LogFileWriter, error) {
-	file, err := os.OpenFile("./log/"+time.Now().Format("2006-01-02.03:04:05.PM.log"), os.O_WRONLY|os.O_APPEND|os.O_CREATE|os.O_SYNC, 0600)
+	file, err := os.OpenFile("./log/"+time.Now().Format("2006-01-02.PM.log"), os.O_WRONLY|os.O_APPEND|os.O_CREATE|os.O_SYNC, 0600)
 	if err != nil {
 		log.Fatal("file not opened")
 		return nil, err
@@ -32,8 +32,8 @@ func CeateNewLogFileWriter() (*LogFileWriter, error) {
 }
 
 func isNextDay(oldTime time.Time) bool {
-	oldTimeStr := oldTime.Format("20160102")
-	newTimeStr := time.Now().Format("20160102")
+	oldTimeStr := oldTime.Format("2016-01-02")
+	newTimeStr := time.Now().Format("2016-01-02")
 	if oldTimeStr != newTimeStr {
 		return true
 	}
