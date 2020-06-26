@@ -160,7 +160,7 @@ func AdminAddStudentPostHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"err_code": 0,
-		"err_msg":  "插入成功！",
+		"err_msg":  "添加成功！",
 	})
 }
 

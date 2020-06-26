@@ -691,7 +691,7 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 					return errors.New("type is submit")
 				}
 			} else {
-				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`, `team_year`, `team_th`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '0', '%f', '%f', `%s`, `%s`)", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit, teamYearStr, teamThStr)
+				err := dao.DataBase.Execf("insert into `score`(`student_uid`, `course_uid`, `usual_score`, `midterm_score`, `endterm_score`,`score`, `type`, `score_type`, `credit`, `academic_credit`, `team_year`, `team_th`) values ('%s', '%s', '%f', '%f', '%f', '%d', '%d', '0', '%f', '%f', '%s', '%s')", student_data["StudentUid"].(string), student_data["CourseUid"].(string), usual_score, mid_score, end_score, score, save_type, credit, acaCredit, teamYearStr, teamThStr)
 				if err != nil {
 					return err
 				}
