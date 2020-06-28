@@ -518,6 +518,8 @@
                                             "Data": score,
                                             "Cmd": "submit",
                                             "Percent": percent,
+                                            "TeamYear": document.getElementById("team_year").value,
+                                            "TeamTh": document.getElementById("team_th").value,
                                         };
                                         var post_data = JSON.stringify(req);
                                         $.ajax({
