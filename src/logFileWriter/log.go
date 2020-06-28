@@ -51,10 +51,13 @@ func (p *LogFileWriter) Write(data []byte) (n int, err error) {
 
 	if isNextDay(p.createTime) {
 		p.File.Close()
-		p, e = CeateNewLogFileWriter()
+		tmp, e := CeateNewLogFileWriter()
 		if e != nil {
 			log.Fatal(e)
 		}
+
+		p.File = tmp.File
+		p.createTime = tmp.createTime
 	}
 	return n, e
 }

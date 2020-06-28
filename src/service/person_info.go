@@ -9,6 +9,7 @@
 package service
 
 import (
+	"GradeManager/src/api"
 	"GradeManager/src/context"
 	"GradeManager/src/dao"
 	"net/http"
@@ -104,14 +105,18 @@ func StudentInfoGetHandler(c *gin.Context) {
 		return
 	}
 
+	collegeName, _ := api.GetNamebyUid(s.Info.GetCollegeUid(), "college", "college_uid")
+	majorName, _ := api.GetNamebyUid(s.Info.GetMajorUid(), "major", "major_uid")
+	className, _ := api.GetNamebyUid(s.Info.GetClassUid(), "class", "class_uid")
+
 	c.HTML(http.StatusOK, "student_person_info.html", gin.H{
 		"student_uid":  s.Info.GetStudentUid(),
 		"name":         s.Info.GetName(),
 		"sex":          s.Info.GetSex(),
 		"NRIC":         s.Info.GetNRIC(),
-		"college_name": s.Info.GetCollegeUid(),
-		"major_name":   s.Info.GetMajorUid(),
-		"class_name":   s.Info.GetClassUid(),
+		"college_name": collegeName,
+		"major_name":   majorName,
+		"class_name":   className,
 		"status":       s.Info.GetStatus(),
 		"create_time":  s.Info.GetCreateTime(),
 		"loginer_name": s.Info.GetName(),
@@ -130,7 +135,7 @@ func UpdateStudentPersonInfoHandler(c *gin.Context) {
 	name := c.Request.PostForm.Get("name")
 	sex := c.Request.PostForm.Get("sex")
 
-	err := dao.DataBase.Execf("update `student` set `name`='%s', sex='%s' where `student_uid`='%s'", name, sex, s.Info.GetStudentUid())
+	err := dao.DataBase.Execf("update `student` set `name`='%s', sex='%s' where `student_uid`='%d'", name, sex, s.Info.GetStudentUid())
 	if err != nil {
 		c.HTML(http.StatusBadGateway, "502.html", nil)
 		return
