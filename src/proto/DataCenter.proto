@@ -94,7 +94,8 @@ message CourseInfo {
     float               Hour = 5;
     STATUS              Status = 6;
     string              CreateTime = 7;
-    TYPE               Type = 8;
+    TYPE                Type = 8;
+    uint64              TeacherUid = 9;
 }
 
 // 成绩信息

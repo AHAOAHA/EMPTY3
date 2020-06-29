@@ -737,13 +737,16 @@ func SaveStudentScore(body map[string]interface{}, save_type int) error {
 	}
 
 	// 提交成绩时修改课程状态
-	if save_type == 1 {
-		// 更新课程状态
-		err := dao.DataBase.Execf("update `student_course` set `status`='%d' where `class_uid`='%d' and `course_uid`='%s'", DataCenter.StudentCourseInfo_DONE, classUID, courseUIDStr)
-		if err != nil {
-			log.Error(err.Error())
+
+	defer func() {
+		if save_type == 1 {
+			// 更新课程状态
+			err := dao.DataBase.Execf("update `student_course` set `status`='%d' where `class_uid`='%d' and `course_uid`='%s'", DataCenter.StudentCourseInfo_DONE, classUID, courseUIDStr)
+			if err != nil {
+				log.Error(err.Error())
+			}
 		}
-	}
+	}()
 	return nil
 }
 

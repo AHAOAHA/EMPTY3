@@ -160,9 +160,12 @@ func StudentQueryCourseHandler(c *gin.Context) {
 		Credit      float32
 		CourseType  string
 		Status      string
+		TeacherName string
+		TeacherUid  uint64
 	}
 
 	for _, v := range courses {
+		teacherName, _ := api.GetNamebyUid(v.GetTeacherUid(), "teacher", "teacher_uid")
 		collegeName, _ := api.GetNamebyUid(v.GetCollegeUid(), "college", "college_uid")
 		result = append(result, struct {
 			CourseName  string
@@ -171,6 +174,8 @@ func StudentQueryCourseHandler(c *gin.Context) {
 			Credit      float32
 			CourseType  string
 			Status      string
+			TeacherName string
+			TeacherUid  uint64
 		}{
 			v.GetName(),
 			collegeName,
@@ -178,6 +183,8 @@ func StudentQueryCourseHandler(c *gin.Context) {
 			v.GetCredit(),
 			v.GetType().String(),
 			v.GetStatus().String(),
+			teacherName,
+			v.GetTeacherUid(),
 		})
 	}
 

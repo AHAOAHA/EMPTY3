@@ -145,6 +145,8 @@
                                 <tr>
                                     <th class="table-id">序号</th>
                                     <th class="table-title">课程</th>
+                                    <th class="table-title">授课教师</th>
+                                    <th class="table-title">授课教师教工号</th>
                                     <th class="table-title">所属学院</th>
                                     <th class="table-title">学时</th>
                                     <th class="table-set">总学分</th>
@@ -168,6 +170,8 @@
                                                 tr += "\<tr\>\
                                                             \<td\>"+ count++ + "\</td\>\
                                                             \<td\>"+ val["CourseName"] + "\</td\>\
+                                                            \<td\>"+ val["TeacherName"] + "\</td\>\
+                                                            \<td\>"+ val["TeacherUid"] + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ val["CollegeName"] + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ val["Hour"] + "\</td\>\
                                                             \<td class=\"am-hide-sm-only\"\>"+ val["Credit"] + "\</td\>\

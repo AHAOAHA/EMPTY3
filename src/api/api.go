@@ -933,6 +933,7 @@ func GetCourseByClassUid(class_uid uint64) ([]DataCenter.CourseInfo, error) {
 			Hour:       float32(hour),
 			Type:       DataCenter.CourseInfo_TYPE(type_c),
 			Status:     DataCenter.CourseInfo_STATUS(v.GetStatus()),
+			TeacherUid: v.GetTeacherUid(),
 		})
 	}
 
