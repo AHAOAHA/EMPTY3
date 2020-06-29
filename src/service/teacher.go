@@ -583,11 +583,7 @@ func TeacherInputScoreHandler(c *gin.Context) {
 	if cmd == "save" {
 		// 保存命令
 		// 保存比例
-		err = SavePercent(body_m, 0)
-		if err != nil {
-			log.Error(err)
-			err_code = 1001
-		}
+		_ = SavePercent(body_m, 0)
 		err = SaveStudentScore(body_m, 0)
 		if err != nil {
 			log.Error(err)
@@ -595,11 +591,7 @@ func TeacherInputScoreHandler(c *gin.Context) {
 		}
 	} else if cmd == "submit" {
 		// 提交
-		err = SavePercent(body_m, 0)
-		if err != nil {
-			log.Error(err)
-			err_code = 1002
-		}
+		_ = SavePercent(body_m, 0)
 		err = SaveStudentScore(body_m, 1)
 		if err != nil {
 			log.Error(err)
