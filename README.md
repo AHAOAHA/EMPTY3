@@ -49,3 +49,14 @@ SK="xxxxxx"
 Url="xxxxxx"
 Path="xxxxxx"
 ```
+
+## 項目展示
+
+項目地址：[請點擊此處](101.37.175.110:8080).
+
+
+## API
+
+IP地址轉換：URL[101.37.175.110:8080/ip-to-addr?ip=xxx.xxx.xxx.xxx], [example](http://101.37.175.110:8080/ip-to-addr?ip=101.37.175.110).
+
+坐標地址轉換：URL[101.37.175.110:8080/location-to-addr?location=xx.xx.xx,xx.xx.xx], [example](http://101.37.175.110:8080/location-to-addr?location=30.32,45.65).
