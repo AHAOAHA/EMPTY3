@@ -1,0 +1,14 @@
+language: golang
+
+golang: "1.15"
+
+cache:
+  directories:
+  - gopath
+
+install:
+  - go mod download
+
+script:
+  - go build src/main.go
+  - echo "ok"
