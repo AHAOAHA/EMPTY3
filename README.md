@@ -1,5 +1,7 @@
 # GradeManager
 
+[![Build Status](https://travis-ci.com/AHAOAHA/GradeManager.svg?branch=master)](https://travis-ci.com/AHAOAHA/GradeManager)
+
 ## 简介
 
 本文是基于Golang的学生成绩管理系统，项目基于B/S架构。
