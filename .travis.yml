@@ -6,9 +6,10 @@ cache:
   directories:
   - gopath
 
-install:
+before_install:
   - go mod download
 
+install: true
+
 script:
-  - go build src/main.go
-  - echo "ok"
+  - make
