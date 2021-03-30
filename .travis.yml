@@ -1,13 +1,13 @@
 language: golang
 
-golang: "1.15"
+golang: 1.15
 
 cache:
   directories:
   - gopath
 
 before_install:
-  - go mod download
+  - GO111MODULE=on go mod download
 
 install: true
 
