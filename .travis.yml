@@ -12,4 +12,4 @@ before_install:
 install: true
 
 script:
-  - make
+  - GO111MODULE=on make
