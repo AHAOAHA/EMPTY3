@@ -41,7 +41,7 @@ func main() {
 	store := sessions.NewCookieStore([]byte("secret"))
 	r.Use(sessions.Sessions("mysession", store))
 	r.Static("/static", "./views/static")
-	r.LoadHTMLGlob("/home/ahaoozhang/dev_code/GradeManager/views/templates/*")
+	r.LoadHTMLGlob("./views/templates/*")
 
 	// rounte
 	r.Any("/", func(g *gin.Context) {

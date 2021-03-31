@@ -56,7 +56,7 @@ var Config MyConfig
 
 func init() {
 	// prase config
-	if _, err := toml.DecodeFile("/home/ahaoozhang/dev_code/GradeManager/config/config.toml", &Config); err != nil {
+	if _, err := toml.DecodeFile("./config/config.toml", &Config); err != nil {
 		panic(err)
 	}
 	log.Infof("MyConfig: %+v", Config)
